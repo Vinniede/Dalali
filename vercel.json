@@ -1,32 +1,13 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
-  "installCommand": "npm install && cd backend && npm install && cd ../frontend && npm install",
-  "monorepo": true,
-  "builds": [
-    {
-      "src": "backend/package.json",
-      "use": "@vercel/node",
-      "config": {
-        "zeroConfig": true
-      }
+  "experimentalServices": {
+    "frontend": {
+      "entrypoint": "frontend",
+      "routePrefix": "/",
+      "framework": "vite"
     },
-    {
-      "src": "frontend/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
+    "backend": {
+      "entrypoint": "backend"
     }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "backend/api/index.ts"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "frontend/dist/$1"
-    }
-  ]
+  }
 }
