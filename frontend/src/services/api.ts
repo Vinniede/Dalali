@@ -3,7 +3,7 @@ import axios, { AxiosInstance } from 'axios';
 const API_BASE_URL = import.meta.env.VITE_API_URL || (
   typeof window !== 'undefined' && window.location.hostname === 'localhost'
     ? 'http://localhost:5000/api'
-    : '/_/backend/api'
+    : '/api'
 );
 
 const api: AxiosInstance = axios.create({
