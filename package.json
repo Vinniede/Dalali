@@ -1,0 +1,14 @@
+{
+  "name": "dalali-express",
+  "version": "1.0.0",
+  "description": "Dalali Express - Cargo Tracking System",
+  "private": true,
+  "scripts": {
+    "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "build": "cd backend && npm run build && cd ../frontend && npm run build",
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.1"
+  }
+}
