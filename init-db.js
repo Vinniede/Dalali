@@ -1,9 +1,15 @@
 const { Pool } = require('pg');
 const fs = require('fs');
 const path = require('path');
+require('dotenv').config();
+
+if (!process.env.DATABASE_URL) {
+  console.error('❌ DATABASE_URL environment variable is required');
+  process.exit(1);
+}
 
 const pool = new Pool({
-  connectionString: 'postgresql://neondb_owner:npg_7yoc8UmuaxjV@ep-late-resonance-anv0u9yc-pooler.c-6.us-east-1.aws.neon.tech/neondb?sslmode=require'
+  connectionString: process.env.DATABASE_URL
 });
 
 async function initializeDatabase() {
