@@ -1,12 +1,15 @@
-import React from 'react';
-import { Header, Footer } from '../components/Layout.tsx';
-import shipmentService from '../services/shipmentService';
-import { useNavigate } from 'react-router-dom';
-import { TrackingForm, TrackingResults } from '../components/Tracking.tsx';
-import { ImageCarousel } from '../components/ImageCarousel.tsx';
+import React from "react";
+import { Header, Footer } from "../components/Layout.tsx";
+import shipmentService from "../services/shipmentService";
+import { useNavigate } from "react-router-dom";
+import { TrackingForm, TrackingResults } from "../components/Tracking.tsx";
+import { ImageCarousel } from "../components/ImageCarousel.tsx";
 
 // CountUp component for animating numbers
-const CountUp: React.FC<{ target: number; suffix: string }> = ({ target, suffix }) => {
+const CountUp: React.FC<{ target: number; suffix: string }> = ({
+  target,
+  suffix,
+}) => {
   const [count, setCount] = React.useState(0);
 
   React.useEffect(() => {
@@ -24,14 +27,19 @@ const CountUp: React.FC<{ target: number; suffix: string }> = ({ target, suffix 
     return () => clearInterval(timer);
   }, [target]);
 
-  return <span>{count.toLocaleString()}{suffix}</span>;
+  return (
+    <span>
+      {count.toLocaleString()}
+      {suffix}
+    </span>
+  );
 };
 
 // Tracking Page
 export const TrackingPage: React.FC = () => {
   const [trackingData, setTrackingData] = React.useState<any>(null);
   const searchParams = new URLSearchParams(window.location.search);
-  const trackingFromUrl = searchParams.get('tracking');
+  const trackingFromUrl = searchParams.get("tracking");
 
   const handleTrackingResults = (results: any) => {
     if (results.success) {
@@ -46,8 +54,12 @@ export const TrackingPage: React.FC = () => {
         {/* Hero Section */}
         <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-12 sm:py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 className="text-4xl sm:text-5xl font-bold mb-2">Track Your Shipment</h1>
-            <p className="text-lg text-blue-100">Real-time tracking for your international cargo</p>
+            <h1 className="text-4xl sm:text-5xl font-bold mb-2">
+              Track Your Shipment
+            </h1>
+            <p className="text-lg text-blue-100">
+              Real-time tracking for your international cargo
+            </p>
           </div>
         </section>
 
@@ -65,64 +77,68 @@ export const TrackingPage: React.FC = () => {
 // Services Page
 export const ServicesPage: React.FC = () => {
   const navigate = useNavigate();
-  const [activeService, setActiveService] = React.useState('air');
+  const [activeService, setActiveService] = React.useState("air");
 
   const services = {
     air: {
-      title: 'Air Freight',
-      icon: '✈️',
-      description: 'Fast international delivery for urgent cargo',
-      details: 'Transport of goods by aircraft for speed-critical shipments. Perfect for urgent deliveries and high-value items requiring quick transit times.',
-      image: '/media/air%20freight.jpeg',
+      title: "Air Freight",
+      icon: "✈️",
+      description: "Fast international delivery for urgent cargo",
+      details:
+        "Transport of goods by aircraft for speed-critical shipments. Perfect for urgent deliveries and high-value items requiring quick transit times.",
+      image: "/media/air%20freight.jpeg",
       features: [
-        '24-48 hour delivery worldwide',
-        'Real-time tracking',
-        'Full insurance coverage',
-        'Flexible package sizes',
+        "24-48 hour delivery worldwide",
+        "Real-time tracking",
+        "Full insurance coverage",
+        "Flexible package sizes",
       ],
-      pricing: 'Contact for quote',
+      pricing: "Contact for quote",
     },
     sea: {
-      title: 'Sea Freight',
-      icon: '🚢',
-      description: 'Cost-effective bulk shipping solutions',
-      details: 'Economical transportation of large volumes. Ideal for scheduled shipments where cost savings are prioritized over speed.',
-      image: '/media/sea%20shippment.jpeg',
+      title: "Sea Freight",
+      icon: "🚢",
+      description: "Cost-effective bulk shipping solutions",
+      details:
+        "Economical transportation of large volumes. Ideal for scheduled shipments where cost savings are prioritized over speed.",
+      image: "/media/sea%20shippment.jpeg",
       features: [
-        'Competitive bulk rates',
-        '5-15 day delivery',
-        'Container options available',
-        'Weekly schedules',
+        "Competitive bulk rates",
+        "5-15 day delivery",
+        "Container options available",
+        "Weekly schedules",
       ],
-      pricing: 'Contact for quote',
+      pricing: "Contact for quote",
     },
     land: {
-      title: 'Land Freight',
-      icon: '🚚',
-      description: 'Regional ground transport across Africa',
-      details: 'Reliable overland transportation covering East and Central Africa. Perfect for regional deliveries with flexible scheduling.',
-      image: '/media/Land%20freight.jpeg',
+      title: "Land Freight",
+      icon: "🚚",
+      description: "Regional ground transport across Africa",
+      details:
+        "Reliable overland transportation covering East and Central Africa. Perfect for regional deliveries with flexible scheduling.",
+      image: "/media/Land%20freight.jpeg",
       features: [
-        '2-7 day regional delivery',
-        'Direct route optimization',
-        'Door-to-door service',
-        'Affordable rates',
+        "2-7 day regional delivery",
+        "Direct route optimization",
+        "Door-to-door service",
+        "Affordable rates",
       ],
-      pricing: 'Contact for quote',
+      pricing: "Contact for quote",
     },
     clearing: {
-      title: 'Clearing & Forwarding',
-      icon: '📦',
-      description: 'Complete customs and logistics solutions',
-      details: 'Expert handling of customs clearance and documentation. We manage all paperwork and regulatory requirements for smooth border crossings.',
-      image: '/media/land%20forwarding.jpeg',
+      title: "Clearing & Forwarding",
+      icon: "📦",
+      description: "Complete customs and logistics solutions",
+      details:
+        "Expert handling of customs clearance and documentation. We manage all paperwork and regulatory requirements for smooth border crossings.",
+      image: "/media/land%20forwarding.jpeg",
       features: [
-        'Full customs clearance',
-        'Documentation handling',
-        'Duty calculation',
-        'Fast processing',
+        "Full customs clearance",
+        "Documentation handling",
+        "Duty calculation",
+        "Fast processing",
       ],
-      pricing: 'Contact for quote',
+      pricing: "Contact for quote",
     },
   };
 
@@ -139,15 +155,22 @@ export const ServicesPage: React.FC = () => {
         {/* Hero Section */}
         <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16 sm:py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 className="text-4xl sm:text-5xl font-bold mb-3">Our Logistics Services</h1>
-            <p className="text-lg text-blue-100 max-w-2xl">Simple, reliable, and tailored shipping solutions for your international cargo needs</p>
+            <h1 className="text-4xl sm:text-5xl font-bold mb-3">
+              Our Logistics Services
+            </h1>
+            <p className="text-lg text-blue-100 max-w-2xl">
+              Simple, reliable, and tailored shipping solutions for your
+              international cargo needs
+            </p>
           </div>
         </section>
 
         {/* Service Navigation */}
         <section className="bg-white border-b border-gray-200 sticky top-0 z-20 shadow">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <p className="text-sm font-bold text-gray-600 mb-4 uppercase tracking-widest">Select a Service</p>
+            <p className="text-sm font-bold text-gray-600 mb-4 uppercase tracking-widest">
+              Select a Service
+            </p>
             <div className="flex flex-wrap gap-3">
               {Object.entries(services).map(([key, service]) => (
                 <button
@@ -155,8 +178,8 @@ export const ServicesPage: React.FC = () => {
                   onClick={() => setActiveService(key)}
                   className={`px-5 py-2 rounded-lg font-semibold transition-all duration-200 ${
                     activeService === key
-                      ? 'bg-blue-600 text-white shadow-lg'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? "bg-blue-600 text-white shadow-lg"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
                 >
                   {service.icon} {service.title}
@@ -179,15 +202,23 @@ export const ServicesPage: React.FC = () => {
                 <div className="flex items-start gap-4 mb-8">
                   <span className="text-5xl">{currentService.icon}</span>
                   <div className="flex-1">
-                    <h2 className="text-4xl font-bold mb-2 text-blue-600">{currentService.title}</h2>
-                    <p className="text-lg text-gray-600">{currentService.description}</p>
+                    <h2 className="text-4xl font-bold mb-2 text-blue-600">
+                      {currentService.title}
+                    </h2>
+                    <p className="text-lg text-gray-600">
+                      {currentService.description}
+                    </p>
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-blue-600 mb-3 uppercase tracking-wide">Overview</h3>
-                  <p className="text-gray-700 leading-relaxed mb-6">{currentService.details}</p>
+                  <h3 className="text-lg font-bold text-blue-600 mb-3 uppercase tracking-wide">
+                    Overview
+                  </h3>
+                  <p className="text-gray-700 leading-relaxed mb-6">
+                    {currentService.details}
+                  </p>
                 </div>
-                <button 
+                <button
                   onClick={() => handleContactService(activeService)}
                   className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition shadow-lg"
                 >
@@ -198,20 +229,26 @@ export const ServicesPage: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
               <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-6">Key Features</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-6">
+                  Key Features
+                </h3>
                 <ul className="space-y-4">
                   {currentService.features.map((feature, idx) => (
                     <li key={idx} className="flex items-start gap-3">
-                      <span className="text-2xl text-blue-600 font-bold">✓</span>
+                      <span className="text-2xl text-blue-600 font-bold">
+                        ✓
+                      </span>
                       <span className="text-gray-700">{feature}</span>
                     </li>
                   ))}
                 </ul>
               </div>
               <div className="bg-blue-50 rounded-lg p-8">
-                <h3 className="text-xl font-bold text-gray-900 mb-6">Pricing</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-6">
+                  Pricing
+                </h3>
                 <p className="text-gray-700 mb-6">{currentService.pricing}</p>
-                <button 
+                <button
                   onClick={() => handleContactService(activeService)}
                   className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition shadow-lg"
                 >
@@ -224,7 +261,9 @@ export const ServicesPage: React.FC = () => {
 
         {/* Service Cards Overview */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <h2 className="text-3xl font-bold text-center mb-12">All Our Services</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">
+            All Our Services
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {Object.entries(services).map(([key, service]) => (
               <button
@@ -232,13 +271,17 @@ export const ServicesPage: React.FC = () => {
                 onClick={() => setActiveService(key)}
                 className={`p-6 rounded-lg text-center transition duration-300 hover:shadow-lg ${
                   activeService === key
-                    ? 'bg-blue-600 text-white shadow-lg'
-                    : 'bg-white text-gray-900 border-2 border-gray-200 hover:border-blue-600'
+                    ? "bg-blue-600 text-white shadow-lg"
+                    : "bg-white text-gray-900 border-2 border-gray-200 hover:border-blue-600"
                 }`}
               >
                 <div className="text-4xl mb-3">{service.icon}</div>
                 <h3 className="font-bold text-lg mb-2">{service.title}</h3>
-                <p className={`text-sm ${activeService === key ? 'text-blue-100' : 'text-gray-600'}`}>{service.description}</p>
+                <p
+                  className={`text-sm ${activeService === key ? "text-blue-100" : "text-gray-600"}`}
+                >
+                  {service.description}
+                </p>
               </button>
             ))}
           </div>
@@ -252,22 +295,36 @@ export const ServicesPage: React.FC = () => {
 // Contact Page
 export const ContactPage: React.FC = () => {
   const [formData, setFormData] = React.useState({
-    name: '',
-    email: '',
-    message: '',
+    name: "",
+    email: "",
+    message: "",
   });
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [submitMessage, setSubmitMessage] = React.useState('');
+  const [submitMessage, setSubmitMessage] = React.useState("");
 
   const contactOffices = [
-    { city: 'Dar es Salaam, Tanzania', phone: '+255 715 961778', email: 'info@dalaliexpress.com' },
-    { city: 'Kinshasa, DRC', phone: '+243 977 052 098', email: 'drc@dalaliexpress.com' },
-    { city: 'Entebbe, Uganda', phone: '+256 789563653', email: 'uganda@dalaliexpress.com' },
+    {
+      city: "Dar es Salaam, Tanzania",
+      phone: "+255 715 961778",
+      email: "info@dalaliexpress.com",
+    },
+    {
+      city: "Kinshasa, DRC",
+      phone: "+243 977 052 098",
+      email: "drc@dalaliexpress.com",
+    },
+    {
+      city: "Entebbe, Uganda",
+      phone: "+256 789563653",
+      email: "uganda@dalaliexpress.com",
+    },
   ];
 
-  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleFormChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -276,15 +333,15 @@ export const ContactPage: React.FC = () => {
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
       // Here you would typically send the form data to your backend
       // For now, we'll just show a success message
-      setSubmitMessage('Thank you! We will get back to you soon.');
-      setFormData({ name: '', email: '', message: '' });
-      setTimeout(() => setSubmitMessage(''), 5000);
+      setSubmitMessage("Thank you! We will get back to you soon.");
+      setFormData({ name: "", email: "", message: "" });
+      setTimeout(() => setSubmitMessage(""), 5000);
     } catch (error) {
-      setSubmitMessage('Failed to send message. Please try again.');
+      setSubmitMessage("Failed to send message. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -307,17 +364,22 @@ export const ContactPage: React.FC = () => {
               <h2 className="text-2xl font-bold mb-8">Regional Offices</h2>
               <div className="space-y-6">
                 {contactOffices.map((office, idx) => (
-                  <div key={idx} className="bg-gray-50 p-6 rounded-lg border-l-4 border-blue-600">
-                    <p className="font-bold text-lg text-gray-900">{office.city}</p>
-                    <a 
-                      href={`tel:${office.phone.replace(/\s/g, '')}`}
+                  <div
+                    key={idx}
+                    className="bg-gray-50 p-6 rounded-lg border-l-4 border-blue-600"
+                  >
+                    <p className="font-bold text-lg text-gray-900">
+                      {office.city}
+                    </p>
+                    <a
+                      href={`tel:${office.phone.replace(/\s/g, "")}`}
                       className="text-blue-600 hover:text-blue-700 font-medium mt-2 inline-block"
                     >
                       📞 {office.phone}
                     </a>
                     <p className="text-gray-600 text-sm mt-1">{office.email}</p>
-                    <a 
-                      href={`https://wa.me/${office.phone.replace(/[^\d+]/g, '')}?text=Hello%20Dalali%20Express`}
+                    <a
+                      href={`https://wa.me/${office.phone.replace(/[^\d+]/g, "")}?text=Hello%20Dalali%20Express`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-green-600 hover:text-green-700 font-medium text-sm mt-2 inline-block"
@@ -331,43 +393,45 @@ export const ContactPage: React.FC = () => {
 
             <form className="space-y-4" onSubmit={handleFormSubmit}>
               {submitMessage && (
-                <div className={`p-4 rounded-lg ${submitMessage.includes('Thank') ? 'bg-green-100 text-green-700 border-l-4 border-green-500' : 'bg-red-100 text-red-700 border-l-4 border-red-500'}`}>
+                <div
+                  className={`p-4 rounded-lg ${submitMessage.includes("Thank") ? "bg-green-100 text-green-700 border-l-4 border-green-500" : "bg-red-100 text-red-700 border-l-4 border-red-500"}`}
+                >
                   {submitMessage}
                 </div>
               )}
-              <input 
-                type="text" 
+              <input
+                type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleFormChange}
-                placeholder="Your Name" 
+                placeholder="Your Name"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none"
                 required
               />
-              <input 
-                type="email" 
+              <input
+                type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleFormChange}
-                placeholder="Your Email" 
+                placeholder="Your Email"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none"
                 required
               />
-              <textarea 
+              <textarea
                 name="message"
                 value={formData.message}
                 onChange={handleFormChange}
-                placeholder="Your Message" 
+                placeholder="Your Message"
                 rows={5}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none"
                 required
               ></textarea>
-              <button 
+              <button
                 type="submit"
                 disabled={isSubmitting}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition disabled:opacity-50"
               >
-                {isSubmitting ? 'Sending...' : 'Send Message'}
+                {isSubmitting ? "Sending..." : "Send Message"}
               </button>
             </form>
           </div>
@@ -380,41 +444,45 @@ export const ContactPage: React.FC = () => {
 
 // Home Page
 export const HomePage: React.FC = () => {
-  const [trackingNumber, setTrackingNumber] = React.useState('');
+  const [trackingNumber, setTrackingNumber] = React.useState("");
   const [trackingResult, setTrackingResult] = React.useState<any>(null);
-  const [trackingError, setTrackingError] = React.useState('');
+  const [trackingError, setTrackingError] = React.useState("");
   const [isLoadingTracking, setIsLoadingTracking] = React.useState(false);
-  const [serviceType, setServiceType] = React.useState<'air' | 'ocean' | null>(null);
+  const [serviceType, setServiceType] = React.useState<"air" | "ocean" | null>(
+    null,
+  );
   const navigate = useNavigate();
 
   // Contact information
   const contactInfo = [
-    { city: 'Dar es Salaam, Tanzania', phone: '+255 715 961778' },
-    { city: 'Kinshasa, DRC', phone: '+243 977 052 098' },
-    { city: 'Entebbe, Uganda', phone: '+256 789563653' },
+    { city: "Dar es Salaam, Tanzania", phone: "+255 715 961778" },
+    { city: "Kinshasa, DRC", phone: "+243 977 052 098" },
+    { city: "Entebbe, Uganda", phone: "+256 789563653" },
   ];
 
   // Handle tracking search
   const handleTrackingSearch = async () => {
     if (!trackingNumber.trim()) {
-      setTrackingError('Please enter a tracking number');
+      setTrackingError("Please enter a tracking number");
       return;
     }
-    
+
     setIsLoadingTracking(true);
-    setTrackingError('');
+    setTrackingError("");
     setTrackingResult(null);
-    
+
     try {
       const response = await shipmentService.trackShipment(trackingNumber);
       if (response.success) {
         setTrackingResult(response.data);
-        setTrackingError('');
+        setTrackingError("");
       } else {
-        setTrackingError('Shipment not found');
+        setTrackingError("Shipment not found");
       }
     } catch (error: any) {
-      setTrackingError(error.response?.data?.message || 'Failed to fetch tracking information');
+      setTrackingError(
+        error.response?.data?.message || "Failed to fetch tracking information",
+      );
     } finally {
       setIsLoadingTracking(false);
     }
@@ -422,24 +490,26 @@ export const HomePage: React.FC = () => {
 
   // Handle call button
   const handleCall = (phone: string) => {
-    window.location.href = `tel:${phone.replace(/\s/g, '')}`;
+    window.location.href = `tel:${phone.replace(/\s/g, "")}`;
   };
 
   // Handle WhatsApp button
   const handleWhatsApp = (phone: string) => {
-    const message = encodeURIComponent('Hello! I need information about shipping with Dalali Express.');
-    const phoneNumber = phone.replace(/[^\d+]/g, '');
-    window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+    const message = encodeURIComponent(
+      "Hello! I need information about shipping with Dalali Express.",
+    );
+    const phoneNumber = phone.replace(/[^\d+]/g, "");
+    window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
   };
 
   // Handle quote request
   const handleRequestQuote = () => {
-    navigate('/contact');
+    navigate("/contact");
   };
 
   // Handle get quote button in CTA
   const handleGetQuote = () => {
-    navigate('/contact');
+    navigate("/contact");
   };
 
   return (
@@ -460,32 +530,39 @@ export const HomePage: React.FC = () => {
           </video>
           <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
             <div className="text-center text-white">
-              <p className="text-sm font-bold">🚚 Dalali Express - Africa's Premier Logistics</p>
+              <p className="text-sm font-bold">
+                🚚 Dalali Express - Africa's Premier Logistics
+              </p>
             </div>
           </div>
         </section>
 
         {/* Hero Section */}
-        <section className="bg-gradient-to-b from-blue-50 to-white py-4 bg-cover bg-center relative" style={{
-          backgroundImage: 'url(/media/Home%20hero.png)',
-        }}>
+        <section
+          className="bg-gradient-to-b from-blue-50 to-white py-4 bg-cover bg-center relative"
+          style={{
+            backgroundImage: "url(/media/Home%20hero.png)",
+          }}
+        >
           <div className="absolute inset-0 bg-black/40"></div>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
             <h1 className="text-4xl sm:text-5xl font-bold text-white mb-2">
               Reliable Cargo & Logistics Services
             </h1>
-            <p className="text-lg text-gray-100 mb-8">Fast Delivery | Low Cost | High Reliability</p>
+            <p className="text-lg text-gray-100 mb-8">
+              Fast Delivery | Low Cost | High Reliability
+            </p>
 
             {/* Service Type Selector */}
             <div className="flex justify-center gap-4 mb-12">
-              <button 
-                onClick={() => navigate('/services')}
+              <button
+                onClick={() => navigate("/services")}
                 className="px-6 py-2 border-2 border-blue-600 text-blue-600 font-bold rounded-lg hover:bg-blue-50 transition"
               >
                 ✈️ Air
               </button>
-              <button 
-                onClick={() => navigate('/services')}
+              <button
+                onClick={() => navigate("/services")}
                 className="px-6 py-2 border-2 border-blue-600 text-blue-600 font-bold rounded-lg hover:bg-blue-50 transition"
               >
                 🌊 Ocean
@@ -494,7 +571,9 @@ export const HomePage: React.FC = () => {
 
             {/* Tracking Section */}
             <div className="max-w-2xl mx-auto mb-8">
-              <label className="block text-lg font-bold text-gray-800 mb-4">Enter Tracking Number</label>
+              <label className="block text-lg font-bold text-gray-800 mb-4">
+                Enter Tracking Number
+              </label>
               <div className="flex gap-3 mb-6">
                 <input
                   type="text"
@@ -503,12 +582,12 @@ export const HomePage: React.FC = () => {
                   placeholder="e.g., DLX-2024-001234"
                   className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none"
                 />
-                <button 
+                <button
                   onClick={handleTrackingSearch}
                   disabled={isLoadingTracking}
                   className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition disabled:opacity-50"
                 >
-                  {isLoadingTracking ? 'SEARCHING...' : 'SEARCH'}
+                  {isLoadingTracking ? "SEARCHING..." : "SEARCH"}
                 </button>
               </div>
 
@@ -521,13 +600,28 @@ export const HomePage: React.FC = () => {
               {trackingResult && (
                 <div className="mb-6 p-4 bg-green-100 border-l-4 border-green-500 text-green-700 rounded">
                   <p className="font-semibold mb-2">Shipment Found</p>
-                  <p><strong>Tracking:</strong> {trackingResult.tracking_number}</p>
-                  <p><strong>From:</strong> {trackingResult.sender_name}</p>
-                  <p><strong>To:</strong> {trackingResult.receiver_name}</p>
-                  <p><strong>Status:</strong> <span className="bg-green-500 text-white px-3 py-1 rounded">{trackingResult.current_status}</span></p>
-                  <p><strong>Destination:</strong> {trackingResult.destination}</p>
-                  <button 
-                    onClick={() => navigate(`/track?tracking=${trackingNumber}`)}
+                  <p>
+                    <strong>Tracking:</strong> {trackingResult.tracking_number}
+                  </p>
+                  <p>
+                    <strong>From:</strong> {trackingResult.sender_name}
+                  </p>
+                  <p>
+                    <strong>To:</strong> {trackingResult.receiver_name}
+                  </p>
+                  <p>
+                    <strong>Status:</strong>{" "}
+                    <span className="bg-green-500 text-white px-3 py-1 rounded">
+                      {trackingResult.current_status}
+                    </span>
+                  </p>
+                  <p>
+                    <strong>Destination:</strong> {trackingResult.destination}
+                  </p>
+                  <button
+                    onClick={() =>
+                      navigate(`/track?tracking=${trackingNumber}`)
+                    }
                     className="mt-3 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium transition"
                   >
                     View Full Details
@@ -537,7 +631,7 @@ export const HomePage: React.FC = () => {
 
               <div className="text-gray-600 mb-6 font-medium">OR</div>
 
-              <button 
+              <button
                 onClick={handleRequestQuote}
                 className="px-8 py-3 border-2 border-orange-600 text-orange-600 font-bold rounded-lg hover:bg-orange-50 transition"
               >
@@ -550,14 +644,18 @@ export const HomePage: React.FC = () => {
         {/* Trust Bar */}
         <section className="bg-blue-600 text-white py-4">
           <div className="max-w-7xl mx-auto px-4 text-center">
-            <p className="text-lg font-semibold">✔ Safe | ✔ Fast | ✔ Professional Logistics</p>
+            <p className="text-lg font-semibold">
+              ✔ Safe | ✔ Fast | ✔ Professional Logistics
+            </p>
           </div>
         </section>
 
         {/* Core Services */}
         <section className="py-16 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold text-center mb-12">Our Core Services</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">
+              Our Core Services
+            </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
               <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition transform hover:scale-105">
@@ -567,7 +665,9 @@ export const HomePage: React.FC = () => {
                   className="w-full h-48 object-cover"
                 />
                 <div className="p-6 text-center">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Air Freight</h3>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                    Air Freight
+                  </h3>
                   <p className="text-gray-600">Fast delivery worldwide</p>
                 </div>
               </div>
@@ -579,7 +679,9 @@ export const HomePage: React.FC = () => {
                   className="w-full h-48 object-cover"
                 />
                 <div className="p-6 text-center">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Sea Freight</h3>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                    Sea Freight
+                  </h3>
                   <p className="text-gray-600">Bulk shipping solutions</p>
                 </div>
               </div>
@@ -591,8 +693,12 @@ export const HomePage: React.FC = () => {
                   className="w-full h-48 object-cover"
                 />
                 <div className="p-6 text-center">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Land Freight</h3>
-                  <p className="text-gray-600">Ground transport across Africa</p>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                    Land Freight
+                  </h3>
+                  <p className="text-gray-600">
+                    Ground transport across Africa
+                  </p>
                 </div>
               </div>
 
@@ -603,15 +709,17 @@ export const HomePage: React.FC = () => {
                   className="w-full h-48 object-cover"
                 />
                 <div className="p-6 text-center">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Clearing & Forwarding</h3>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                    Clearing & Forwarding
+                  </h3>
                   <p className="text-gray-600">Customs handling</p>
                 </div>
               </div>
             </div>
 
             <div className="text-center">
-              <button 
-                onClick={() => navigate('/services')}
+              <button
+                onClick={() => navigate("/services")}
                 className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition"
               >
                 View Services
@@ -621,32 +729,43 @@ export const HomePage: React.FC = () => {
         </section>
 
         {/* Key Metrics Section */}
-        <section className="bg-cover bg-center relative py-6" style={{
-          backgroundImage: 'url(/media/Company%20image.png)',
-        }}>
+        <section
+          className="bg-cover bg-center relative py-6"
+          style={{
+            backgroundImage: "url(/media/Company%20image.png)",
+          }}
+        >
           <div className="absolute inset-0 bg-black/80"></div>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             {/* Section Header */}
             <div className="text-center mb-16">
-              <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4" style={{
-                textShadow: '0 4px 12px rgba(0, 0, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.6)',
-              }}>
+              <h2
+                className="text-4xl sm:text-5xl font-bold text-white mb-4"
+                style={{
+                  textShadow:
+                    "0 4px 12px rgba(0, 0, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.6)",
+                }}
+              >
                 Why Businesses Trust Dalali Express
               </h2>
-              <p className="text-lg text-yellow-300 max-w-2xl mx-auto font-semibold" style={{
-                textShadow: '0 2px 8px rgba(0, 0, 0, 0.8)',
-              }}>
-                Reliable logistics solutions backed by performance and experience
+              <p
+                className="text-lg text-yellow-300 max-w-2xl mx-auto font-semibold"
+                style={{
+                  textShadow: "0 2px 8px rgba(0, 0, 0, 0.8)",
+                }}
+              >
+                Reliable logistics solutions backed by performance and
+                experience
               </p>
             </div>
 
             {/* Stats Row */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
               {[
-                { number: '15', label: 'Years', suffix: '+' },
-                { number: '45', label: 'Countries', suffix: '+' },
-                { number: '50K', label: 'Shipments', suffix: '+' },
-                { number: '98', label: 'Satisfaction', suffix: '%' },
+                { number: "15", label: "Years", suffix: "+" },
+                { number: "45", label: "Countries", suffix: "+" },
+                { number: "50K", label: "Shipments", suffix: "+" },
+                { number: "98", label: "Satisfaction", suffix: "%" },
               ].map((stat, idx) => (
                 <div
                   key={idx}
@@ -656,14 +775,24 @@ export const HomePage: React.FC = () => {
                     opacity: 0,
                   }}
                 >
-                  <div className="text-5xl sm:text-6xl font-bold text-blue-400 mb-2" style={{
-                    textShadow: '0 4px 12px rgba(0, 0, 0, 0.9), 0 0 20px rgba(96, 165, 250, 0.5)',
-                  }}>
-                    {stat.number}<span className="text-3xl">{stat.suffix}</span>
+                  <div
+                    className="text-5xl sm:text-6xl font-bold text-blue-400 mb-2"
+                    style={{
+                      textShadow:
+                        "0 4px 12px rgba(0, 0, 0, 0.9), 0 0 20px rgba(96, 165, 250, 0.5)",
+                    }}
+                  >
+                    {stat.number}
+                    <span className="text-3xl">{stat.suffix}</span>
                   </div>
-                  <p className="text-white font-bold" style={{
-                    textShadow: '0 2px 8px rgba(0, 0, 0, 0.8)',
-                  }}>{stat.label}</p>
+                  <p
+                    className="text-white font-bold"
+                    style={{
+                      textShadow: "0 2px 8px rgba(0, 0, 0, 0.8)",
+                    }}
+                  >
+                    {stat.label}
+                  </p>
                 </div>
               ))}
             </div>
@@ -671,10 +800,26 @@ export const HomePage: React.FC = () => {
             {/* Core Advantages */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
               {[
-                { icon: '🚀', title: 'Fast Delivery', desc: '24–48 hour delivery across major routes' },
-                { icon: '💰', title: 'Competitive Rates', desc: 'Transparent pricing with no hidden charges' },
-                { icon: '🔒', title: 'Fully Insured Cargo', desc: 'Your shipments are protected at every stage' },
-                { icon: '🌍', title: 'Wide Coverage', desc: 'Operations across East & Central Africa' },
+                {
+                  icon: "🚀",
+                  title: "Fast Delivery",
+                  desc: "24–48 hour delivery across major routes",
+                },
+                {
+                  icon: "💰",
+                  title: "Competitive Rates",
+                  desc: "Transparent pricing with no hidden charges",
+                },
+                {
+                  icon: "🔒",
+                  title: "Fully Insured Cargo",
+                  desc: "Your shipments are protected at every stage",
+                },
+                {
+                  icon: "🌍",
+                  title: "Wide Coverage",
+                  desc: "Operations across East & Central Africa",
+                },
               ].map((item, idx) => (
                 <div
                   key={idx}
@@ -682,16 +827,26 @@ export const HomePage: React.FC = () => {
                   style={{
                     animation: `slideInUp 0.6s ease-out ${400 + idx * 100}ms forwards`,
                     opacity: 0,
-                    boxShadow: '0 8px 32px rgba(59, 130, 246, 0.2)',
+                    boxShadow: "0 8px 32px rgba(59, 130, 246, 0.2)",
                   }}
                 >
                   <div className="text-4xl mb-3">{item.icon}</div>
-                  <h3 className="text-lg font-bold text-white mb-2" style={{
-                    textShadow: '0 2px 6px rgba(0, 0, 0, 0.7)',
-                  }}>{item.title}</h3>
-                  <p className="text-blue-100 text-sm font-medium" style={{
-                    textShadow: '0 1px 4px rgba(0, 0, 0, 0.7)',
-                  }}>{item.desc}</p>
+                  <h3
+                    className="text-lg font-bold text-white mb-2"
+                    style={{
+                      textShadow: "0 2px 6px rgba(0, 0, 0, 0.7)",
+                    }}
+                  >
+                    {item.title}
+                  </h3>
+                  <p
+                    className="text-blue-100 text-sm font-medium"
+                    style={{
+                      textShadow: "0 1px 4px rgba(0, 0, 0, 0.7)",
+                    }}
+                  >
+                    {item.desc}
+                  </p>
                 </div>
               ))}
             </div>
@@ -715,17 +870,41 @@ export const HomePage: React.FC = () => {
         <section className="py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">How It Works</h2>
-              <p className="text-gray-400 text-lg max-w-2xl mx-auto">Simple steps to ship your cargo with us</p>
+              <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">
+                How It Works
+              </h2>
+              <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+                Simple steps to ship your cargo with us
+              </p>
               <div className="h-1 w-24 bg-gradient-to-r from-blue-500 to-blue-300 mx-auto mt-4 rounded"></div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
               {[
-                { icon: '📦', step: '1. Drop Cargo', desc: 'Bring your items to us', delay: '0' },
-                { icon: '🚚', step: '2. We Ship', desc: 'We handle everything', delay: '100' },
-                { icon: '📍', step: '3. Track', desc: 'Monitor your shipment', delay: '200' },
-                { icon: '✅', step: '4. Deliver', desc: 'Safe delivery guaranteed', delay: '300' },
+                {
+                  icon: "📦",
+                  step: "1. Drop Cargo",
+                  desc: "Bring your items to us",
+                  delay: "0",
+                },
+                {
+                  icon: "🚚",
+                  step: "2. We Ship",
+                  desc: "We handle everything",
+                  delay: "100",
+                },
+                {
+                  icon: "📍",
+                  step: "3. Track",
+                  desc: "Monitor your shipment",
+                  delay: "200",
+                },
+                {
+                  icon: "✅",
+                  step: "4. Deliver",
+                  desc: "Safe delivery guaranteed",
+                  delay: "300",
+                },
               ].map((item, index) => (
                 <div
                   key={index}
@@ -781,7 +960,6 @@ export const HomePage: React.FC = () => {
             </div>
           </div>
         </section>
-
       </main>
 
       {/* CTA Section Outside Main */}
@@ -789,27 +967,36 @@ export const HomePage: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800"></div>
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 left-0 w-96 h-96 bg-blue-300 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-400 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
+          <div
+            className="absolute bottom-0 right-0 w-96 h-96 bg-blue-400 rounded-full blur-3xl animate-pulse"
+            style={{ animationDelay: "1s" }}
+          ></div>
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4 animate-fadeIn">Ready to Ship with Confidence?</h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">Join thousands of businesses trusting Dalali Express for their logistics needs. Fast, reliable, and affordable shipping across Africa.</p>
+          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4 animate-fadeIn">
+            Ready to Ship with Confidence?
+          </h2>
+          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+            Join thousands of businesses trusting Dalali Express for their
+            logistics needs. Fast, reliable, and affordable shipping across
+            Africa.
+          </p>
 
           <div className="flex flex-wrap justify-center gap-4 mb-6">
-            <button 
+            <button
               onClick={() => handleCall(contactInfo[0].phone)}
               className="px-8 py-4 bg-white text-blue-600 font-bold rounded-lg hover:bg-blue-50 transition transform hover:scale-105 shadow-lg flex items-center gap-2"
             >
               <span className="text-xl">📞</span> Call Now
             </button>
-            <button 
+            <button
               onClick={() => handleWhatsApp(contactInfo[0].phone)}
               className="px-8 py-4 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg transition transform hover:scale-105 shadow-lg flex items-center gap-2"
             >
               <span className="text-xl">💬</span> WhatsApp
             </button>
-            <button 
+            <button
               onClick={handleGetQuote}
               className="px-8 py-4 border-2 border-white text-white font-bold rounded-lg hover:bg-blue-700 transition transform hover:scale-105 shadow-lg flex items-center gap-2"
             >
@@ -822,12 +1009,16 @@ export const HomePage: React.FC = () => {
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20 hover:border-white/40 transform hover:scale-105 transition duration-300">
               <div className="text-4xl mb-3">✔</div>
               <h3 className="text-white font-bold mb-2">Strong Network</h3>
-              <p className="text-blue-100 text-sm">15+ branches across Africa</p>
+              <p className="text-blue-100 text-sm">
+                15+ branches across Africa
+              </p>
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20 hover:border-white/40 transform hover:scale-105 transition duration-300">
               <div className="text-4xl mb-3">✔</div>
               <h3 className="text-white font-bold mb-2">Experienced Team</h3>
-              <p className="text-blue-100 text-sm">600+ dedicated professionals</p>
+              <p className="text-blue-100 text-sm">
+                600+ dedicated professionals
+              </p>
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20 hover:border-white/40 transform hover:scale-105 transition duration-300">
               <div className="text-4xl mb-3">✔</div>

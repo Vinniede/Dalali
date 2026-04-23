@@ -1,6 +1,6 @@
-import React from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import authService from '../services/authService';
+import React from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import authService from "../services/authService";
 
 interface HeaderProps {
   isAdmin?: boolean;
@@ -16,15 +16,15 @@ export const Header: React.FC<HeaderProps> = ({ isAdmin = false }) => {
 
   const getLinkClass = (path: string) => {
     const baseClass = "font-medium transition-colors duration-200";
-    const activeClass = isActive(path) 
-      ? "text-white bg-white/20 px-3 py-2 rounded-lg" 
+    const activeClass = isActive(path)
+      ? "text-white bg-white/20 px-3 py-2 rounded-lg"
       : "hover:text-primary-100 hover:bg-white/10 px-3 py-2 rounded-lg";
     return `${baseClass} ${activeClass}`;
   };
 
   const handleLogout = () => {
     authService.logout();
-    navigate('/');
+    navigate("/");
   };
 
   return (
@@ -32,11 +32,16 @@ export const Header: React.FC<HeaderProps> = ({ isAdmin = false }) => {
       <nav className="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition">
+          <Link
+            to="/"
+            className="flex items-center gap-2 hover:opacity-80 transition"
+          >
             <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center font-bold text-primary-600">
               D
             </div>
-            <span className="text-xl font-bold hidden sm:inline">Dalali Express</span>
+            <span className="text-xl font-bold hidden sm:inline">
+              Dalali Express
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -49,7 +54,9 @@ export const Header: React.FC<HeaderProps> = ({ isAdmin = false }) => {
                   </div>
                   <div className="flex flex-col">
                     <span className="text-sm font-semibold">{user.name}</span>
-                    <span className="text-xs text-primary-100 capitalize">{user.role?.replace('_', ' ')}</span>
+                    <span className="text-xs text-primary-100 capitalize">
+                      {user.role?.replace("_", " ")}
+                    </span>
                   </div>
                 </div>
                 <button
@@ -61,16 +68,16 @@ export const Header: React.FC<HeaderProps> = ({ isAdmin = false }) => {
               </>
             ) : (
               <>
-                <Link to="/" className={getLinkClass('/')}>
+                <Link to="/" className={getLinkClass("/")}>
                   Home
                 </Link>
-                <Link to="/services" className={getLinkClass('/services')}>
+                <Link to="/services" className={getLinkClass("/services")}>
                   Services
                 </Link>
-                <Link to="/track" className={getLinkClass('/track')}>
+                <Link to="/track" className={getLinkClass("/track")}>
                   Track Shipment
                 </Link>
-                <Link to="/contact" className={getLinkClass('/contact')}>
+                <Link to="/contact" className={getLinkClass("/contact")}>
                   Contact
                 </Link>
               </>
@@ -82,8 +89,18 @@ export const Header: React.FC<HeaderProps> = ({ isAdmin = false }) => {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden p-2 hover:bg-white/10 rounded-lg transition"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
             </svg>
           </button>
         </div>
@@ -95,7 +112,9 @@ export const Header: React.FC<HeaderProps> = ({ isAdmin = false }) => {
               <>
                 <div className="px-3 py-2 text-sm">
                   <p className="font-semibold">{user.name}</p>
-                  <p className="text-primary-100 capitalize">{user.role?.replace('_', ' ')}</p>
+                  <p className="text-primary-100 capitalize">
+                    {user.role?.replace("_", " ")}
+                  </p>
                 </div>
                 <button
                   onClick={handleLogout}
@@ -106,16 +125,28 @@ export const Header: React.FC<HeaderProps> = ({ isAdmin = false }) => {
               </>
             ) : (
               <>
-                <Link to="/" className={`block px-3 py-2 rounded-lg transition ${isActive('/') ? 'bg-white/20 text-white' : 'hover:bg-white/10'}`}>
+                <Link
+                  to="/"
+                  className={`block px-3 py-2 rounded-lg transition ${isActive("/") ? "bg-white/20 text-white" : "hover:bg-white/10"}`}
+                >
                   Home
                 </Link>
-                <Link to="/services" className={`block px-3 py-2 rounded-lg transition ${isActive('/services') ? 'bg-white/20 text-white' : 'hover:bg-white/10'}`}>
+                <Link
+                  to="/services"
+                  className={`block px-3 py-2 rounded-lg transition ${isActive("/services") ? "bg-white/20 text-white" : "hover:bg-white/10"}`}
+                >
                   Services
                 </Link>
-                <Link to="/track" className={`block px-3 py-2 rounded-lg transition ${isActive('/track') ? 'bg-white/20 text-white' : 'hover:bg-white/10'}`}>
+                <Link
+                  to="/track"
+                  className={`block px-3 py-2 rounded-lg transition ${isActive("/track") ? "bg-white/20 text-white" : "hover:bg-white/10"}`}
+                >
                   Track Shipment
                 </Link>
-                <Link to="/contact" className={`block px-3 py-2 rounded-lg transition ${isActive('/contact') ? 'bg-white/20 text-white' : 'hover:bg-white/10'}`}>
+                <Link
+                  to="/contact"
+                  className={`block px-3 py-2 rounded-lg transition ${isActive("/contact") ? "bg-white/20 text-white" : "hover:bg-white/10"}`}
+                >
                   Contact
                 </Link>
               </>
@@ -141,38 +172,117 @@ export const Footer: React.FC = () => (
             <span className="font-bold text-lg">Dalali Express</span>
           </div>
           <p className="text-gray-400 text-sm">
-            Your trusted partner in international cargo tracking and logistics management.
+            Your trusted partner in international cargo tracking and logistics
+            management.
           </p>
         </div>
 
         {/* Services */}
         <div>
-          <h3 className="text-sm font-bold mb-4 text-white uppercase tracking-wide">Services</h3>
+          <h3 className="text-sm font-bold mb-4 text-white uppercase tracking-wide">
+            Services
+          </h3>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/services" className="text-gray-400 hover:text-primary-400 transition">Air Freight</Link></li>
-            <li><Link to="/services" className="text-gray-400 hover:text-primary-400 transition">Sea Freight</Link></li>
-            <li><Link to="/services" className="text-gray-400 hover:text-primary-400 transition">Clearing & Forwarding</Link></li>
-            <li><Link to="/services" className="text-gray-400 hover:text-primary-400 transition">Tracking</Link></li>
+            <li>
+              <Link
+                to="/services"
+                className="text-gray-400 hover:text-primary-400 transition"
+              >
+                Air Freight
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/services"
+                className="text-gray-400 hover:text-primary-400 transition"
+              >
+                Sea Freight
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/services"
+                className="text-gray-400 hover:text-primary-400 transition"
+              >
+                Clearing & Forwarding
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/services"
+                className="text-gray-400 hover:text-primary-400 transition"
+              >
+                Tracking
+              </Link>
+            </li>
           </ul>
         </div>
 
         {/* Company */}
         <div>
-          <h3 className="text-sm font-bold mb-4 text-white uppercase tracking-wide">Company</h3>
+          <h3 className="text-sm font-bold mb-4 text-white uppercase tracking-wide">
+            Company
+          </h3>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/" className="text-gray-400 hover:text-primary-400 transition">Home</Link></li>
-            <li><Link to="/services" className="text-gray-400 hover:text-primary-400 transition">Services</Link></li>
-            <li><Link to="/track" className="text-gray-400 hover:text-primary-400 transition">Track</Link></li>
-            <li><Link to="/contact" className="text-gray-400 hover:text-primary-400 transition">Contact</Link></li>
+            <li>
+              <Link
+                to="/"
+                className="text-gray-400 hover:text-primary-400 transition"
+              >
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/services"
+                className="text-gray-400 hover:text-primary-400 transition"
+              >
+                Services
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/track"
+                className="text-gray-400 hover:text-primary-400 transition"
+              >
+                Track
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/contact"
+                className="text-gray-400 hover:text-primary-400 transition"
+              >
+                Contact
+              </Link>
+            </li>
           </ul>
         </div>
 
         {/* Contact */}
         <div>
-          <h3 className="text-sm font-bold mb-4 text-white uppercase tracking-wide">Contact</h3>
+          <h3 className="text-sm font-bold mb-4 text-white uppercase tracking-wide">
+            Contact
+          </h3>
           <div className="space-y-2 text-sm text-gray-400">
-            <p>📧 <a href="mailto:support@dalaliexpress.com" className="hover:text-primary-400 transition">support@dalaliexpress.com</a></p>
-            <p>📞 <a href="tel:+201234567890" className="hover:text-primary-400 transition">+20 (0)2 1234 5678</a></p>
+            <p>
+              📧{" "}
+              <a
+                href="mailto:support@dalaliexpress.com"
+                className="hover:text-primary-400 transition"
+              >
+                support@dalaliexpress.com
+              </a>
+            </p>
+            <p>
+              📞{" "}
+              <a
+                href="tel:+201234567890"
+                className="hover:text-primary-400 transition"
+              >
+                +20 (0)2 1234 5678
+              </a>
+            </p>
             <p>📍 Cairo, Egypt</p>
           </div>
         </div>
@@ -185,9 +295,24 @@ export const Footer: React.FC = () => (
             &copy; 2026 Dalali Express Services. All rights reserved.
           </p>
           <div className="flex gap-4">
-            <a href="#" className="text-gray-400 hover:text-primary-400 transition text-sm">Privacy Policy</a>
-            <a href="#" className="text-gray-400 hover:text-primary-400 transition text-sm">Terms of Service</a>
-            <a href="#" className="text-gray-400 hover:text-primary-400 transition text-sm">Sitemap</a>
+            <a
+              href="#"
+              className="text-gray-400 hover:text-primary-400 transition text-sm"
+            >
+              Privacy Policy
+            </a>
+            <a
+              href="#"
+              className="text-gray-400 hover:text-primary-400 transition text-sm"
+            >
+              Terms of Service
+            </a>
+            <a
+              href="#"
+              className="text-gray-400 hover:text-primary-400 transition text-sm"
+            >
+              Sitemap
+            </a>
           </div>
         </div>
       </div>

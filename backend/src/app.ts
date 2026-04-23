@@ -13,8 +13,11 @@ dotenv.config();
 const app: Express = express();
 
 // Middleware
+const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+const vercelUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : clientUrl;
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: process.env.NODE_ENV === 'production' ? vercelUrl : clientUrl,
   credentials: true,
 }));
 
