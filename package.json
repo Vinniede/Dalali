@@ -8,7 +8,7 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "concurrently \"tsx watch src/server.ts\" \"cd frontend && npm run dev\"",
-    "build": "cd frontend && npm run build",
+    "build": "cd frontend && npm install && npm run build",
     "build:server": "tsc",
     "build:frontend": "cd frontend && npm run build",
     "seed": "node seeds/seeder.js",
