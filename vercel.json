@@ -21,11 +21,15 @@
       "dest": "/media/$1"
     },
     {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
+    },
+    {
       "src": "/(.*)\\.(?:js|css|svg|png|jpg|jpeg|gif|webp|woff|woff2|ttf|eot|mp4|webm)$",
       "dest": "/$1.$2"
     },
     {
-      "src": "/(?!api|media)",
+      "src": "/(.*)",
       "dest": "/index.html",
       "status": 200
     }
