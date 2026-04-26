@@ -192,7 +192,7 @@ export const ServicesPage: React.FC = () => {
         {/* Service Content */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
           <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 lg:p-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-8 sm:mb-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8 lg:mb-12">
               <img
                 src={currentService.image}
                 alt={currentService.title}
@@ -229,7 +229,7 @@ export const ServicesPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
               <div>
                 <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6">
                   Key Features
