@@ -40,76 +40,82 @@ A full-stack cargo tracking and logistics management system for "Dalali Express 
 
 ```
 Dalali/
-├── backend/
-│   ├── src/
-│   │   ├── config/
-│   │   │   ├── database.ts      # PostgreSQL connection & pooling
-│   │   │   └── constants.ts     # App constants & config values
-│   │   ├── controllers/         # Request handlers
-│   │   │   ├── authController.ts
-│   │   │   ├── shipmentController.ts
-│   │   │   ├── userController.ts
-│   │   │   └── branchController.ts
-│   │   ├── middleware/          # Express middleware
-│   │   │   ├── auth.ts         # JWT verification
-│   │   │   └── errorHandler.ts # Error handling
-│   │   ├── routes/              # API routes
-│   │   │   ├── authRoutes.ts
-│   │   │   ├── shipmentRoutes.ts
-│   │   │   ├── userRoutes.ts
-│   │   │   └── branchRoutes.ts
-│   │   ├── services/            # Business logic
-│   │   │   ├── authService.ts
-│   │   │   ├── shipmentService.ts
-│   │   │   ├── userService.ts
-│   │   │   └── branchService.ts
-│   │   ├── utils/               # Utilities
-│   │   │   ├── errorHandler.ts # Custom error classes
-│   │   │   └── generateTrackingNumber.ts
-│   │   ├── app.ts              # Express app setup
-│   │   └── server.ts           # Server entry point
-│   ├── package.json
-│   ├── tsconfig.json           # TypeScript config
-│   ├── .env.example
-│   └── dist/                   # Compiled output
+├── src/                         # Backend TypeScript source
+│   ├── config/                  # Configuration
+│   │   ├── database.ts          # PostgreSQL connection & pooling
+│   │   └── constants.ts         # App constants & config values
+│   ├── controllers/             # Request handlers
+│   │   ├── authController.ts
+│   │   ├── shipmentController.ts
+│   │   ├── userController.ts
+│   │   └── branchController.ts
+│   ├── middleware/              # Express middleware
+│   │   ├── auth.ts              # JWT verification
+│   │   └── errorHandler.ts      # Error handling
+│   ├── routes/                  # API routes
+│   │   ├── authRoutes.ts
+│   │   ├── shipmentRoutes.ts
+│   │   ├── userRoutes.ts
+│   │   └── branchRoutes.ts
+│   ├── services/                # Business logic
+│   │   ├── authService.ts
+│   │   ├── shipmentService.ts
+│   │   ├── userService.ts
+│   │   └── branchService.ts
+│   ├── utils/                   # Utilities
+│   │   ├── errorHandler.ts      # Custom error classes
+│   │   └── generateTrackingNumber.ts
+│   ├── app.ts                   # Express app setup
+│   └── server.ts                # Server entry point
 │
-├── frontend/
+├── api/                         # API route handlers
+│   ├── [...path].ts             # Dynamic API routes
+│   └── index.ts
+│
+├── database/                    # Database schema
+│   └── schema.sql               # PostgreSQL schema
+│
+├── seeds/                       # Database seeders
+│   └── seeder.js                # Seed script
+│
+├── frontend/                    # React 18 frontend
 │   ├── src/
-│   │   ├── components/         # React components
+│   │   ├── components/          # React components
 │   │   │   ├── Auth.tsx
 │   │   │   ├── Dashboard.tsx
 │   │   │   ├── Layout.tsx
 │   │   │   ├── Shipments.tsx
 │   │   │   └── Tracking.tsx
-│   │   ├── pages/              # Page components
-│   │   │   ├── Public.tsx      # Public landing page
-│   │   │   └── Admin.tsx       # Admin dashboard
-│   │   ├── services/           # API services
-│   │   │   ├── api.ts         # Axios configuration
+│   │   ├── pages/               # Page components
+│   │   │   ├── Public.tsx       # Public landing page
+│   │   │   └── Admin.tsx        # Admin dashboard
+│   │   ├── services/            # API services
+│   │   │   ├── api.ts           # Axios configuration
 │   │   │   ├── authService.ts
 │   │   │   ├── shipmentService.ts
 │   │   │   ├── userService.ts
 │   │   │   ├── branchService.ts
-│   │   │   └── utils.ts       # Frontend utilities
-│   │   ├── App.tsx            # Main app component
-│   │   ├── main.tsx           # React entry point
-│   │   ├── index.css          # Global styles
-│   │   └── vite-env.d.ts      # Vite type definitions
-│   ├── public/                # Static assets
-│   ├── dist/                  # Build output
+│   │   │   └── utils.ts         # Frontend utilities
+│   │   ├── App.tsx              # Main app component
+│   │   ├── main.tsx             # React entry point
+│   │   ├── index.css            # Global styles
+│   │   └── vite-env.d.ts        # Vite type definitions
+│   ├── public/                  # Static assets
+│   ├── dist/                    # Build output
 │   ├── package.json
-│   ├── tsconfig.json          # TypeScript config
-│   ├── tsconfig.node.json     # Vite's TypeScript config
-│   ├── vite.config.ts         # Vite configuration
-│   ├── tailwind.config.js     # Tailwind CSS config
-│   ├── postcss.config.js      # PostCSS config
+│   ├── tsconfig.json            # TypeScript config
+│   ├── tsconfig.node.json       # Vite's TypeScript config
+│   ├── vite.config.ts           # Vite configuration
+│   ├── tailwind.config.js       # Tailwind CSS config
+│   ├── postcss.config.js        # PostCSS config
 │   ├── .env.example
 │   └── index.html
 │
-├── database/
-│   └── schema.sql             # PostgreSQL schema
-│
-└── README.md                  # This file
+├── package.json                 # Root dependencies
+├── tsconfig.json                # Root TypeScript config
+├── LICENSE
+├── README.md                    # This file
+└── .env.example                 # Backend environment template
 ```
 
 ## 🚀 Getting Started
@@ -121,43 +127,38 @@ Dalali/
 
 ### Backend Setup
 
-1. **Navigate to backend directory**
-```bash
-cd backend
-```
-
-2. **Install dependencies**
+1. **Install dependencies** (from root directory)
 ```bash
 npm install
 ```
 
-3. **Create `.env` file**
+2. **Create `.env` file**
 ```bash
 cp .env.example .env
 ```
 
-4. **Configure environment variables** in `.env`
+3. **Configure environment variables** in `.env`
 ```env
 NODE_ENV=development
 PORT=5000
-DATABASE_URL=postgresql://postgres:password@localhost:5432/dalali_db
+DATABASE_URL=postgresql://<username>:<password>@<host>:<port>/<database>
 JWT_SECRET=your_super_secret_jwt_key_here_min_32_chars
 CLIENT_URL=http://localhost:5173
 JWT_EXPIRE=7d
 ```
 
-5. **Setup PostgreSQL Database**
+4. **Setup PostgreSQL Database**
    - Create a new database: `dalali_db`
-   - Import schema: `psql -U postgres -d dalali_db < ../database/schema.sql`
+   - Import schema: `psql -U postgres -d dalali_db < ./database/schema.sql`
    - Or run the SQL commands from `database/schema.sql` in your PostgreSQL client
 
-6. **Start development server**
+5. **Start development server**
 ```bash
 npm run dev
 ```
 Backend will run on `http://localhost:5000`
 
-7. **Build for production**
+6. **Build for production**
 ```bash
 npm run build
 npm start

@@ -3,17 +3,56 @@
   "version": "1.0.0",
   "description": "Dalali Express - Cargo Tracking System",
   "private": true,
-  "workspaces": [
-    "frontend",
-    "backend"
-  ],
+  "main": "dist/server.js",
+  "type": "module",
   "scripts": {
-    "install-all": "npm install",
-    "build": "npm run build --workspace frontend",
-    "build:all": "npm run build --workspace backend && npm run build --workspace frontend",
-    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\""
+    "start": "node dist/server.js",
+    "dev": "concurrently \"tsx watch src/server.ts\" \"cd frontend && npm run dev\"",
+    "build": "tsc && cd frontend && npm run build",
+    "build:server": "tsc",
+    "build:frontend": "cd frontend && npm run build",
+    "seed": "node seeds/seeder.js",
+    "install-all": "npm install && cd frontend && npm install"
+  },
+  "keywords": [
+    "cargo",
+    "tracking",
+    "express"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.10.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.16.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "concurrently": "^8.2.1"
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/node": "^20.10.0",
+    "@types/pg": "^8.10.9",
+    "@types/react": "^18.2.28",
+    "@types/react-dom": "^18.2.13",
+    "@types/uuid": "^9.0.7",
+    "@vitejs/plugin-react": "^4.1.1",
+    "autoprefixer": "^10.4.16",
+    "concurrently": "^8.2.1",
+    "cross-env": "^10.1.0",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.3.3",
+    "ts-node-dev": "^2.0.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.3.2",
+    "vite": "^5.0.0"
   }
 }
