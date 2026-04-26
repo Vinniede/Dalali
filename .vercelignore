@@ -1,0 +1,6 @@
+# Prevent Vercel from auto-detecting subfolders as separate projects
+# This ensures the entire monorepo is treated as one project
+
+node_modules/
+.git/
+dist/
