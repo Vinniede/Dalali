@@ -9,14 +9,11 @@ interface Notification {
 }
 
 export const SuperAdminNotifications: React.FC = () => {
-  const [notifications, setNotifications] = React.useState<Notification[]>([
-    { id: '1', message: 'Shipment XF27-001 delayed by 2 hours', timestamp: '5 mins ago', read: false },
-    { id: '2', message: 'New branch admin added for Entebbe', timestamp: '1 hour ago', read: false },
-    { id: '3', message: 'System backup completed successfully', timestamp: '3 hours ago', read: true },
-  ]);
-
+  const [notifications, setNotifications] = React.useState<Notification[]>([]);
+  const [loading, setLoading] = React.useState(true);
   const [newMessage, setNewMessage] = React.useState('');
   const [recipients, setRecipients] = React.useState('all');
+  const [success, setSuccess] = React.useState('');
 
   const menuItems = [
     { id: 'overview', label: 'Overview', icon: '📊', path: '/admin/super/overview' },
@@ -29,6 +26,33 @@ export const SuperAdminNotifications: React.FC = () => {
     { id: 'notifications', label: 'Notifications', icon: '🔔', path: '/admin/super/notifications' },
     { id: 'settings', label: 'Settings', icon: '⚙️', path: '/admin/super/settings' },
   ];
+
+  React.useEffect(() => {
+    // Fetch notifications from database or API
+    // For now, we'll initialize as empty
+    setLoading(false);
+  }, []);
+
+  const handleSendNotification = () => {
+    if (!newMessage.trim()) {
+      return;
+    }
+
+    // Here you would call an API to send the notification
+    // For now, we'll just add it to the local list as a demo
+    const newNotification: Notification = {
+      id: Date.now().toString(),
+      message: newMessage,
+      timestamp: 'just now',
+      read: false,
+    };
+
+    setNotifications([newNotification, ...notifications]);
+    setSuccess('✅ Notification sent successfully!');
+    setNewMessage('');
+    
+    setTimeout(() => setSuccess(''), 3000);
+  };
 
   return (
     <DashboardLayout

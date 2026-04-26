@@ -1,21 +1,18 @@
 import React from 'react';
 import { DashboardLayout } from '../../layouts/DashboardLayout.tsx';
+import branchService from '../../services/branchService';
 
 interface Branch {
   id: string;
   name: string;
-  location: string;
-  admin: string;
-  shipments: number;
-  status: 'Active' | 'Inactive';
+  country: string;
+  phone: string;
 }
 
 export const SuperAdminBranches: React.FC = () => {
-  const [branches, setBranches] = React.useState<Branch[]>([
-    { id: 'BR001', name: 'Dar es Salaam', location: 'Tanzania', admin: 'John Kamau', shipments: 156, status: 'Active' },
-    { id: 'BR002', name: 'Entebbe', location: 'Uganda', admin: 'Grace Mwamba', shipments: 98, status: 'Active' },
-    { id: 'BR003', name: 'Kinshasa', location: 'DRC', admin: 'David Nkana', shipments: 67, status: 'Active' },
-  ]);
+  const [branches, setBranches] = React.useState<Branch[]>([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState('');
 
   const menuItems = [
     { id: 'overview', label: 'Overview', icon: '📊', path: '/admin/super/overview' },
@@ -29,6 +26,24 @@ export const SuperAdminBranches: React.FC = () => {
     { id: 'settings', label: 'Settings', icon: '⚙️', path: '/admin/super/settings' },
   ];
 
+  React.useEffect(() => {
+    fetchBranches();
+  }, []);
+
+  const fetchBranches = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const response = await branchService.getAllBranches(100, 0);
+      setBranches(response.data.branches || []);
+    } catch (err) {
+      console.error('Failed to fetch branches:', err);
+      setError('Failed to load branches');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <DashboardLayout
       title="Branch Management"
@@ -37,47 +52,64 @@ export const SuperAdminBranches: React.FC = () => {
       userName="Super Admin"
     >
       <div className="space-y-6">
-        {/* Branch Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-          {branches.map((branch) => (
-            <div key={branch.id} className="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-600">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">{branch.name}</h3>
-              <div className="space-y-3 mb-4">
-                <div>
-                  <p className="text-sm text-gray-500">Location</p>
-                  <p className="font-medium text-gray-900">{branch.location}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Branch Admin</p>
-                  <p className="font-medium text-gray-900">{branch.admin}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Active Shipments</p>
-                  <p className="text-2xl font-bold text-blue-600">{branch.shipments}</p>
-                </div>
-              </div>
-              <div className="flex justify-between items-center pt-4 border-t">
-                <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                  {branch.status}
-                </span>
-                <button className="text-blue-600 font-medium hover:underline text-sm">Edit</button>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Add Branch CTA */}
-        <div className="bg-gradient-to-r from-green-600 to-green-800 text-white rounded-lg shadow p-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <h3 className="text-xl font-bold">Add New Branch</h3>
-              <p className="text-green-100 mt-1">Expand Dalali Express to new locations</p>
-            </div>
-            <button className="px-6 py-3 bg-white text-green-600 font-bold rounded-lg hover:bg-gray-100 transition">
-              + Add Branch
-            </button>
+        {/* Error Alert */}
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+            {error}
           </div>
-        </div>
+        )}
+
+        {loading ? (
+          <div className="text-center py-12">
+            <p className="text-gray-600">Loading branches...</p>
+          </div>
+        ) : (
+          <>
+            {/* Branch Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+              {branches && branches.length > 0 ? (
+                branches.map((branch) => (
+                  <div key={branch.id} className="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-600">
+                    <h3 className="text-xl font-bold text-gray-900 mb-4">{branch.name}</h3>
+                    <div className="space-y-3 mb-4">
+                      <div>
+                        <p className="text-sm text-gray-500">Country</p>
+                        <p className="font-medium text-gray-900">{branch.country}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Phone</p>
+                        <p className="font-medium text-gray-900">{branch.phone}</p>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center pt-4 border-t">
+                      <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                        Active
+                      </span>
+                      <button className="text-blue-600 font-medium hover:underline text-sm">Edit</button>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="col-span-full text-center py-12 bg-white rounded-lg">
+                  <p className="text-gray-600">No branches found</p>
+                </div>
+              )}
+            </div>
+
+            {/* Add Branch CTA */}
+            <div className="bg-gradient-to-r from-green-600 to-green-800 text-white rounded-lg shadow p-6">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="text-xl font-bold">Add New Branch</h3>
+                  <p className="text-green-100 mt-1">Expand Dalali Express to new locations</p>
+                </div>
+                <button className="px-6 py-3 bg-white text-green-600 font-bold rounded-lg hover:bg-gray-100 transition">
+                  + Add Branch
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </DashboardLayout>
   );
