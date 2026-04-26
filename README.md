@@ -198,6 +198,40 @@ npm run build
 ```
 Production build will be in `dist/` folder
 
+## 🚀 Deployment
+
+### Deploy to Vercel (Monorepo)
+
+This project is configured for **single-command Vercel deployment** with both backend and frontend:
+
+1. **Connect GitHub repository to Vercel**
+   - Go to [vercel.com](https://vercel.com)
+   - Import your GitHub repository
+   - Select your project
+
+2. **Configure environment variables in Vercel**
+   - Go to Settings → Environment Variables
+   - Add these variables:
+   ```
+   DATABASE_URL=postgresql://user:password@host/database?sslmode=require
+   JWT_SECRET=your_secure_secret_key_here_min_32_characters
+   JWT_EXPIRE=7d
+   NODE_ENV=production
+   ```
+
+3. **Deploy**
+   - Push to `main` branch or click "Deploy"
+   - Vercel automatically builds and deploys:
+     - Frontend: `https://your-project.vercel.app`
+     - Backend API: `https://your-project.vercel.app/api`
+
+**Project Structure for Vercel:**
+- `frontend/` → Built to `frontend/dist` and served from root `/`
+- `api/[...path].ts` → Serverless functions served from `/api/*`
+- `vercel.json` → Routing and build configuration
+
+The build command `npm run build` only builds the frontend, and Vercel automatically deploys the `api/` folder as serverless functions.
+
 ## 📚 API Endpoints
 
 ### Authentication
