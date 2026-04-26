@@ -5,12 +5,14 @@ A full-stack cargo tracking and logistics management system for "Dalali Express 
 ## 🎯 Features
 
 ### Public Features
+
 - **Landing Page** - Company information with service highlights
 - **Shipment Tracking** - Real-time tracking with complete history
 - **Services Page** - Detailed information about all services
 - **Contact Page** - Branch information and contact details
 
 ### Admin Features
+
 - **JWT Authentication** - Secure login with token-based auth
 - **Role-Based Access Control** - Super Admin and Branch Admin roles
 - **Shipment Management** - Create, view, and update shipments
@@ -22,6 +24,7 @@ A full-stack cargo tracking and logistics management system for "Dalali Express 
 ## 🏗️ Tech Stack
 
 ### Backend
+
 - **TypeScript** + Node.js + Express.js
 - **PostgreSQL** - Database with connection pooling
 - **JWT** - Secure authentication
@@ -30,6 +33,7 @@ A full-stack cargo tracking and logistics management system for "Dalali Express 
 - **UUID** - Unique identifier generation
 
 ### Frontend
+
 - **TypeScript** + React 18 with Vite
 - **React Router v6** - SPA routing
 - **Tailwind CSS** - Utility-first styling
@@ -121,6 +125,7 @@ Dalali/
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - **Node.js** v16+ (v18+ recommended)
 - **PostgreSQL** 12+
 - **npm** v8+ or **yarn**
@@ -128,16 +133,19 @@ Dalali/
 ### Backend Setup
 
 1. **Install dependencies** (from root directory)
+
 ```bash
 npm install
 ```
 
 2. **Create `.env` file**
+
 ```bash
 cp .env.example .env
 ```
 
 3. **Configure environment variables** in `.env`
+
 ```env
 NODE_ENV=development
 PORT=5000
@@ -153,12 +161,15 @@ JWT_EXPIRE=7d
    - Or run the SQL commands from `database/schema.sql` in your PostgreSQL client
 
 5. **Start development server**
+
 ```bash
 npm run dev
 ```
+
 Backend will run on `http://localhost:5000`
 
 6. **Build for production**
+
 ```bash
 npm run build
 npm start
@@ -167,35 +178,43 @@ npm start
 ### Frontend Setup
 
 1. **Navigate to frontend directory**
+
 ```bash
 cd frontend
 ```
 
 2. **Install dependencies**
+
 ```bash
 npm install
 ```
 
 3. **Create `.env` file**
+
 ```bash
 cp .env.example .env
 ```
 
 4. **Configure environment variables** in `.env`
+
 ```env
 VITE_API_BASE_URL=http://localhost:5000/api
 ```
 
 5. **Start development server**
+
 ```bash
 npm run dev
 ```
+
 Frontend will run on `http://localhost:5173`
 
 6. **Build for production**
+
 ```bash
 npm run build
 ```
+
 Production build will be in `dist/` folder
 
 ## 🚀 Deployment
@@ -212,6 +231,7 @@ This project is configured for **single-command Vercel deployment** with both ba
 2. **Configure environment variables in Vercel**
    - Go to Settings → Environment Variables
    - Add these variables:
+
    ```
    DATABASE_URL=postgresql://user:password@host/database?sslmode=require
    JWT_SECRET=your_secure_secret_key_here_min_32_characters
@@ -226,6 +246,7 @@ This project is configured for **single-command Vercel deployment** with both ba
      - Backend API: `https://your-project.vercel.app/api`
 
 **Project Structure for Vercel:**
+
 - `frontend/` → Built to `frontend/dist` and served from root `/`
 - `api/[...path].ts` → Serverless functions served from `/api/*`
 - `vercel.json` → Routing and build configuration
@@ -235,15 +256,18 @@ The build command `npm run build` only builds the frontend, and Vercel automatic
 ## 📚 API Endpoints
 
 ### Authentication
+
 - `POST /api/auth/login` - User login
   - Body: `{ email: string, password: string }`
   - Returns: `{ token: string, user: User }`
 
 ### Public Tracking
+
 - `GET /api/shipments/track/:trackingNumber` - Track shipment
   - Returns: `{ shipment: Shipment, history: TrackingHistory[] }`
 
 ### Shipments (Protected)
+
 - `GET /api/shipments` - Get all shipments (branch-filtered for branch admins)
 - `POST /api/shipments` - Create new shipment
   - Body: `{ origin: string, destination: string, items: string, weight: number, recipient: string, recipientPhone: string, branchId: string }`
@@ -252,6 +276,7 @@ The build command `npm run build` only builds the frontend, and Vercel automatic
   - Body: `{ status: string, notes?: string }`
 
 ### Users (Super Admin Only)
+
 - `GET /api/users` - Get all users
 - `POST /api/users` - Create new user
   - Body: `{ name: string, email: string, password: string, role: 'super_admin' | 'branch_admin', branchId?: string }`
@@ -259,6 +284,7 @@ The build command `npm run build` only builds the frontend, and Vercel automatic
 - `DELETE /api/users/:id` - Delete user
 
 ### Branches
+
 - `GET /api/branches` - Get all branches
 - `GET /api/branches/:id` - Get branch details
 - `POST /api/branches` - Create branch (Super Admin only)
@@ -279,6 +305,7 @@ The build command `npm run build` only builds the frontend, and Vercel automatic
 ### Tables
 
 **users**
+
 - id (UUID) - Primary key
 - name (string) - User name
 - email (string) - Unique email
@@ -289,6 +316,7 @@ The build command `npm run build` only builds the frontend, and Vercel automatic
 - updated_at (timestamp)
 
 **branches**
+
 - id (UUID) - Primary key
 - name (string) - Branch name
 - city (string) - City location
@@ -298,6 +326,7 @@ The build command `npm run build` only builds the frontend, and Vercel automatic
 - updated_at (timestamp)
 
 **shipments**
+
 - id (UUID) - Primary key
 - tracking_number (string) - Unique tracking number
 - origin (string) - Origin location
@@ -312,6 +341,7 @@ The build command `npm run build` only builds the frontend, and Vercel automatic
 - updated_at (timestamp)
 
 **tracking_history**
+
 - id (UUID) - Primary key
 - shipment_id (UUID) - Reference to shipment
 - status (string) - Status at this point
@@ -339,6 +369,7 @@ The build command `npm run build` only builds the frontend, and Vercel automatic
 ## 🛠️ Development Scripts
 
 ### Backend
+
 ```bash
 npm run dev      # Start development server with auto-reload
 npm run build    # Compile TypeScript to JavaScript
@@ -346,6 +377,7 @@ npm start        # Run compiled server
 ```
 
 ### Frontend
+
 ```bash
 npm run dev      # Start Vite dev server
 npm run build    # Build for production
@@ -355,6 +387,7 @@ npm run preview  # Preview production build locally
 ## 📝 TypeScript Configuration
 
 Both frontend and backend use strict TypeScript settings:
+
 - ES2020 target for modern features
 - Strict mode enabled
 - Module resolution: node
@@ -363,12 +396,14 @@ Both frontend and backend use strict TypeScript settings:
 ## 🚢 Deployment
 
 ### Backend Deployment (Node.js)
+
 1. Build: `npm run build`
 2. Deploy `dist/` folder with `package.json`
 3. Set environment variables on production server
 4. Run: `npm start`
 
 ### Frontend Deployment (Static)
+
 1. Build: `npm run build`
 2. Deploy contents of `dist/` folder to web server (Vercel, Netlify, etc.)
 3. Set `VITE_API_BASE_URL` to production API URL

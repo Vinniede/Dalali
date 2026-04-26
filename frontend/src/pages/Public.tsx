@@ -52,19 +52,19 @@ export const TrackingPage: React.FC = () => {
       <Header />
       <main className="bg-gray-50 min-h-screen">
         {/* Hero Section */}
-        <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-12 sm:py-16">
+        <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-8 sm:py-12 lg:py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 className="text-4xl sm:text-5xl font-bold mb-2">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-1 sm:mb-2">
               Track Your Shipment
             </h1>
-            <p className="text-lg text-blue-100">
+            <p className="text-base sm:text-lg text-blue-100">
               Real-time tracking for your international cargo
             </p>
           </div>
         </section>
 
         {/* Tracking Form Section */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
           <TrackingForm onResults={handleTrackingResults} />
           {trackingData && <TrackingResults shipment={trackingData} />}
         </section>
@@ -153,12 +153,12 @@ export const ServicesPage: React.FC = () => {
       <Header />
       <main className="bg-gray-50 min-h-screen">
         {/* Hero Section */}
-        <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16 sm:py-20">
+        <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-8 sm:py-12 lg:py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 className="text-4xl sm:text-5xl font-bold mb-3">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-2 sm:mb-3">
               Our Logistics Services
             </h1>
-            <p className="text-lg text-blue-100 max-w-2xl">
+            <p className="text-sm sm:text-base lg:text-lg text-blue-100 max-w-2xl">
               Simple, reliable, and tailored shipping solutions for your
               international cargo needs
             </p>
@@ -167,16 +167,16 @@ export const ServicesPage: React.FC = () => {
 
         {/* Service Navigation */}
         <section className="bg-white border-b border-gray-200 sticky top-0 z-20 shadow">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <p className="text-sm font-bold text-gray-600 mb-4 uppercase tracking-widest">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+            <p className="text-xs sm:text-sm font-bold text-gray-600 mb-3 uppercase tracking-widest">
               Select a Service
             </p>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2 sm:gap-3">
               {Object.entries(services).map(([key, service]) => (
                 <button
                   key={key}
                   onClick={() => setActiveService(key)}
-                  className={`px-5 py-2 rounded-lg font-semibold transition-all duration-200 ${
+                  className={`px-3 sm:px-5 py-2 rounded-lg font-semibold transition-all duration-200 text-sm sm:text-base ${
                     activeService === key
                       ? "bg-blue-600 text-white shadow-lg"
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -190,67 +190,73 @@ export const ServicesPage: React.FC = () => {
         </section>
 
         {/* Service Content */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+          <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 lg:p-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-8 sm:mb-12">
               <img
                 src={currentService.image}
                 alt={currentService.title}
-                className="w-full h-64 object-cover rounded-lg shadow-lg"
+                className="w-full h-48 sm:h-64 object-cover rounded-lg shadow-lg"
               />
-              <div>
-                <div className="flex items-start gap-4 mb-8">
-                  <span className="text-5xl">{currentService.icon}</span>
-                  <div className="flex-1">
-                    <h2 className="text-4xl font-bold mb-2 text-blue-600">
+              <div className="flex flex-col justify-start">
+                <div className="flex items-start gap-3 sm:gap-4 mb-6 sm:mb-8">
+                  <span className="text-4xl sm:text-5xl flex-shrink-0">
+                    {currentService.icon}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2 text-blue-600">
                       {currentService.title}
                     </h2>
-                    <p className="text-lg text-gray-600">
+                    <p className="text-sm sm:text-base lg:text-lg text-gray-600">
                       {currentService.description}
                     </p>
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-blue-600 mb-3 uppercase tracking-wide">
+                  <h3 className="text-base sm:text-lg font-bold text-blue-600 mb-2 sm:mb-3 uppercase tracking-wide">
                     Overview
                   </h3>
-                  <p className="text-gray-700 leading-relaxed mb-6">
+                  <p className="text-sm sm:text-base text-gray-700 leading-relaxed mb-4 sm:mb-6">
                     {currentService.details}
                   </p>
                 </div>
                 <button
                   onClick={() => handleContactService(activeService)}
-                  className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition shadow-lg"
+                  className="px-4 sm:px-8 py-2 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition shadow-lg text-sm sm:text-base w-full sm:w-auto"
                 >
                   Get a Quote
                 </button>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12">
               <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-6">
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6">
                   Key Features
                 </h3>
-                <ul className="space-y-4">
+                <ul className="space-y-3 sm:space-y-4">
                   {currentService.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-start gap-3">
-                      <span className="text-2xl text-blue-600 font-bold">
+                    <li key={idx} className="flex items-start gap-2 sm:gap-3">
+                      <span className="text-xl sm:text-2xl text-blue-600 font-bold flex-shrink-0">
                         ✓
                       </span>
-                      <span className="text-gray-700">{feature}</span>
+                      <span className="text-sm sm:text-base text-gray-700">
+                        {feature}
+                      </span>
                     </li>
                   ))}
                 </ul>
               </div>
-              <div className="bg-blue-50 rounded-lg p-8">
-                <h3 className="text-xl font-bold text-gray-900 mb-6">
+              <div className="bg-blue-50 rounded-lg p-4 sm:p-8">
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6">
                   Pricing
                 </h3>
-                <p className="text-gray-700 mb-6">{currentService.pricing}</p>
+                <p className="text-sm sm:text-base text-gray-700 mb-4 sm:mb-6">
+                  {currentService.pricing}
+                </p>
                 <button
                   onClick={() => handleContactService(activeService)}
-                  className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition shadow-lg"
+                  className="w-full px-4 sm:px-6 py-2 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition shadow-lg text-sm sm:text-base"
                 >
                   Request Quote Today
                 </button>
@@ -260,25 +266,29 @@ export const ServicesPage: React.FC = () => {
         </section>
 
         {/* Service Cards Overview */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <h2 className="text-3xl font-bold text-center mb-12">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12">
             All Our Services
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {Object.entries(services).map(([key, service]) => (
               <button
                 key={key}
                 onClick={() => setActiveService(key)}
-                className={`p-6 rounded-lg text-center transition duration-300 hover:shadow-lg ${
+                className={`p-4 sm:p-6 rounded-lg text-center transition duration-300 hover:shadow-lg ${
                   activeService === key
                     ? "bg-blue-600 text-white shadow-lg"
                     : "bg-white text-gray-900 border-2 border-gray-200 hover:border-blue-600"
                 }`}
               >
-                <div className="text-4xl mb-3">{service.icon}</div>
-                <h3 className="font-bold text-lg mb-2">{service.title}</h3>
+                <div className="text-3xl sm:text-4xl mb-2 sm:mb-3">
+                  {service.icon}
+                </div>
+                <h3 className="font-bold text-base sm:text-lg mb-1 sm:mb-2">
+                  {service.title}
+                </h3>
                 <p
-                  className={`text-sm ${activeService === key ? "text-blue-100" : "text-gray-600"}`}
+                  className={`text-xs sm:text-sm ${activeService === key ? "text-blue-100" : "text-gray-600"}`}
                 >
                   {service.description}
                 </p>
@@ -351,38 +361,46 @@ export const ContactPage: React.FC = () => {
     <>
       <Header />
       <main className="bg-white">
-        <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
+        <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-8 sm:py-12 lg:py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 className="text-4xl font-bold mb-2">Contact Us</h1>
-            <p className="text-lg text-blue-100">Get in touch with our team</p>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-1 sm:mb-2">
+              Contact Us
+            </h1>
+            <p className="text-base sm:text-lg text-blue-100">
+              Get in touch with our team
+            </p>
           </div>
         </section>
 
-        <section className="max-w-7xl mx-auto px-4 py-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12">
             <div>
-              <h2 className="text-2xl font-bold mb-8">Regional Offices</h2>
-              <div className="space-y-6">
+              <h2 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-8">
+                Regional Offices
+              </h2>
+              <div className="space-y-4 sm:space-y-6">
                 {contactOffices.map((office, idx) => (
                   <div
                     key={idx}
-                    className="bg-gray-50 p-6 rounded-lg border-l-4 border-blue-600"
+                    className="bg-gray-50 p-4 sm:p-6 rounded-lg border-l-4 border-blue-600"
                   >
-                    <p className="font-bold text-lg text-gray-900">
+                    <p className="font-bold text-base sm:text-lg text-gray-900">
                       {office.city}
                     </p>
                     <a
                       href={`tel:${office.phone.replace(/\s/g, "")}`}
-                      className="text-blue-600 hover:text-blue-700 font-medium mt-2 inline-block"
+                      className="text-blue-600 hover:text-blue-700 font-medium mt-2 inline-block text-sm sm:text-base"
                     >
                       📞 {office.phone}
                     </a>
-                    <p className="text-gray-600 text-sm mt-1">{office.email}</p>
+                    <p className="text-gray-600 text-xs sm:text-sm mt-1">
+                      {office.email}
+                    </p>
                     <a
                       href={`https://wa.me/${office.phone.replace(/[^\d+]/g, "")}?text=Hello%20Dalali%20Express`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-green-600 hover:text-green-700 font-medium text-sm mt-2 inline-block"
+                      className="text-green-600 hover:text-green-700 font-medium text-xs sm:text-sm mt-2 inline-block"
                     >
                       💬 WhatsApp
                     </a>
@@ -391,10 +409,13 @@ export const ContactPage: React.FC = () => {
               </div>
             </div>
 
-            <form className="space-y-4" onSubmit={handleFormSubmit}>
+            <form
+              className="space-y-3 sm:space-y-4"
+              onSubmit={handleFormSubmit}
+            >
               {submitMessage && (
                 <div
-                  className={`p-4 rounded-lg ${submitMessage.includes("Thank") ? "bg-green-100 text-green-700 border-l-4 border-green-500" : "bg-red-100 text-red-700 border-l-4 border-red-500"}`}
+                  className={`p-3 sm:p-4 rounded-lg text-sm sm:text-base ${submitMessage.includes("Thank") ? "bg-green-100 text-green-700 border-l-4 border-green-500" : "bg-red-100 text-red-700 border-l-4 border-red-500"}`}
                 >
                   {submitMessage}
                 </div>
@@ -405,7 +426,7 @@ export const ContactPage: React.FC = () => {
                 value={formData.name}
                 onChange={handleFormChange}
                 placeholder="Your Name"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none text-sm sm:text-base"
                 required
               />
               <input
@@ -414,7 +435,7 @@ export const ContactPage: React.FC = () => {
                 value={formData.email}
                 onChange={handleFormChange}
                 placeholder="Your Email"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none text-sm sm:text-base"
                 required
               />
               <textarea
@@ -423,13 +444,13 @@ export const ContactPage: React.FC = () => {
                 onChange={handleFormChange}
                 placeholder="Your Message"
                 rows={5}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none text-sm sm:text-base"
                 required
               ></textarea>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition disabled:opacity-50"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 sm:py-3 rounded-lg transition disabled:opacity-50 text-sm sm:text-base"
               >
                 {isSubmitting ? "Sending..." : "Send Message"}
               </button>
@@ -517,7 +538,7 @@ export const HomePage: React.FC = () => {
       <Header />
       <main className="bg-white">
         {/* Video Strip */}
-        <section className="w-full h-48 sm:h-56 bg-gray-200 relative overflow-hidden">
+        <section className="w-full h-40 sm:h-48 lg:h-56 bg-gray-200 relative overflow-hidden">
           <video
             className="w-full h-full object-cover"
             autoPlay
@@ -529,8 +550,8 @@ export const HomePage: React.FC = () => {
             Your browser does not support the video tag.
           </video>
           <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-            <div className="text-center text-white">
-              <p className="text-sm font-bold">
+            <div className="text-center text-white px-4">
+              <p className="text-xs sm:text-sm font-bold">
                 🚚 Dalali Express - Africa's Premier Logistics
               </p>
             </div>
@@ -539,66 +560,66 @@ export const HomePage: React.FC = () => {
 
         {/* Hero Section */}
         <section
-          className="bg-gradient-to-b from-blue-50 to-white py-4 bg-cover bg-center relative"
+          className="bg-gradient-to-b from-blue-50 to-white py-6 sm:py-8 lg:py-12 bg-cover bg-center relative"
           style={{
             backgroundImage: "url(/media/Home%20hero.png)",
           }}
         >
           <div className="absolute inset-0 bg-black/40"></div>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-            <h1 className="text-4xl sm:text-5xl font-bold text-white mb-2">
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-white mb-2 sm:mb-3">
               Reliable Cargo & Logistics Services
             </h1>
-            <p className="text-lg text-gray-100 mb-8">
+            <p className="text-sm sm:text-base lg:text-lg text-gray-100 mb-6 sm:mb-8">
               Fast Delivery | Low Cost | High Reliability
             </p>
 
             {/* Service Type Selector */}
-            <div className="flex justify-center gap-4 mb-12">
+            <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-8 sm:mb-12">
               <button
                 onClick={() => navigate("/services")}
-                className="px-6 py-2 border-2 border-blue-600 text-blue-600 font-bold rounded-lg hover:bg-blue-50 transition"
+                className="px-4 sm:px-6 py-2 border-2 border-blue-600 text-blue-600 font-bold rounded-lg hover:bg-blue-50 transition text-sm sm:text-base"
               >
                 ✈️ Air
               </button>
               <button
                 onClick={() => navigate("/services")}
-                className="px-6 py-2 border-2 border-blue-600 text-blue-600 font-bold rounded-lg hover:bg-blue-50 transition"
+                className="px-4 sm:px-6 py-2 border-2 border-blue-600 text-blue-600 font-bold rounded-lg hover:bg-blue-50 transition text-sm sm:text-base"
               >
                 🌊 Ocean
               </button>
             </div>
 
             {/* Tracking Section */}
-            <div className="max-w-2xl mx-auto mb-8">
-              <label className="block text-lg font-bold text-gray-800 mb-4">
+            <div className="max-w-2xl mx-auto mb-6 sm:mb-8">
+              <label className="block text-base sm:text-lg font-bold text-gray-800 mb-3 sm:mb-4">
                 Enter Tracking Number
               </label>
-              <div className="flex gap-3 mb-6">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-4 sm:mb-6">
                 <input
                   type="text"
                   value={trackingNumber}
                   onChange={(e) => setTrackingNumber(e.target.value)}
                   placeholder="e.g., DLX-2024-001234"
-                  className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none"
+                  className="flex-1 px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none text-sm sm:text-base"
                 />
                 <button
                   onClick={handleTrackingSearch}
                   disabled={isLoadingTracking}
-                  className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition disabled:opacity-50"
+                  className="px-4 sm:px-8 py-2 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition disabled:opacity-50 text-sm sm:text-base whitespace-nowrap"
                 >
                   {isLoadingTracking ? "SEARCHING..." : "SEARCH"}
                 </button>
               </div>
 
               {trackingError && (
-                <div className="mb-6 p-4 bg-red-100 border-l-4 border-red-500 text-red-700">
+                <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded text-sm sm:text-base">
                   <p className="font-semibold">{trackingError}</p>
                 </div>
               )}
 
               {trackingResult && (
-                <div className="mb-6 p-4 bg-green-100 border-l-4 border-green-500 text-green-700 rounded">
+                <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-green-100 border-l-4 border-green-500 text-green-700 rounded text-sm sm:text-base">
                   <p className="font-semibold mb-2">Shipment Found</p>
                   <p>
                     <strong>Tracking:</strong> {trackingResult.tracking_number}
@@ -629,11 +650,13 @@ export const HomePage: React.FC = () => {
                 </div>
               )}
 
-              <div className="text-gray-600 mb-6 font-medium">OR</div>
+              <div className="text-gray-600 mb-4 sm:mb-6 font-medium text-sm sm:text-base">
+                OR
+              </div>
 
               <button
                 onClick={handleRequestQuote}
-                className="px-8 py-3 border-2 border-orange-600 text-orange-600 font-bold rounded-lg hover:bg-orange-50 transition"
+                className="px-6 sm:px-8 py-2 sm:py-3 border-2 border-orange-600 text-orange-600 font-bold rounded-lg hover:bg-orange-50 transition text-sm sm:text-base w-full sm:w-auto"
               >
                 Request Quote
               </button>
@@ -642,33 +665,35 @@ export const HomePage: React.FC = () => {
         </section>
 
         {/* Trust Bar */}
-        <section className="bg-blue-600 text-white py-4">
+        <section className="bg-blue-600 text-white py-3 sm:py-4">
           <div className="max-w-7xl mx-auto px-4 text-center">
-            <p className="text-lg font-semibold">
+            <p className="text-sm sm:text-base lg:text-lg font-semibold">
               ✔ Safe | ✔ Fast | ✔ Professional Logistics
             </p>
           </div>
         </section>
 
         {/* Core Services */}
-        <section className="py-16 bg-gray-50">
+        <section className="py-8 sm:py-12 lg:py-16 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold text-center mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12">
               Our Core Services
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-8">
               <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition transform hover:scale-105">
                 <img
                   src="/media/air%20freight.jpeg"
                   alt="Air Freight"
-                  className="w-full h-48 object-cover"
+                  className="w-full h-40 sm:h-48 object-cover"
                 />
-                <div className="p-6 text-center">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                <div className="p-4 sm:p-6 text-center">
+                  <h3 className="text-lg sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">
                     Air Freight
                   </h3>
-                  <p className="text-gray-600">Fast delivery worldwide</p>
+                  <p className="text-sm sm:text-base text-gray-600">
+                    Fast delivery worldwide
+                  </p>
                 </div>
               </div>
 
@@ -676,13 +701,15 @@ export const HomePage: React.FC = () => {
                 <img
                   src="/media/sea%20shippment.jpeg"
                   alt="Sea Freight"
-                  className="w-full h-48 object-cover"
+                  className="w-full h-40 sm:h-48 object-cover"
                 />
-                <div className="p-6 text-center">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                <div className="p-4 sm:p-6 text-center">
+                  <h3 className="text-lg sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">
                     Sea Freight
                   </h3>
-                  <p className="text-gray-600">Bulk shipping solutions</p>
+                  <p className="text-sm sm:text-base text-gray-600">
+                    Bulk shipping solutions
+                  </p>
                 </div>
               </div>
 
@@ -690,13 +717,13 @@ export const HomePage: React.FC = () => {
                 <img
                   src="/media/Land%20freight.jpeg"
                   alt="Land Freight"
-                  className="w-full h-48 object-cover"
+                  className="w-full h-40 sm:h-48 object-cover"
                 />
-                <div className="p-6 text-center">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                <div className="p-4 sm:p-6 text-center">
+                  <h3 className="text-lg sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">
                     Land Freight
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-sm sm:text-base text-gray-600">
                     Ground transport across Africa
                   </p>
                 </div>
@@ -706,13 +733,15 @@ export const HomePage: React.FC = () => {
                 <img
                   src="/media/land%20forwarding.jpeg"
                   alt="Clearing & Forwarding"
-                  className="w-full h-48 object-cover"
+                  className="w-full h-40 sm:h-48 object-cover"
                 />
-                <div className="p-6 text-center">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                <div className="p-4 sm:p-6 text-center">
+                  <h3 className="text-lg sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">
                     Clearing & Forwarding
                   </h3>
-                  <p className="text-gray-600">Customs handling</p>
+                  <p className="text-sm sm:text-base text-gray-600">
+                    Customs handling
+                  </p>
                 </div>
               </div>
             </div>
@@ -720,7 +749,7 @@ export const HomePage: React.FC = () => {
             <div className="text-center">
               <button
                 onClick={() => navigate("/services")}
-                className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition"
+                className="px-6 sm:px-8 py-2 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition text-sm sm:text-base"
               >
                 View Services
               </button>
@@ -730,7 +759,7 @@ export const HomePage: React.FC = () => {
 
         {/* Key Metrics Section */}
         <section
-          className="bg-cover bg-center relative py-6"
+          className="bg-cover bg-center relative py-8 sm:py-12 lg:py-16"
           style={{
             backgroundImage: "url(/media/Company%20image.png)",
           }}
@@ -738,9 +767,9 @@ export const HomePage: React.FC = () => {
           <div className="absolute inset-0 bg-black/80"></div>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             {/* Section Header */}
-            <div className="text-center mb-16">
+            <div className="text-center mb-12 sm:mb-16">
               <h2
-                className="text-4xl sm:text-5xl font-bold text-white mb-4"
+                className="text-2xl sm:text-3xl lg:text-5xl font-bold text-white mb-2 sm:mb-4"
                 style={{
                   textShadow:
                     "0 4px 12px rgba(0, 0, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.6)",
@@ -749,7 +778,7 @@ export const HomePage: React.FC = () => {
                 Why Businesses Trust Dalali Express
               </h2>
               <p
-                className="text-lg text-yellow-300 max-w-2xl mx-auto font-semibold"
+                className="text-sm sm:text-base lg:text-lg text-yellow-300 max-w-2xl mx-auto font-semibold"
                 style={{
                   textShadow: "0 2px 8px rgba(0, 0, 0, 0.8)",
                 }}
@@ -760,7 +789,7 @@ export const HomePage: React.FC = () => {
             </div>
 
             {/* Stats Row */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-12 sm:mb-16">
               {[
                 { number: "15", label: "Years", suffix: "+" },
                 { number: "45", label: "Countries", suffix: "+" },
@@ -776,17 +805,19 @@ export const HomePage: React.FC = () => {
                   }}
                 >
                   <div
-                    className="text-5xl sm:text-6xl font-bold text-blue-400 mb-2"
+                    className="text-3xl sm:text-5xl lg:text-6xl font-bold text-blue-400 mb-1 sm:mb-2"
                     style={{
                       textShadow:
                         "0 4px 12px rgba(0, 0, 0, 0.9), 0 0 20px rgba(96, 165, 250, 0.5)",
                     }}
                   >
                     {stat.number}
-                    <span className="text-3xl">{stat.suffix}</span>
+                    <span className="text-lg sm:text-2xl lg:text-3xl">
+                      {stat.suffix}
+                    </span>
                   </div>
                   <p
-                    className="text-white font-bold"
+                    className="text-white font-bold text-sm sm:text-base"
                     style={{
                       textShadow: "0 2px 8px rgba(0, 0, 0, 0.8)",
                     }}
