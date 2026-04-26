@@ -588,6 +588,12 @@ export const HomePage: React.FC = () => {
               >
                 🌊 Ocean
               </button>
+              <button
+                onClick={() => navigate("/services")}
+                className="px-4 sm:px-6 py-2 border-2 border-blue-600 text-blue-600 font-bold rounded-lg hover:bg-blue-50 transition text-sm sm:text-base"
+              >
+                🚚 Land
+              </button>
             </div>
 
             {/* Tracking Section */}

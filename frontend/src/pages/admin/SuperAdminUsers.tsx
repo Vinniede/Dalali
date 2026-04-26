@@ -1,50 +1,48 @@
 import React from 'react';
 import { DashboardLayout } from '../../layouts/DashboardLayout.tsx';
+import userService from '../../services/userService';
 
 interface User {
   id: string;
   name: string;
   email: string;
-  branch: string;
-  status: 'Active' | 'Inactive';
-  joinDate: string;
+  branch_id?: string;
+  role?: string;
+  status?: 'Active' | 'Inactive';
+  joinDate?: string;
 }
 
 export const SuperAdminUsers: React.FC = () => {
-  const [users, setUsers] = React.useState<User[]>([
-    {
-      id: 'USR001',
-      name: 'John Kamau',
-      email: 'john@dalali.com',
-      branch: 'Dar es Salaam',
-      status: 'Active',
-      joinDate: '2024-01-15',
-    },
-    {
-      id: 'USR002',
-      name: 'Grace Mwamba',
-      email: 'grace@dalali.com',
-      branch: 'Entebbe',
-      status: 'Active',
-      joinDate: '2024-02-20',
-    },
-    {
-      id: 'USR003',
-      name: 'David Nkana',
-      email: 'david@dalali.com',
-      branch: 'Kinshasa',
-      status: 'Active',
-      joinDate: '2024-03-10',
-    },
-  ]);
-
+  const [users, setUsers] = React.useState<User[]>([]);
   const [showForm, setShowForm] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState('');
+  const [success, setSuccess] = React.useState('');
   const [formData, setFormData] = React.useState({
     name: '',
     email: '',
     password: '',
-    branch: '',
+    branchId: '',
+    role: 'branch_admin',
   });
+
+  // Fetch users on component mount
+  React.useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      const response = await userService.getAllUsers(100, 0);
+      setUsers(response.data.users);
+    } catch (err) {
+      console.error('Failed to fetch users:', err);
+      setError('Failed to load users');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const menuItems = [
     { id: 'overview', label: 'Overview', icon: '📊', path: '/admin/super/overview' },
@@ -58,19 +56,33 @@ export const SuperAdminUsers: React.FC = () => {
     { id: 'settings', label: 'Settings', icon: '⚙️', path: '/admin/super/settings' },
   ];
 
-  const handleAddUser = () => {
-    if (formData.name && formData.email && formData.branch) {
-      setUsers([
-        ...users,
-        {
-          id: `USR${users.length + 1}`,
-          ...formData,
-          status: 'Active',
-          joinDate: new Date().toISOString().split('T')[0],
-        },
-      ]);
-      setFormData({ name: '', email: '', password: '', branch: '' });
-      setShowForm(false);
+  const handleAddUser = async () => {
+    if (!formData.name || !formData.email || !formData.password || !formData.branchId) {
+      setError('Please fill in all fields');
+      return;
+    }
+
+    try {
+      setError('');
+      setSuccess('');
+      
+      const response = await userService.createUser({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role,
+        branchId: formData.branchId,
+      });
+
+      if (response.success) {
+        setSuccess(`✅ User created successfully: ${formData.name}`);
+        setFormData({ name: '', email: '', password: '', branchId: '', role: 'branch_admin' });
+        setShowForm(false);
+        // Refresh the users list
+        await fetchUsers();
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to create user');
     }
   };
 
@@ -82,6 +94,18 @@ export const SuperAdminUsers: React.FC = () => {
       userName="Super Admin"
     >
       <div className="space-y-6">
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+            {error}
+          </div>
+        )}
+
+        {success && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+            {success}
+          </div>
+        )}
+
         {/* Users Table */}
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="px-6 py-4 border-b  flex justify-between items-center">
@@ -93,41 +117,45 @@ export const SuperAdminUsers: React.FC = () => {
               + Add Branch Admin
             </button>
           </div>
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b">
-              <tr>
-                <th className="px-6 py-4 text-left font-bold text-gray-700">Name</th>
-                <th className="px-6 py-4 text-left font-bold text-gray-700">Email</th>
-                <th className="px-6 py-4 text-left font-bold text-gray-700">Branch</th>
-                <th className="px-6 py-4 text-left font-bold text-gray-700">Status</th>
-                <th className="px-6 py-4 text-left font-bold text-gray-700">Join Date</th>
-                <th className="px-6 py-4 text-left font-bold text-gray-700">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((user) => (
-                <tr key={user.id} className="border-b hover:bg-gray-50 transition">
-                  <td className="px-6 py-4 font-bold text-gray-900">{user.name}</td>
-                  <td className="px-6 py-4 text-gray-700">{user.email}</td>
-                  <td className="px-6 py-4 text-gray-700">{user.branch}</td>
-                  <td className="px-6 py-4">
-                    <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                      {user.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-gray-700 text-sm">{user.joinDate}</td>
-                  <td className="px-6 py-4 space-x-2">
-                    <button className="px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 text-sm font-medium transition">
-                      Edit
-                    </button>
-                    <button className="px-3 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 text-sm font-medium transition">
-                      Deactivate
-                    </button>
-                  </td>
+          {loading ? (
+            <div className="p-6 text-center text-gray-600">Loading users...</div>
+          ) : (
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b">
+                <tr>
+                  <th className="px-6 py-4 text-left font-bold text-gray-700">Name</th>
+                  <th className="px-6 py-4 text-left font-bold text-gray-700">Email</th>
+                  <th className="px-6 py-4 text-left font-bold text-gray-700">Role</th>
+                  <th className="px-6 py-4 text-left font-bold text-gray-700">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {users && users.length > 0 ? (
+                  users.map((user) => (
+                    <tr key={user.id} className="border-b hover:bg-gray-50 transition">
+                      <td className="px-6 py-4 font-bold text-gray-900">{user.name}</td>
+                      <td className="px-6 py-4 text-gray-700">{user.email}</td>
+                      <td className="px-6 py-4 text-gray-700 capitalize">{user.role?.replace('_', ' ')}</td>
+                      <td className="px-6 py-4 space-x-2">
+                        <button className="px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 text-sm font-medium transition">
+                          Edit
+                        </button>
+                        <button className="px-3 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 text-sm font-medium transition">
+                          Deactivate
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={4} className="px-6 py-4 text-center text-gray-600">
+                      No users found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
 
         {/* Add User Form */}
@@ -157,15 +185,20 @@ export const SuperAdminUsers: React.FC = () => {
                 className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <select
-                value={formData.branch}
-                onChange={(e) => setFormData({ ...formData, branch: e.target.value })}
+                value={formData.role}
+                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                 className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">Select Branch</option>
-                <option value="Dar es Salaam">Dar es Salaam</option>
-                <option value="Entebbe">Entebbe</option>
-                <option value="Kinshasa">Kinshasa</option>
+                <option value="branch_admin">Branch Admin</option>
+                <option value="super_admin">Super Admin</option>
               </select>
+              <input
+                type="text"
+                placeholder="Branch ID (optional)"
+                value={formData.branchId}
+                onChange={(e) => setFormData({ ...formData, branchId: e.target.value })}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
             </div>
             <div className="flex gap-3">
               <button

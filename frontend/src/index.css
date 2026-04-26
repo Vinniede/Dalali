@@ -2,6 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes slideAcross {
+  0%, 100% {
+    transform: translateX(-2px);
+  }
+  50% {
+    transform: translateX(2px);
+  }
+}
+
+@keyframes colorShift3D {
+  0% {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    text-shadow: -2px -2px 4px rgba(139, 92, 246, 0.5), 2px 2px 4px rgba(59, 130, 246, 0.5);
+  }
+  25% {
+    background: linear-gradient(135deg, #8b5cf6, #ec4899);
+    text-shadow: -2px -2px 4px rgba(236, 72, 153, 0.5), 2px 2px 4px rgba(139, 92, 246, 0.5);
+  }
+  50% {
+    background: linear-gradient(135deg, #ec4899, #f59e0b);
+    text-shadow: -2px -2px 4px rgba(245, 158, 11, 0.5), 2px 2px 4px rgba(236, 72, 153, 0.5);
+  }
+  75% {
+    background: linear-gradient(135deg, #f59e0b, #3b82f6);
+    text-shadow: -2px -2px 4px rgba(59, 130, 246, 0.5), 2px 2px 4px rgba(245, 158, 11, 0.5);
+  }
+  100% {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    text-shadow: -2px -2px 4px rgba(139, 92, 246, 0.5), 2px 2px 4px rgba(59, 130, 246, 0.5);
+  }
+}
+
 @layer base {
   * {
     @apply transition-colors duration-200;
@@ -50,6 +82,18 @@
 }
 
 @layer components {
+  /* Brand Name Animation */
+  .brand-name {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: colorShift3D 6s ease-in-out infinite, slideAcross 3s ease-in-out infinite;
+    filter: drop-shadow(-2px -2px 4px rgba(139, 92, 246, 0.3)) drop-shadow(2px 2px 4px rgba(59, 130, 246, 0.3));
+    font-weight: 900;
+    letter-spacing: -0.5px;
+  }
+
   /* Card Styles */
   .card {
     @apply bg-white rounded-lg shadow-base border border-gray-200 p-6;

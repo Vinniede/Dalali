@@ -39,7 +39,7 @@ export const Header: React.FC<HeaderProps> = ({ isAdmin = false }) => {
             <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center font-bold text-primary-600">
               D
             </div>
-            <span className="text-xl font-bold hidden sm:inline">
+            <span className="text-xl font-bold hidden sm:inline brand-name">
               Dalali Express
             </span>
           </Link>
@@ -159,30 +159,29 @@ export const Header: React.FC<HeaderProps> = ({ isAdmin = false }) => {
 };
 
 export const Footer: React.FC = () => (
-  <footer className="bg-gray-900 text-gray-100 py-12 mt-0">
+  <footer className="bg-gray-900 text-gray-100 py-8 sm:py-12 mt-0">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* Footer Content */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
         {/* Brand Section */}
-        <div>
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center font-bold text-white">
+        <div className="col-span-2 sm:col-span-1">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center font-bold text-white text-sm">
               D
             </div>
-            <span className="font-bold text-lg">Dalali Express</span>
+            <span className="font-bold text-sm sm:text-base">Dalali Express</span>
           </div>
-          <p className="text-gray-400 text-sm">
-            Your trusted partner in international cargo tracking and logistics
-            management.
+          <p className="text-gray-400 text-xs sm:text-sm leading-tight">
+            Your trusted logistics partner in Africa.
           </p>
         </div>
 
         {/* Services */}
         <div>
-          <h3 className="text-sm font-bold mb-4 text-white uppercase tracking-wide">
+          <h3 className="text-xs sm:text-sm font-bold mb-3 text-white uppercase tracking-wide">
             Services
           </h3>
-          <ul className="space-y-2 text-sm">
+          <ul className="space-y-1 sm:space-y-2 text-xs sm:text-sm">
             <li>
               <Link
                 to="/services"
@@ -204,7 +203,7 @@ export const Footer: React.FC = () => (
                 to="/services"
                 className="text-gray-400 hover:text-primary-400 transition"
               >
-                Clearing & Forwarding
+                Land Freight
               </Link>
             </li>
             <li>
@@ -212,18 +211,18 @@ export const Footer: React.FC = () => (
                 to="/services"
                 className="text-gray-400 hover:text-primary-400 transition"
               >
-                Tracking
+                Clearing & Forwarding
               </Link>
             </li>
           </ul>
         </div>
 
-        {/* Company */}
+        {/* Quick Links */}
         <div>
-          <h3 className="text-sm font-bold mb-4 text-white uppercase tracking-wide">
-            Company
+          <h3 className="text-xs sm:text-sm font-bold mb-3 text-white uppercase tracking-wide">
+            Quick Links
           </h3>
-          <ul className="space-y-2 text-sm">
+          <ul className="space-y-1 sm:space-y-2 text-xs sm:text-sm">
             <li>
               <Link
                 to="/"
@@ -260,11 +259,11 @@ export const Footer: React.FC = () => (
         </div>
 
         {/* Contact */}
-        <div>
-          <h3 className="text-sm font-bold mb-4 text-white uppercase tracking-wide">
+        <div className="hidden sm:block">
+          <h3 className="text-xs sm:text-sm font-bold mb-3 text-white uppercase tracking-wide">
             Contact
           </h3>
-          <div className="space-y-2 text-sm text-gray-400">
+          <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm text-gray-400">
             <p>
               📧{" "}
               <a
@@ -289,29 +288,23 @@ export const Footer: React.FC = () => (
       </div>
 
       {/* Divider */}
-      <div className="border-t border-gray-800 pt-8">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-gray-400 text-sm">
-            &copy; 2026 Dalali Express Services. All rights reserved.
+      <div className="border-t border-gray-800 pt-4 sm:pt-6">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-4">
+          <p className="text-gray-400 text-xs sm:text-sm">
+            &copy; 2026 Dalali Express. All rights reserved.
           </p>
-          <div className="flex gap-4">
+          <div className="flex gap-3 sm:gap-4 text-xs sm:text-sm">
             <a
               href="#"
-              className="text-gray-400 hover:text-primary-400 transition text-sm"
+              className="text-gray-400 hover:text-primary-400 transition"
             >
-              Privacy Policy
+              Privacy
             </a>
             <a
               href="#"
-              className="text-gray-400 hover:text-primary-400 transition text-sm"
+              className="text-gray-400 hover:text-primary-400 transition"
             >
-              Terms of Service
-            </a>
-            <a
-              href="#"
-              className="text-gray-400 hover:text-primary-400 transition text-sm"
-            >
-              Sitemap
+              Terms
             </a>
           </div>
         </div>
