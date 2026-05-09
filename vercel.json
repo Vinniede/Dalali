@@ -7,8 +7,7 @@
   "functions": {
     "api/[...path].ts": {
       "memory": 1024,
-      "maxDuration": 30,
-      "runtime": "nodejs18.x"
+      "maxDuration": 30
     }
   },
   "routes": [
@@ -16,10 +15,6 @@
       "src": "/api/.*",
       "dest": "/api/[...path]",
       "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"]
-    },
-    {
-      "src": "/media/(.*)",
-      "dest": "/public/media/$1"
     },
     {
       "src": "/(.*)\\.(?:js|css|svg|png|jpg|jpeg|gif|webp|woff|woff2|ttf|eot|mp4|webm)$",
@@ -30,8 +25,5 @@
       "dest": "/index.html",
       "status": 200
     }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  }
+  ]
 }
