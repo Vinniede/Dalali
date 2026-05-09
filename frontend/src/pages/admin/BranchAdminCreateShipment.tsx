@@ -115,6 +115,13 @@ export const BranchAdminCreateShipment: React.FC = () => {
         throw new Error("User branch information not available");
       }
 
+      console.log('[CreateShipment] Submitting form with data:', {
+        sender: formData.senderName,
+        receiver: formData.receiverName,
+        destination: formData.destination,
+        branch_id: user.branch_id,
+      });
+
       const response = await shipmentService.createShipment({
         senderName: formData.senderName,
         senderPhone: formData.senderPhone,
@@ -130,6 +137,8 @@ export const BranchAdminCreateShipment: React.FC = () => {
         serviceType: formData.serviceType,
       });
 
+      console.log('[CreateShipment] Response:', response);
+      
       setTrackingNumber(response.data.tracking_number);
       setShowSuccessModal(true);
 
@@ -153,7 +162,13 @@ export const BranchAdminCreateShipment: React.FC = () => {
         navigate("/admin/branch/shipments");
       }, 3000);
     } catch (err: any) {
-      setError(err.message || "Failed to create shipment");
+      const errorMessage = err.response?.data?.message || err.message || "Failed to create shipment";
+      console.error('[CreateShipment] Error:', {
+        message: errorMessage,
+        status: err.response?.status,
+        data: err.response?.data,
+      });
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
