@@ -84,7 +84,7 @@ export const LoginForm: React.FC = () => {
         <p className="text-center text-gray-600 mt-6">
           Test credentials:<br />
           Email: admin@dalali.com<br />
-          Password: Admin@123
+          Password: Admin@2024!
         </p>
       </div>
     </div>

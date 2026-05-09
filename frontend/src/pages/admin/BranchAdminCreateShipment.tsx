@@ -8,7 +8,10 @@ import authService from '../../services/authService';
 interface Branch {
   id: string;
   name: string;
+  country: string;
 }
+
+const SERVICE_TYPES = ['Standard', 'Express', 'Overnight', 'Economy'];
 
 export const BranchAdminCreateShipment: React.FC = () => {
   const navigate = useNavigate();
@@ -18,6 +21,8 @@ export const BranchAdminCreateShipment: React.FC = () => {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState('');
   const [success, setSuccess] = React.useState('');
+  const [trackingNumber, setTrackingNumber] = React.useState('');
+  const [showSuccessModal, setShowSuccessModal] = React.useState(false);
 
   const [formData, setFormData] = React.useState({
     senderName: '',
@@ -30,7 +35,7 @@ export const BranchAdminCreateShipment: React.FC = () => {
     cargoDescription: '',
     weight: '',
     volume: '',
-    serviceType: 'Air Freight',
+    serviceType: 'Standard',
   });
 
   const menuItems = [
@@ -77,13 +82,23 @@ export const BranchAdminCreateShipment: React.FC = () => {
 
       const response = await shipmentService.createShipment({
         senderName: formData.senderName,
+        senderPhone: formData.senderPhone,
+        senderAddress: formData.senderAddress,
         receiverName: formData.receiverName,
+        receiverPhone: formData.receiverPhone,
+        receiverAddress: formData.receiverAddress,
         originBranchId: user.branch_id,
         destination: formData.destination,
-        description: formData.cargoDescription,
+        cargoDescription: formData.cargoDescription,
+        weight: formData.weight ? parseFloat(formData.weight) : undefined,
+        volume: formData.volume ? parseFloat(formData.volume) : undefined,
+        serviceType: formData.serviceType,
       });
 
-      setSuccess(`✅ Shipment created successfully! Tracking ID: ${response.data.tracking_number}`);
+      setTrackingNumber(response.data.tracking_number);
+      setShowSuccessModal(true);
+      
+      // Reset form
       setFormData({
         senderName: '',
         senderPhone: '',
@@ -95,12 +110,13 @@ export const BranchAdminCreateShipment: React.FC = () => {
         cargoDescription: '',
         weight: '',
         volume: '',
-        serviceType: 'Air Freight',
+        serviceType: 'Standard',
       });
 
+      // Redirect after 3 seconds
       setTimeout(() => {
         navigate('/admin/branch/shipments');
-      }, 2000);
+      }, 3000);
     } catch (err: any) {
       setError(err.message || 'Failed to create shipment');
     } finally {
@@ -116,6 +132,40 @@ export const BranchAdminCreateShipment: React.FC = () => {
       userName={user?.name || 'Branch Admin'}
       branchName={branchName}
     >
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="card-elevated max-w-md mx-auto bg-white p-8 text-center transform transition-all">
+            <div className="text-6xl mb-4">✅</div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Shipment Created!</h2>
+            <p className="text-gray-600 mb-6">Your shipment has been successfully created.</p>
+            
+            <div className="bg-gradient-to-r from-primary-50 to-secondary-50 rounded-lg p-6 mb-6 border-2 border-primary-200">
+              <p className="text-sm text-gray-600 font-semibold uppercase tracking-wide mb-2">Order Number</p>
+              <p className="text-3xl font-bold text-primary-600 font-mono break-all mb-2">{trackingNumber}</p>
+              <p className="text-xs text-gray-600">Use this number to track your shipment</p>
+            </div>
+
+            <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 text-left">
+              <p className="text-sm text-blue-800">
+                <strong>📌 Share this tracking number:</strong><br/>
+                Customers can track their shipment on our website by searching with this order number.
+              </p>
+            </div>
+
+            <button
+              onClick={() => {
+                setShowSuccessModal(false);
+                navigate('/admin/branch/shipments');
+              }}
+              className="btn-primary w-full"
+            >
+              View All Shipments
+            </button>
+          </div>
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="space-y-6">
         {error && (
           <div className="alert-error">
@@ -230,7 +280,7 @@ export const BranchAdminCreateShipment: React.FC = () => {
                 <option value="">Select Destination</option>
                 {branches.map((branch) => (
                   <option key={branch.id} value={branch.name}>
-                    {branch.name}
+                    {branch.name} - {branch.country}
                   </option>
                 ))}
               </select>
@@ -242,9 +292,11 @@ export const BranchAdminCreateShipment: React.FC = () => {
                 onChange={(e) => setFormData({ ...formData, serviceType: e.target.value })}
                 className="input-field"
               >
-                <option value="Air Freight">✈️ Air Freight</option>
-                <option value="Sea Freight">🚢 Sea Freight</option>
-                <option value="Consolidation">📦 Consolidation</option>
+                {SERVICE_TYPES.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
               </select>
             </div>
           </div>

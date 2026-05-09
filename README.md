@@ -4,22 +4,26 @@ A full-stack cargo tracking and logistics management system for "Dalali Express 
 
 ## 🎯 Features
 
-### Public Features
+### ✨ Public Features
 
 - **Landing Page** - Company information with service highlights
-- **Shipment Tracking** - Real-time tracking with complete history
+- **Shipment Tracking** - Search by order number, view full tracking history
+- **Order Number Display** - Unique DEX-format tracking numbers (e.g., DEX123456ABC)
+- **Public Tracking Timeline** - Complete shipment journey with timestamps
 - **Services Page** - Detailed information about all services
 - **Contact Page** - Branch information and contact details
 
-### Admin Features
+### 🔐 Admin Features
 
 - **JWT Authentication** - Secure login with token-based auth
 - **Role-Based Access Control** - Super Admin and Branch Admin roles
-- **Shipment Management** - Create, view, and update shipments
-- **Status Tracking** - Track shipments throughout their journey
+- **Comprehensive Shipment Management** - Create with all details (sender, receiver, cargo, service type)
+- **Order Number Success Modal** - Displays tracking number prominently after creation
+- **Status Tracking** - Track shipments throughout their journey with history
 - **Dashboard Analytics** - Quick statistics and overview
 - **User Management** (Super Admin Only) - Create and manage users
-- **Branch Management** - View all branches and create new ones
+- **Branch Management** - View all branches (3 pre-configured East African branches)
+- **Shipment Details View** - Complete view with sender/receiver info, cargo details, and tracking timeline
 
 ## 🏗️ Tech Stack
 
@@ -261,34 +265,71 @@ The build command `npm run build` only builds the frontend, and Vercel automatic
   - Body: `{ email: string, password: string }`
   - Returns: `{ token: string, user: User }`
 
-### Public Tracking
+### Public Tracking (No Authentication Required)
 
-- `GET /api/shipments/track/:trackingNumber` - Track shipment
-  - Returns: `{ shipment: Shipment, history: TrackingHistory[] }`
+- `GET /api/shipments/track/:trackingNumber` - Track shipment by order number
+  - Returns: `{ shipment: Shipment, tracking_history: TrackingHistory[] }`
+  - Example: `/api/shipments/track/DEX123456ABC`
 
-### Shipments (Protected)
+### Shipments (Protected - Login Required)
 
 - `GET /api/shipments` - Get all shipments (branch-filtered for branch admins)
-- `POST /api/shipments` - Create new shipment
-  - Body: `{ origin: string, destination: string, items: string, weight: number, recipient: string, recipientPhone: string, branchId: string }`
-- `GET /api/shipments/:id` - Get shipment details
-- `PUT /api/shipments/:id/status` - Update shipment status
-  - Body: `{ status: string, notes?: string }`
+  - Query: `?limit=10&offset=0`
+  - Returns: `{ shipments: Shipment[], total: number }`
 
-### Users (Super Admin Only)
+- `POST /api/shipments` - Create new shipment
+  - Body: Complete shipment data with sender, receiver, and cargo details
+  ```json
+  {
+    "sender_name": "John Doe",
+    "sender_phone": "+255 123 456 7890",
+    "sender_address": "Dar es Salaam, Tanzania",
+    "receiver_name": "Jane Smith",
+    "receiver_phone": "+243 987 654 3210",
+    "receiver_address": "Kinshasa, DRC",
+    "destination": "Kinshasa",
+    "cargo_description": "Electronics package",
+    "weight": 5.5,
+    "volume": 0.05,
+    "service_type": "Express",
+    "origin_branch_id": "branch_uuid"
+  }
+  ```
+  - Returns: `{ shipment: Shipment, tracking_number: string }`
+
+- `GET /api/shipments/:id` - Get shipment details
+  - Returns: `{ shipment: Shipment, tracking_history: TrackingHistory[] }`
+
+- `PUT /api/shipments/:id/status` - Update shipment status
+  - Body: `{ status: string, description?: string }`
+  - Statuses: Created, In Transit, Out for Delivery, Delivered, Delayed, Cancelled
+
+### Users (Protected - Super Admin Only)
 
 - `GET /api/users` - Get all users
 - `POST /api/users` - Create new user
-  - Body: `{ name: string, email: string, password: string, role: 'super_admin' | 'branch_admin', branchId?: string }`
+  - Body: `{ name: string, email: string, password: string, role: 'super_admin' | 'branch_admin', branch_id?: string }`
 - `PUT /api/users/:id` - Update user
 - `DELETE /api/users/:id` - Delete user
 
-### Branches
+### Branches (Public Read, Protected Write)
 
-- `GET /api/branches` - Get all branches
-- `GET /api/branches/:id` - Get branch details
+- `GET /api/branches` - Get all branches (public, no auth required)
+  - Query: `?limit=10&offset=0`
+  - Returns all available branches for shipment selection
+  - Returns: `{ branches: Branch[], total: number }`
+
+- `GET /api/branches/:id` - Get branch details (public)
+  - Returns: `{ branch: Branch }`
+
 - `POST /api/branches` - Create branch (Super Admin only)
-  - Body: `{ name: string, city: string, manager: string, phone: string }`
+  - Body: `{ name: string, country: string, phone: string }`
+  - Returns: `{ branch: Branch }`
+
+### Health Check
+
+- `GET /api/health` - API health status
+  - Returns: `{ status: "OK" }`
 
 ## 🔐 Security
 
@@ -302,10 +343,9 @@ The build command `npm run build` only builds the frontend, and Vercel automatic
 
 ## 📊 Database Schema
 
-### Tables
+### Key Tables
 
 **users**
-
 - id (UUID) - Primary key
 - name (string) - User name
 - email (string) - Unique email
@@ -315,37 +355,44 @@ The build command `npm run build` only builds the frontend, and Vercel automatic
 - created_at (timestamp)
 - updated_at (timestamp)
 
-**branches**
-
+**branches** - Pre-configured with 3 East African locations
 - id (UUID) - Primary key
 - name (string) - Branch name
-- city (string) - City location
-- manager (string) - Manager name
+- country (string) - Country location
 - phone (string) - Contact phone
 - created_at (timestamp)
 - updated_at (timestamp)
 
-**shipments**
+**Pre-configured Branches:**
+- 🇹🇿 **Dar es Salaam** - Tanzania
+- 🇨🇩 **Kinshasa** - Democratic Republic of Congo
+- 🇺🇬 **Entebbe** - Uganda
 
+**shipments** - Comprehensive tracking information
 - id (UUID) - Primary key
-- tracking_number (string) - Unique tracking number
-- origin (string) - Origin location
-- destination (string) - Destination location
-- items (string) - Description of items
-- weight (number) - Weight in kg
-- status (enum) - Current status
-- recipient (string) - Recipient name
-- recipient_phone (string) - Recipient phone
-- branch_id (UUID) - Reference to branch
+- tracking_number (string, UNIQUE) - Auto-generated order number (DEX prefix)
+- sender_name (string) - Sender full name
+- sender_phone (string) - Sender phone number
+- sender_address (string) - Sender address
+- receiver_name (string) - Receiver full name
+- receiver_phone (string) - Receiver phone number
+- receiver_address (string) - Receiver address
+- origin_branch_id (UUID) - Reference to origin branch
+- destination (string) - Destination city/country
+- cargo_description (text) - What's being shipped
+- weight (DECIMAL) - Weight in kg
+- volume (DECIMAL) - Volume in m³
+- service_type (enum) - Standard, Express, Overnight, Economy
+- current_status (enum) - Created, In Transit, Out for Delivery, Delivered, Delayed, Cancelled
+- created_by (UUID) - Reference to user who created shipment
 - created_at (timestamp)
 - updated_at (timestamp)
 
-**tracking_history**
-
+**tracking_history** - Immutable history of shipment status changes
 - id (UUID) - Primary key
-- shipment_id (UUID) - Reference to shipment
-- status (string) - Status at this point
-- notes (text, nullable) - Additional notes
+- shipment_id (UUID, FK) - Reference to shipment
+- status (string) - Status at this point in time
+- description (text, nullable) - What happened
 - created_at (timestamp)
 
 ## 🎨 UI Features
@@ -394,19 +441,80 @@ Both frontend and backend use strict TypeScript settings:
 - Automatic type definitions for dependencies
 
 ## 🚢 Deployment
+### Production Deployment on Vercel
 
+This project is fully configured for **Vercel deployment** with automatic CI/CD:
+
+**Complete deployment guide** → See [DEPLOYMENT.md](./DEPLOYMENT.md)
+
+**Quick Deployment Steps:**
+
+1. Push to GitHub
+2. Connect repository to Vercel
+3. Add environment variables in Vercel settings:
+   - `DATABASE_URL` - Neon PostgreSQL connection string
+   - `JWT_SECRET` - 32+ character random string
+   - `JWT_EXPIRE` - "7d"
+   - `NODE_ENV` - "production"
+   - `CLIENT_URL` - Your Vercel production domain
+
+4. Deploy:
+   ```
+   npm run build
+   npm run seed  # Initial data load
+   ```
+
+**Deployment Architecture:**
+- Frontend: React → Vercel CDN (static files from `frontend/dist`)
+- Backend: Node.js → Vercel Serverless Functions (from `api/` folder)
+- Database: PostgreSQL on Neon Cloud
+- Domain: yourdomain.vercel.app (or custom domain)
+
+**Production Features:**
+- ✅ Automatic HTTPS
+- ✅ Serverless auto-scaling
+- ✅ Database connection pooling
+- ✅ CORS preconfigured for production
+- ✅ Environment-based API routing
+- ✅ CDN for static assets
+
+### Local Development
+
+**Start both servers with auto-reload:**
+
+```bash
+npm run dev
+```
+
+This starts:
+- Backend on `http://localhost:5000` (TypeScript with tsx watch)
+- Frontend on `http://localhost:5173` (Vite dev server)
+
+**Test the system:**
+
+1. Open `http://localhost:5173`
+2. Login: `admin@dalali.com` / `Admin@2024!`
+3. Create a shipment and note the order number in success modal
+4. Go to homepage and search tracking by order number
+5. View complete shipment details and history
 ### Backend Deployment (Node.js)
 
 1. Build: `npm run build`
-2. Deploy `dist/` folder with `package.json`
-3. Set environment variables on production server
-4. Run: `npm start`
+2. Vercel automatically uses `vercel.json` configuration
+3. Environment variables set in Vercel dashboard
+4. Automatic deployment on push to main branch
 
-### Frontend Deployment (Static)
+### Built-in Production Features
 
-1. Build: `npm run build`
-2. Deploy contents of `dist/` folder to web server (Vercel, Netlify, etc.)
-3. Set `VITE_API_BASE_URL` to production API URL
+- ✅ **Health Check Endpoint**: `GET /api/health`
+- ✅ **CORS Configured**: Auto-detects environment and sets correct origin
+- ✅ **Database Connection Pooling**: Neon connection pooler for performance
+- ✅ **JWT Token Caching**: Tokens stored in localStorage for offline access
+- ✅ **SPA Fallback**: All routes fallback to `/index.html` for React Router
+- ✅ **Static Asset Caching**: Versioned assets via Vite
+- ✅ **Error Handling**: Comprehensive error logging and user-friendly messages
+- ✅ **Security Headers**: CORS, secure JWT, password hashing
+- ✅ **Monitoring Ready**: Vercel logs and Neon database logs available
 
 ## 📄 License
 

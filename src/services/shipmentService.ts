@@ -5,10 +5,17 @@ import { SHIPMENT_STATUS } from '../config/constants';
 
 interface CreateShipmentData {
   senderName: string;
+  senderPhone?: string;
+  senderAddress?: string;
   receiverName: string;
+  receiverPhone?: string;
+  receiverAddress?: string;
   originBranchId: string;
   destination: string;
-  description?: string;
+  cargoDescription?: string;
+  weight?: number;
+  volume?: number;
+  serviceType?: string;
 }
 
 interface ShipmentsResult {
@@ -27,10 +34,17 @@ class ShipmentService {
   ): Promise<any> {
     const {
       senderName,
+      senderPhone = '',
+      senderAddress = '',
       receiverName,
+      receiverPhone = '',
+      receiverAddress = '',
       originBranchId,
       destination,
-      description = '',
+      cargoDescription = '',
+      weight,
+      volume,
+      serviceType = 'Standard',
     } = data;
 
     // Validate input
@@ -53,12 +67,32 @@ class ShipmentService {
       try {
         await client.query('BEGIN');
 
-        // Create shipment
+        // Create shipment with all fields
         const shipmentResult = await client.query(
-          `INSERT INTO shipments (tracking_number, sender_name, receiver_name, origin_branch_id, destination, current_status, created_by, created_at)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+          `INSERT INTO shipments (
+            tracking_number, sender_name, sender_phone, sender_address, 
+            receiver_name, receiver_phone, receiver_address, 
+            origin_branch_id, destination, cargo_description, 
+            weight, volume, service_type, current_status, created_by, created_at
+           ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, NOW())
            RETURNING *`,
-          [trackingNumber, senderName, receiverName, originBranchId, destination, SHIPMENT_STATUS.CREATED, userId]
+          [
+            trackingNumber, 
+            senderName, 
+            senderPhone, 
+            senderAddress,
+            receiverName, 
+            receiverPhone, 
+            receiverAddress,
+            originBranchId, 
+            destination, 
+            cargoDescription,
+            weight || null,
+            volume || null,
+            serviceType,
+            SHIPMENT_STATUS.CREATED, 
+            userId
+          ]
         );
 
         const shipment = shipmentResult.rows[0];
@@ -67,7 +101,7 @@ class ShipmentService {
         await client.query(
           `INSERT INTO tracking_history (shipment_id, branch_id, location, status, description, created_by, created_at)
            VALUES ($1, $2, $3, $4, $5, $6, NOW())`,
-          [shipment.id, originBranchId, 'Origin Branch', SHIPMENT_STATUS.CREATED, description || 'Shipment created', userId]
+          [shipment.id, originBranchId, 'Origin Branch', SHIPMENT_STATUS.CREATED, cargoDescription || 'Shipment created', userId]
         );
 
         await client.query('COMMIT');

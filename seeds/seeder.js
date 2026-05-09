@@ -1,8 +1,14 @@
-const { Pool } = require('pg');
-const fs = require('fs');
-const path = require('path');
-const bcrypt = require('bcryptjs');
-require('dotenv').config();
+import { Pool } from 'pg';
+import fs from 'fs';
+import path from 'path';
+import bcrypt from 'bcryptjs';
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+
+dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 if (!process.env.DATABASE_URL) {
   console.error('❌ DATABASE_URL environment variable is required');
@@ -22,7 +28,7 @@ const pool = new Pool({
 
     // Step 1: Initialize database schema
     console.log('📦 Step 1: Initializing database schema...');
-    const schemaPath = path.join(__dirname, '..', '..', 'database', 'schema.sql');
+    const schemaPath = path.join(__dirname, '..', 'database', 'schema.sql');
     const schemaSql = fs.readFileSync(schemaPath, 'utf8');
     await client.query(schemaSql);
     console.log('✅ Database schema initialized successfully!\n');
@@ -36,8 +42,25 @@ const pool = new Pool({
     result.rows.forEach(row => console.log(`   ✓ ${row.table_name}`));
     console.log('');
 
-    // Step 3: Create super admin user
-    console.log('🔐 Step 2: Creating super admin user...');
+    // Step 3: Clear old branches and insert new ones
+    console.log('🧹 Step 2: Setting up branches...');
+    await client.query('DELETE FROM branches');
+    
+    const branchesInsert = `
+      INSERT INTO branches (name, country, phone) VALUES
+        ('Dar es Salaam', 'Tanzania', '+255 654 321 987'),
+        ('Kinshasa', 'DRC', '+243 812 345 678'),
+        ('Entebbe', 'Uganda', '+256 702 123 456')
+      RETURNING id, name, country;
+    `;
+    
+    const branchesResult = await client.query(branchesInsert);
+    console.log('✅ Branches configured successfully!');
+    branchesResult.rows.forEach(row => console.log(`   ✓ ${row.name} (${row.country})`));
+    console.log('');
+
+    // Step 4: Create super admin user
+    console.log('🔐 Step 3: Creating super admin user...');
     const email = 'admin@dalali.com';
     const plainPassword = 'Admin@2024!';
     const hashedPassword = await bcrypt.hash(plainPassword, 10);

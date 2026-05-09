@@ -14,6 +14,9 @@ export const SHIPMENT_STATUS = {
   CANCELLED: 'Cancelled',
 };
 
+// Service Types
+export const SERVICE_TYPES = ['Standard', 'Express', 'Overnight', 'Economy'];
+
 // Status Color Map
 export const STATUS_COLORS: Record<string, string> = {
   'In Transit': 'yellow',

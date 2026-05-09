@@ -606,7 +606,7 @@ export const HomePage: React.FC = () => {
                   type="text"
                   value={trackingNumber}
                   onChange={(e) => setTrackingNumber(e.target.value)}
-                  placeholder="e.g., DLX-2024-001234"
+                  placeholder="e.g., DEX123456ABC"
                   className="flex-1 px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none text-sm sm:text-base"
                 />
                 <button

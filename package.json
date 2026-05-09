@@ -6,7 +6,7 @@
   "main": "dist/server.js",
   "type": "module",
   "scripts": {
-    "start": "node dist/server.js",
+    "start": "tsx src/server.ts",
     "dev": "concurrently \"tsx watch src/server.ts\" \"cd frontend && npm run dev\"",
     "build": "cd frontend && npm install --production=false && npm run build",
     "build:server": "tsc",

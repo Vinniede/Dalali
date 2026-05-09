@@ -6,10 +6,36 @@ import { AuthRequest } from '../middleware/auth';
 class ShipmentController {
   async createShipment(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { senderName, receiverName, originBranchId, destination, description } = req.body;
+      const { 
+        senderName, 
+        senderPhone, 
+        senderAddress, 
+        receiverName, 
+        receiverPhone, 
+        receiverAddress, 
+        originBranchId, 
+        destination, 
+        cargoDescription, 
+        weight, 
+        volume, 
+        serviceType 
+      } = req.body;
 
       const shipment = await shipmentService.createShipment(
-        { senderName, receiverName, originBranchId, destination, description },
+        { 
+          senderName, 
+          senderPhone, 
+          senderAddress, 
+          receiverName, 
+          receiverPhone, 
+          receiverAddress, 
+          originBranchId, 
+          destination, 
+          cargoDescription, 
+          weight, 
+          volume, 
+          serviceType 
+        },
         req.user!.id,
         req.user!.role,
         req.user!.branch_id

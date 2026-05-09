@@ -27,9 +27,17 @@ CREATE TABLE IF NOT EXISTS shipments (
   id SERIAL PRIMARY KEY,
   tracking_number VARCHAR(50) NOT NULL UNIQUE,
   sender_name VARCHAR(255) NOT NULL,
+  sender_phone VARCHAR(20),
+  sender_address TEXT,
   receiver_name VARCHAR(255) NOT NULL,
+  receiver_phone VARCHAR(20),
+  receiver_address TEXT,
   origin_branch_id INTEGER NOT NULL REFERENCES branches(id),
   destination VARCHAR(255) NOT NULL,
+  cargo_description TEXT,
+  weight DECIMAL(10, 2),
+  volume DECIMAL(10, 2),
+  service_type VARCHAR(100) DEFAULT 'Standard',
   current_status VARCHAR(100) NOT NULL DEFAULT 'Created',
   created_by INTEGER NOT NULL REFERENCES users(id),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -49,22 +57,13 @@ CREATE TABLE IF NOT EXISTS tracking_history (
 );
 
 -- Create indexes for better performance
-CREATE INDEX idx_shipments_tracking_number ON shipments(tracking_number);
-CREATE INDEX idx_shipments_origin_branch_id ON shipments(origin_branch_id);
-CREATE INDEX idx_tracking_history_shipment_id ON tracking_history(shipment_id);
-CREATE INDEX idx_users_email ON users(email);
-CREATE INDEX idx_users_role ON users(role);
+CREATE INDEX IF NOT EXISTS idx_shipments_tracking_number ON shipments(tracking_number);
+CREATE INDEX IF NOT EXISTS idx_shipments_origin_branch_id ON shipments(origin_branch_id);
+CREATE INDEX IF NOT EXISTS idx_tracking_history_shipment_id ON tracking_history(shipment_id);
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
 
--- Insert sample branches
-INSERT INTO branches (name, country, phone) VALUES
-  ('Cairo Main', 'Egypt', '+20 100 123 4567'),
-  ('Alexandria Branch', 'Egypt', '+20 100 234 5678'),
-  ('Giza Hub', 'Egypt', '+20 100 345 6789'),
-  ('Suez Terminal', 'Egypt', '+20 100 456 7890'),
-  ('Dubai Center', 'UAE', '+971 4 123 4567')
-ON CONFLICT DO NOTHING;
-
--- Note: Add super admin user setup manually:
+-- Note: Branches are seeded via the seeder script
 -- Use bcryptjs to hash the password first, then insert:
 -- INSERT INTO users (name, email, password, role, branch_id)
 -- VALUES ('Super Admin', 'admin@dalali.com', 'hashed_password_here', 'super_admin', NULL);

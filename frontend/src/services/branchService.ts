@@ -17,6 +17,12 @@ interface BranchesResponse {
   };
 }
 
+interface BranchResponse {
+  success: boolean;
+  message: string;
+  data: Branch;
+}
+
 class BranchService {
   async getAllBranches(limit: number = 100, offset: number = 0): Promise<BranchesResponse> {
     const response = await api.get<BranchesResponse>('/branches', {
@@ -27,6 +33,15 @@ class BranchService {
 
   async getBranchById(id: string): Promise<any> {
     const response = await api.get(`/branches/${id}`);
+    return response.data;
+  }
+
+  async createBranch(name: string, country: string, phone: string): Promise<BranchResponse> {
+    const response = await api.post<BranchResponse>('/branches', {
+      name,
+      country,
+      phone,
+    });
     return response.data;
   }
 }

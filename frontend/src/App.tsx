@@ -18,6 +18,7 @@ import { SuperAdminSettings } from './pages/admin/SuperAdminSettings';
 // Branch Admin Pages
 import { BranchAdminDashboard } from './pages/admin/BranchAdminDashboard';
 import { BranchAdminShipments } from './pages/admin/BranchAdminShipments';
+import { ShipmentDetail } from './pages/admin/ShipmentDetail';
 import { BranchAdminCreateShipment } from './pages/admin/BranchAdminCreateShipment';
 import { BranchAdminTracking } from './pages/admin/BranchAdminTracking';
 import { BranchAdminIncoming } from './pages/admin/BranchAdminIncoming';
@@ -72,6 +73,7 @@ function App(): React.ReactElement {
         {/* Branch Admin Routes */}
         <Route path="/admin/branch/overview" element={<ProtectedRoute element={<BranchAdminDashboard />} requiredRoles={['branch_admin']} />} />
         <Route path="/admin/branch/shipments" element={<ProtectedRoute element={<BranchAdminShipments />} requiredRoles={['branch_admin']} />} />
+        <Route path="/admin/branch/shipments/:id" element={<ProtectedRoute element={<ShipmentDetail />} requiredRoles={['branch_admin']} />} />
         <Route path="/admin/branch/create" element={<ProtectedRoute element={<BranchAdminCreateShipment />} requiredRoles={['branch_admin']} />} />
         <Route path="/admin/branch/tracking" element={<ProtectedRoute element={<BranchAdminTracking />} requiredRoles={['branch_admin']} />} />
         <Route path="/admin/branch/incoming" element={<ProtectedRoute element={<BranchAdminIncoming />} requiredRoles={['branch_admin']} />} />

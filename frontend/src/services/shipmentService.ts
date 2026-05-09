@@ -4,9 +4,17 @@ interface Shipment {
   id: string;
   tracking_number: string;
   sender_name: string;
+  sender_phone?: string;
+  sender_address?: string;
   receiver_name: string;
+  receiver_phone?: string;
+  receiver_address?: string;
   origin_branch_id: string;
   destination: string;
+  cargo_description?: string;
+  weight?: number;
+  volume?: number;
+  service_type?: string;
   current_status: string;
   created_at: string;
   history?: any[];
