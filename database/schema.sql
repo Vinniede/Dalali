@@ -44,6 +44,16 @@ CREATE TABLE IF NOT EXISTS shipments (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Add missing columns to shipments table if they don't exist (for existing databases)
+ALTER TABLE shipments ADD COLUMN IF NOT EXISTS sender_phone VARCHAR(20);
+ALTER TABLE shipments ADD COLUMN IF NOT EXISTS sender_address TEXT;
+ALTER TABLE shipments ADD COLUMN IF NOT EXISTS receiver_phone VARCHAR(20);
+ALTER TABLE shipments ADD COLUMN IF NOT EXISTS receiver_address TEXT;
+ALTER TABLE shipments ADD COLUMN IF NOT EXISTS cargo_description TEXT;
+ALTER TABLE shipments ADD COLUMN IF NOT EXISTS weight DECIMAL(10, 2);
+ALTER TABLE shipments ADD COLUMN IF NOT EXISTS volume DECIMAL(10, 2);
+ALTER TABLE shipments ADD COLUMN IF NOT EXISTS service_type VARCHAR(100) DEFAULT 'Standard';
+
 -- Create tracking_history table
 CREATE TABLE IF NOT EXISTS tracking_history (
   id SERIAL PRIMARY KEY,
