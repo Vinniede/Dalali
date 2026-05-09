@@ -110,6 +110,25 @@ export const BranchAdminCreateShipment: React.FC = () => {
     setSuccess("");
     setLoading(true);
 
+    // Validation
+    const validationErrors = [];
+    
+    if (!formData.senderName.trim()) validationErrors.push("Sender name is required");
+    if (!formData.senderPhone.trim()) validationErrors.push("Sender phone is required");
+    if (!formData.senderAddress.trim()) validationErrors.push("Sender address is required");
+    if (!formData.receiverName.trim()) validationErrors.push("Receiver name is required");
+    if (!formData.receiverPhone.trim()) validationErrors.push("Receiver phone is required");
+    if (!formData.receiverAddress.trim()) validationErrors.push("Receiver address is required");
+    if (!formData.destination.trim()) validationErrors.push("Destination is required - please select from dropdown");
+    if (!formData.cargoDescription.trim()) validationErrors.push("Cargo description is required");
+    if (!formData.weight || parseFloat(formData.weight) <= 0) validationErrors.push("Weight must be greater than 0");
+
+    if (validationErrors.length > 0) {
+      setError(validationErrors.join("\n"));
+      setLoading(false);
+      return;
+    }
+
     try {
       if (!user?.branch_id) {
         throw new Error("User branch information not available");
@@ -231,7 +250,15 @@ export const BranchAdminCreateShipment: React.FC = () => {
       <form onSubmit={handleSubmit} className="space-y-6">
         {error && (
           <div className="alert-error">
-            <span>⚠️ {error}</span>
+            {error.includes('\n') ? (
+              <ul className="list-disc list-inside space-y-1">
+                {error.split('\n').map((err, idx) => (
+                  <li key={idx}>⚠️ {err}</li>
+                ))}
+              </ul>
+            ) : (
+              <span>⚠️ {error}</span>
+            )}
           </div>
         )}
 
