@@ -1,17 +1,17 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import authService from '../services/authService';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import authService from "../services/authService";
 
 export const LoginForm: React.FC = () => {
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const [error, setError] = React.useState('');
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [error, setError] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     try {
@@ -19,16 +19,16 @@ export const LoginForm: React.FC = () => {
       if (response.success) {
         const user = response.data.user;
         // Redirect based on user role
-        if (user.role === 'super_admin') {
-          navigate('/admin/super/overview');
-        } else if (user.role === 'branch_admin') {
-          navigate('/admin/branch/overview');
+        if (user.role === "super_admin") {
+          navigate("/admin/super/overview");
+        } else if (user.role === "branch_admin") {
+          navigate("/admin/branch/overview");
         } else {
-          setError('Unknown user role');
+          setError("Unknown user role");
         }
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed');
+      setError(err.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -49,7 +49,9 @@ export const LoginForm: React.FC = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-gray-700 font-semibold mb-2">Email</label>
+            <label className="block text-gray-700 font-semibold mb-2">
+              Email
+            </label>
             <input
               type="email"
               value={email}
@@ -61,7 +63,9 @@ export const LoginForm: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-gray-700 font-semibold mb-2">Password</label>
+            <label className="block text-gray-700 font-semibold mb-2">
+              Password
+            </label>
             <input
               type="password"
               value={password}
@@ -77,13 +81,15 @@ export const LoginForm: React.FC = () => {
             disabled={loading}
             className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-semibold disabled:opacity-50"
           >
-            {loading ? 'Logging in...' : 'Login'}
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 
         <p className="text-center text-gray-600 mt-6">
-          Test credentials:<br />
-          Email: admin@dalali.com<br />
+          Test credentials:
+          <br />
+          Email: admin@dalali.com
+          <br />
           Password: Admin@2024!
         </p>
       </div>

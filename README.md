@@ -279,6 +279,7 @@ The build command `npm run build` only builds the frontend, and Vercel automatic
 
 - `POST /api/shipments` - Create new shipment
   - Body: Complete shipment data with sender, receiver, and cargo details
+
   ```json
   {
     "sender_name": "John Doe",
@@ -295,6 +296,7 @@ The build command `npm run build` only builds the frontend, and Vercel automatic
     "origin_branch_id": "branch_uuid"
   }
   ```
+
   - Returns: `{ shipment: Shipment, tracking_number: string }`
 
 - `GET /api/shipments/:id` - Get shipment details
@@ -346,6 +348,7 @@ The build command `npm run build` only builds the frontend, and Vercel automatic
 ### Key Tables
 
 **users**
+
 - id (UUID) - Primary key
 - name (string) - User name
 - email (string) - Unique email
@@ -356,6 +359,7 @@ The build command `npm run build` only builds the frontend, and Vercel automatic
 - updated_at (timestamp)
 
 **branches** - Pre-configured with 3 East African locations
+
 - id (UUID) - Primary key
 - name (string) - Branch name
 - country (string) - Country location
@@ -364,11 +368,13 @@ The build command `npm run build` only builds the frontend, and Vercel automatic
 - updated_at (timestamp)
 
 **Pre-configured Branches:**
+
 - 🇹🇿 **Dar es Salaam** - Tanzania
 - 🇨🇩 **Kinshasa** - Democratic Republic of Congo
 - 🇺🇬 **Entebbe** - Uganda
 
 **shipments** - Comprehensive tracking information
+
 - id (UUID) - Primary key
 - tracking_number (string, UNIQUE) - Auto-generated order number (DEX prefix)
 - sender_name (string) - Sender full name
@@ -389,6 +395,7 @@ The build command `npm run build` only builds the frontend, and Vercel automatic
 - updated_at (timestamp)
 
 **tracking_history** - Immutable history of shipment status changes
+
 - id (UUID) - Primary key
 - shipment_id (UUID, FK) - Reference to shipment
 - status (string) - Status at this point in time
@@ -441,6 +448,7 @@ Both frontend and backend use strict TypeScript settings:
 - Automatic type definitions for dependencies
 
 ## 🚢 Deployment
+
 ### Production Deployment on Vercel
 
 This project is fully configured for **Vercel deployment** with automatic CI/CD:
@@ -465,12 +473,14 @@ This project is fully configured for **Vercel deployment** with automatic CI/CD:
    ```
 
 **Deployment Architecture:**
+
 - Frontend: React → Vercel CDN (static files from `frontend/dist`)
 - Backend: Node.js → Vercel Serverless Functions (from `api/` folder)
 - Database: PostgreSQL on Neon Cloud
 - Domain: yourdomain.vercel.app (or custom domain)
 
 **Production Features:**
+
 - ✅ Automatic HTTPS
 - ✅ Serverless auto-scaling
 - ✅ Database connection pooling
@@ -487,6 +497,7 @@ npm run dev
 ```
 
 This starts:
+
 - Backend on `http://localhost:5000` (TypeScript with tsx watch)
 - Frontend on `http://localhost:5173` (Vite dev server)
 
@@ -497,6 +508,7 @@ This starts:
 3. Create a shipment and note the order number in success modal
 4. Go to homepage and search tracking by order number
 5. View complete shipment details and history
+
 ### Backend Deployment (Node.js)
 
 1. Build: `npm run build`
