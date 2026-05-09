@@ -17,6 +17,7 @@ interface Shipment {
   service_type?: string;
   current_status: string;
   created_at: string;
+  updated_at?: string;
   history?: any[];
 }
 
@@ -50,6 +51,16 @@ class ShipmentService {
 
   async createShipment(data: any): Promise<ShipmentResponse> {
     const response = await api.post<ShipmentResponse>('/shipments', data);
+    return response.data;
+  }
+
+  async updateShipment(id: string, data: any): Promise<ShipmentResponse> {
+    const response = await api.put<ShipmentResponse>(`/shipments/${id}`, data);
+    return response.data;
+  }
+
+  async deleteShipment(id: string): Promise<any> {
+    const response = await api.delete(`/shipments/${id}`);
     return response.data;
   }
 

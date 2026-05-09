@@ -120,6 +120,72 @@ class ShipmentController {
     }
   }
 
+  async updateShipment(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { id } = req.params;
+      const {
+        senderName,
+        senderPhone,
+        senderAddress,
+        receiverName,
+        receiverPhone,
+        receiverAddress,
+        destination,
+        cargoDescription,
+        weight,
+        volume,
+        serviceType,
+      } = req.body;
+
+      const shipment = await shipmentService.updateShipment(
+        id,
+        {
+          senderName,
+          senderPhone,
+          senderAddress,
+          receiverName,
+          receiverPhone,
+          receiverAddress,
+          destination,
+          cargoDescription,
+          weight,
+          volume,
+          serviceType,
+        },
+        req.user!.role,
+        req.user!.branch_id
+      );
+
+      res.status(200).json({
+        success: true,
+        message: 'Shipment updated successfully',
+        data: shipment,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async deleteShipment(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { id } = req.params;
+
+      const deletedShipment = await shipmentService.deleteShipment(
+        id,
+        req.user!.role,
+        req.user!.branch_id
+      );
+
+      res.status(200).json({
+        success: true,
+        message: 'Shipment deleted successfully',
+        data: deletedShipment,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async trackShipment(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { trackingNumber } = req.params;

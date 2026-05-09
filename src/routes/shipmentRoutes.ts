@@ -22,6 +22,14 @@ router.get('/:id', verifyToken, (req: AuthRequest, res: Response, next: NextFunc
   shipmentController.getShipmentById(req, res, next)
 );
 
+router.put('/:id', verifyToken, (req: AuthRequest, res: Response, next: NextFunction) =>
+  shipmentController.updateShipment(req, res, next)
+);
+
+router.delete('/:id', verifyToken, (req: AuthRequest, res: Response, next: NextFunction) =>
+  shipmentController.deleteShipment(req, res, next)
+);
+
 router.post('/status/:shipmentId', verifyToken, (req: AuthRequest, res: Response, next: NextFunction) =>
   shipmentController.updateShipmentStatus(req, res, next)
 );

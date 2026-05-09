@@ -1,9 +1,9 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { DashboardLayout } from '../../layouts/DashboardLayout.tsx';
-import shipmentService from '../../services/shipmentService';
-import authService from '../../services/authService';
-import { formatDate, getStatusBgColor } from '../../services/utils';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { DashboardLayout } from "../../layouts/DashboardLayout.tsx";
+import shipmentService from "../../services/shipmentService";
+import authService from "../../services/authService";
+import { formatDate } from "../../services/utils";
 
 interface Shipment {
   id: string;
@@ -17,7 +17,7 @@ interface KPICard {
   label: string;
   value: number | string;
   icon: string;
-  color: 'primary' | 'secondary' | 'success' | 'warning';
+  color: "primary" | "secondary" | "success" | "warning";
   subtitle: string;
 }
 
@@ -26,7 +26,7 @@ export const BranchAdminDashboard: React.FC = () => {
   const user = authService.getUser();
   const [shipments, setShipments] = React.useState<Shipment[]>([]);
   const [loading, setLoading] = React.useState(true);
-  const [branchName, setBranchName] = React.useState('');
+  const [branchName, setBranchName] = React.useState("");
 
   const [stats, setStats] = React.useState({
     pendingShipments: 0,
@@ -40,44 +40,20 @@ export const BranchAdminDashboard: React.FC = () => {
   });
 
   const menuItems = [
-    { id: 'overview', label: 'Overview', icon: '📊', path: '/admin/branch/overview' },
-    { id: 'my-shipments', label: 'My Shipments', icon: '📦', path: '/admin/branch/shipments' },
-    { id: 'create', label: 'Create Shipment', icon: '➕', path: '/admin/branch/create' },
-    { id: 'incoming', label: 'Incoming Cargo', icon: '📥', path: '/admin/branch/incoming' },
-    { id: 'outgoing', label: 'Outgoing Cargo', icon: '📤', path: '/admin/branch/outgoing' },
-    { id: 'tracking', label: 'Tracking Updates', icon: '📍', path: '/admin/branch/tracking' },
-    { id: 'profile', label: 'Profile', icon: '👤', path: '/admin/branch/profile' },
+    { id: "overview", label: "Overview", icon: "📊", path: "/admin/branch/overview" },
+    { id: "my-shipments", label: "My Shipments", icon: "📦", path: "/admin/branch/shipments" },
+    { id: "create", label: "Create Shipment", icon: "➕", path: "/admin/branch/create" },
+    { id: "incoming", label: "Incoming Cargo", icon: "📥", path: "/admin/branch/incoming" },
+    { id: "outgoing", label: "Outgoing Cargo", icon: "📤", path: "/admin/branch/outgoing" },
+    { id: "tracking", label: "Tracking Updates", icon: "📍", path: "/admin/branch/tracking" },
+    { id: "profile", label: "Profile", icon: "👤", path: "/admin/branch/profile" },
   ];
 
   const kpis: KPICard[] = [
-    {
-      label: 'Pending',
-      value: stats.pendingShipments,
-      icon: '⏳',
-      color: 'warning',
-      subtitle: 'Ready to process',
-    },
-    {
-      label: 'In Transit',
-      value: stats.inTransit,
-      icon: '🚚',
-      color: 'secondary',
-      subtitle: 'Currently en route',
-    },
-    {
-      label: 'Delivered',
-      value: stats.delivered,
-      icon: '✅',
-      color: 'success',
-      subtitle: 'Successfully completed',
-    },
-    {
-      label: 'Today',
-      value: stats.todayDeliveries,
-      icon: '📅',
-      color: 'primary',
-      subtitle: 'Completed today',
-    },
+    { label: "Pending", value: stats.pendingShipments, icon: "P", color: "warning", subtitle: "Ready to process" },
+    { label: "In Transit", value: stats.inTransit, icon: "T", color: "secondary", subtitle: "Currently en route" },
+    { label: "Delivered", value: stats.delivered, icon: "D", color: "success", subtitle: "Successfully completed" },
+    { label: "Today", value: stats.todayDeliveries, icon: "N", color: "primary", subtitle: "Completed today" },
   ];
 
   React.useEffect(() => {
@@ -88,16 +64,14 @@ export const BranchAdminDashboard: React.FC = () => {
         const allShipments = response.data.shipments;
         setShipments(allShipments.slice(0, 5));
 
-        // Calculate stats
-        const pendingCount = allShipments.filter((s) => s.current_status === 'Created').length;
-        const inTransitCount = allShipments.filter((s) => s.current_status === 'In Transit').length;
-        const deliveredCount = allShipments.filter((s) => s.current_status === 'Delivered').length;
+        const pendingCount = allShipments.filter((s) => s.current_status === "Created").length;
+        const inTransitCount = allShipments.filter((s) => s.current_status === "In Transit").length;
+        const deliveredCount = allShipments.filter((s) => s.current_status === "Delivered").length;
 
-        // Count today's deliveries
         const today = new Date().toDateString();
         const todayDeliveries = allShipments.filter((s) => {
           const createdDate = new Date(s.created_at).toDateString();
-          return createdDate === today && s.current_status === 'Delivered';
+          return createdDate === today && s.current_status === "Delivered";
         }).length;
 
         setStats({
@@ -112,10 +86,10 @@ export const BranchAdminDashboard: React.FC = () => {
         });
 
         if (user?.branch_id) {
-          setBranchName('Your Branch');
+          setBranchName("Your Branch");
         }
       } catch (err) {
-        console.error('Failed to fetch dashboard data:', err);
+        console.error("Failed to fetch dashboard data:", err);
       } finally {
         setLoading(false);
       }
@@ -129,32 +103,36 @@ export const BranchAdminDashboard: React.FC = () => {
       title="Branch Operations"
       menuItems={menuItems}
       userRole="branch-admin"
-      userName={user?.name || 'Branch Admin'}
+      userName={user?.name || "Branch Admin"}
       branchName={branchName}
     >
-      <div className="space-y-8">
-        {/* Welcome Section */}
-        <div className="bg-gradient-to-r from-primary-50 to-secondary-50 rounded-lg p-6 border border-primary-100">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome back, {user?.name || 'Branch Admin'} 👋</h2>
-          <p className="text-gray-600">Manage daily operations at {branchName} branch</p>
+      <div className="space-y-5 sm:space-y-8">
+        <div className="rounded-lg border border-primary-100 bg-gradient-to-r from-primary-50 to-secondary-50 p-4 sm:p-6">
+          <h2 className="mb-2 text-2xl font-bold text-gray-900 sm:text-3xl">
+            Welcome back, {user?.name || "Branch Admin"}
+          </h2>
+          <p className="text-sm text-gray-600 sm:text-base">
+            Manage daily operations at {branchName} branch
+          </p>
         </div>
 
-        {/* KPIs */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 sm:gap-6">
           {kpis.map((kpi) => (
-            <div key={kpi.label} className="card-elevated hover:shadow-lg transition-all duration-300">
-              <div className="flex justify-between items-start">
+            <div key={kpi.label} className="card-elevated transition-all duration-300 hover:shadow-lg">
+              <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-xs font-bold text-gray-600 uppercase tracking-widest">{kpi.label}</p>
-                  <p className="text-4xl font-bold text-gray-900 mt-3">{kpi.value}</p>
+                  <p className="text-xs font-bold uppercase tracking-widest text-gray-600">{kpi.label}</p>
+                  <p className="mt-3 text-3xl font-bold text-gray-900 sm:text-4xl">{kpi.value}</p>
                 </div>
-                <span className="text-5xl opacity-75">{kpi.icon}</span>
+                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-100 text-lg font-bold text-primary-700 sm:h-14 sm:w-14">
+                  {kpi.icon}
+                </span>
               </div>
-              <p className={`text-xs font-semibold mt-4 ${
-                kpi.color === 'primary' ? 'text-primary-700' :
-                kpi.color === 'secondary' ? 'text-secondary-700' :
-                kpi.color === 'success' ? 'text-success' :
-                'text-warning'
+              <p className={`mt-4 text-xs font-semibold ${
+                kpi.color === "primary" ? "text-primary-700" :
+                kpi.color === "secondary" ? "text-secondary-700" :
+                kpi.color === "success" ? "text-success" :
+                "text-warning"
               }`}>
                 {kpi.subtitle}
               </p>
@@ -162,103 +140,134 @@ export const BranchAdminDashboard: React.FC = () => {
           ))}
         </div>
 
-        {/* Quick Actions */}
         <div className="card-elevated">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">Quick Actions</h3>
+          <h3 className="mb-4 text-lg font-bold text-gray-900">Quick Actions</h3>
           <div className="flex flex-wrap gap-3">
-            <button
-              onClick={() => navigate('/admin/branch/create')}
-              className="btn-primary"
-            >
-              ➕ Create Shipment
+            <button onClick={() => navigate("/admin/branch/create")} className="btn-primary">
+              Create Shipment
             </button>
-            <button className="btn-accent">
-              📍 Update Tracking
+            <button onClick={() => navigate("/admin/branch/tracking")} className="btn-accent">
+              Update Tracking
             </button>
-            <button className="btn-outline">
-              📋 View Inventory
+            <button onClick={() => navigate("/admin/branch/shipments")} className="btn-outline">
+              View Shipments
             </button>
-            <button className="btn-ghost">
-              📊 Today's Report
+            <button onClick={() => navigate("/admin/branch/profile")} className="btn-ghost">
+              Branch Profile
             </button>
           </div>
         </div>
 
-        {/* Recent Shipments */}
         <div className="card-elevated">
-          <div className="flex justify-between items-center mb-6">
+          <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <h3 className="text-lg font-bold text-gray-900">Recent Shipments</h3>
-            <a href="/admin/branch/shipments" className="text-primary-600 hover:text-primary-700 font-semibold text-sm">
-              View All →
-            </a>
+            <button
+              onClick={() => navigate("/admin/branch/shipments")}
+              className="text-left text-sm font-semibold text-primary-600 hover:text-primary-700 sm:text-right"
+            >
+              View All
+            </button>
           </div>
 
-          <div className="overflow-x-auto">
-            {loading ? (
-              <div className="text-center py-12">
-                <div className="inline-block mb-3">
-                  <div className="w-8 h-8 border-3 border-gray-300 border-t-primary-600 rounded-full animate-spin"></div>
-                </div>
-                <p className="text-gray-600">Loading shipments...</p>
+          {loading ? (
+            <div className="py-12 text-center">
+              <div className="mb-3 inline-block">
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-primary-600"></div>
               </div>
-            ) : shipments.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-2xl mb-2">📦</p>
-                <p className="text-gray-600 font-medium">No shipments yet</p>
-              </div>
-            ) : (
-              <table className="w-full text-sm">
-                <thead className="bg-gray-50 border-b border-gray-200">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Tracking ID</th>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Destination</th>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Status</th>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Created</th>
-                    <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {shipments.map((shipment) => (
-                    <tr key={shipment.id} className="table-row-hover">
-                      <td className="px-4 py-4 font-bold text-primary-700 font-mono">{shipment.tracking_number}</td>
-                      <td className="px-4 py-4 text-gray-700">{shipment.destination}</td>
-                      <td className="px-4 py-4">
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-bold ${
-                          shipment.current_status === 'Delivered' ? 'bg-success bg-opacity-10 text-success' :
-                          shipment.current_status === 'In Transit' ? 'bg-warning bg-opacity-10 text-warning' :
-                          shipment.current_status === 'Created' ? 'bg-info-100 text-info-900' :
-                          'bg-error bg-opacity-10 text-error'
-                        }`}>
-                          {shipment.current_status}
-                        </span>
-                      </td>
-                      <td className="px-4 py-4 text-xs text-gray-600">{formatDate(shipment.created_at)}</td>
-                      <td className="px-4 py-4">
-                        <button className="text-primary-600 hover:text-primary-700 font-semibold text-xs transition-colors">
-                          View
-                        </button>
-                      </td>
+              <p className="text-gray-600">Loading shipments...</p>
+            </div>
+          ) : shipments.length === 0 ? (
+            <div className="py-12 text-center">
+              <p className="font-medium text-gray-600">No shipments yet</p>
+            </div>
+          ) : (
+            <>
+              <div className="hidden overflow-x-auto md:block">
+                <table className="w-full text-sm">
+                  <thead className="border-b border-gray-200 bg-gray-50">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-gray-700">Tracking ID</th>
+                      <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-gray-700">Destination</th>
+                      <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-gray-700">Status</th>
+                      <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-gray-700">Created</th>
+                      <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-gray-700">Action</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {shipments.map((shipment) => (
+                      <tr key={shipment.id} className="table-row-hover">
+                        <td className="px-4 py-4 font-mono font-bold text-primary-700">{shipment.tracking_number}</td>
+                        <td className="px-4 py-4 text-gray-700">{shipment.destination}</td>
+                        <td className="px-4 py-4">
+                          <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-bold ${
+                            shipment.current_status === "Delivered" ? "bg-success bg-opacity-10 text-success" :
+                            shipment.current_status === "In Transit" ? "bg-warning bg-opacity-10 text-warning" :
+                            shipment.current_status === "Created" ? "bg-info-100 text-info-900" :
+                            "bg-error bg-opacity-10 text-error"
+                          }`}>
+                            {shipment.current_status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-4 text-xs text-gray-600">{formatDate(shipment.created_at)}</td>
+                        <td className="px-4 py-4">
+                          <button
+                            onClick={() => navigate(`/admin/branch/shipments/${shipment.id}`)}
+                            className="text-xs font-semibold text-primary-600 transition-colors hover:text-primary-700"
+                          >
+                            View
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="grid grid-cols-1 gap-3 md:hidden">
+                {shipments.map((shipment) => (
+                  <div key={shipment.id} className="rounded-lg border border-gray-200 p-4">
+                    <div className="mb-3 flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="break-all font-mono font-bold text-primary-700">{shipment.tracking_number}</p>
+                        <p className="text-xs text-gray-500">{formatDate(shipment.created_at)}</p>
+                      </div>
+                      <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-bold ${
+                        shipment.current_status === "Delivered" ? "bg-success bg-opacity-10 text-success" :
+                        shipment.current_status === "In Transit" ? "bg-warning bg-opacity-10 text-warning" :
+                        shipment.current_status === "Created" ? "bg-info-100 text-info-900" :
+                        "bg-error bg-opacity-10 text-error"
+                      }`}>
+                        {shipment.current_status}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-700">
+                      <span className="font-semibold">Destination:</span> {shipment.destination}
+                    </p>
+                    <button
+                      onClick={() => navigate(`/admin/branch/shipments/${shipment.id}`)}
+                      className="mt-3 rounded-lg bg-primary-100 px-3 py-2 text-sm font-semibold text-primary-700 transition hover:bg-primary-200"
+                    >
+                      View Shipment
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
 
-        {/* Performance Stats */}
-        <div className="bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 rounded-lg text-white p-8 shadow-lg">
-          <h3 className="text-xl font-bold mb-8">This Month's Performance</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="rounded-lg bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 p-5 text-white shadow-lg sm:p-8">
+          <h3 className="mb-6 text-lg font-bold sm:text-xl">This Month's Performance</h3>
+          <div className="grid grid-cols-2 gap-4 text-center sm:gap-8 md:grid-cols-4">
             {[
-              { label: 'Total Shipments', value: stats.totalShipments, icon: '📦' },
-              { label: 'On-Time Rate', value: `${stats.onTimeRate}%`, icon: '📈' },
-              { label: 'Avg Delivery', value: `${stats.avgDeliveryDays.toFixed(1)}d`, icon: '⏱️' },
-              { label: 'Delayed', value: stats.delayedCount, icon: '⚠️' },
+              { label: "Total Shipments", value: stats.totalShipments },
+              { label: "On-Time Rate", value: `${stats.onTimeRate}%` },
+              { label: "Avg Delivery", value: `${stats.avgDeliveryDays.toFixed(1)}d` },
+              { label: "Delayed", value: stats.delayedCount },
             ].map((item) => (
-              <div key={item.label} className="text-center">
-                <p className="text-2xl font-bold mb-1">{item.value}</p>
-                <p className="text-primary-100 text-xs font-medium uppercase tracking-wide">{item.label}</p>
+              <div key={item.label}>
+                <p className="mb-1 text-xl font-bold sm:text-2xl">{item.value}</p>
+                <p className="text-xs font-medium uppercase tracking-wide text-primary-100">{item.label}</p>
               </div>
             ))}
           </div>
