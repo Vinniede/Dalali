@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import branchController from '../controllers/branchController';
-import { verifyToken, requireRole, AuthRequest } from '../middleware/auth';
-import { ROLES } from '../config/constants';
+import branchController from '../controllers/branchController.js';
+import { verifyToken, requireRole, AuthRequest } from '../middleware/auth.js';
+import { ROLES } from '../config/constants.js';
 
 const router = Router();
 

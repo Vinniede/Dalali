@@ -1,7 +1,7 @@
-import pool from '../config/database';
-import AppError from '../utils/errorHandler';
-import generateTrackingNumber from '../utils/generateTrackingNumber';
-import { SHIPMENT_STATUS } from '../config/constants';
+import pool from '../config/database.js';
+import AppError from '../utils/errorHandler.js';
+import generateTrackingNumber from '../utils/generateTrackingNumber.js';
+import { SHIPMENT_STATUS } from '../config/constants.js';
 
 interface CreateShipmentData {
   senderName: string;

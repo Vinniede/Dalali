@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import userController from '../controllers/userController';
-import { verifyToken, requireRole, AuthRequest } from '../middleware/auth';
-import { ROLES } from '../config/constants';
+import userController from '../controllers/userController.js';
+import { verifyToken, requireRole, AuthRequest } from '../middleware/auth.js';
+import { ROLES } from '../config/constants.js';
 
 const router = Router();
 

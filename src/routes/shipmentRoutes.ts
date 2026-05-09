@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import shipmentController from '../controllers/shipmentController';
-import { verifyToken, AuthRequest } from '../middleware/auth';
+import shipmentController from '../controllers/shipmentController.js';
+import { verifyToken, AuthRequest } from '../middleware/auth.js';
 
 const router = Router();
 

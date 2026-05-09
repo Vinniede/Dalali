@@ -1,5 +1,5 @@
-import pool from '../config/database';
-import AppError from '../utils/errorHandler';
+import pool from '../config/database.js';
+import AppError from '../utils/errorHandler.js';
 import bcrypt from 'bcryptjs';
 
 interface UserResult {

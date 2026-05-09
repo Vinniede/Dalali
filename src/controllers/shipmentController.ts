@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import shipmentService from '../services/shipmentService';
-import AppError from '../utils/errorHandler';
-import { AuthRequest } from '../middleware/auth';
+import shipmentService from '../services/shipmentService.js';
+import AppError from '../utils/errorHandler.js';
+import { AuthRequest } from '../middleware/auth.js';
 
 class ShipmentController {
   async createShipment(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {

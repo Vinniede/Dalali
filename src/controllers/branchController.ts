@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import branchService from '../services/branchService';
-import AppError from '../utils/errorHandler';
+import branchService from '../services/branchService.js';
+import AppError from '../utils/errorHandler.js';
 
 class BranchController {
   async getAllBranches(req: Request, res: Response, next: NextFunction): Promise<void> {

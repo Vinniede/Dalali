@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import pool from '../config/database';
-import AppError from '../utils/errorHandler';
-import { ROLES } from '../config/constants';
+import pool from '../config/database.js';
+import AppError from '../utils/errorHandler.js';
+import { ROLES } from '../config/constants.js';
 
 interface LoginResult {
   token: string;

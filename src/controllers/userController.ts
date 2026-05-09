@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import userService from '../services/userService';
-import authService from '../services/authService';
-import AppError from '../utils/errorHandler';
+import userService from '../services/userService.js';
+import authService from '../services/authService.js';
+import AppError from '../utils/errorHandler.js';
 
 class UserController {
   async getAllUsers(req: Request, res: Response, next: NextFunction): Promise<void> {

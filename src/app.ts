@@ -2,11 +2,11 @@ import express, { Express, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
-import errorHandler from './middleware/errorHandler';
-import authRoutes from './routes/authRoutes';
-import shipmentRoutes from './routes/shipmentRoutes';
-import userRoutes from './routes/userRoutes';
-import branchRoutes from './routes/branchRoutes';
+import errorHandler from './middleware/errorHandler.js';
+import authRoutes from './routes/authRoutes.js';
+import shipmentRoutes from './routes/shipmentRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import branchRoutes from './routes/branchRoutes.js';
 
 dotenv.config();
 
