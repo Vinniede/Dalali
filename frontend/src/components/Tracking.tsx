@@ -4,12 +4,20 @@ import { formatDate, getStatusBgColor, getStatusTextColor } from '../services/ut
 
 interface TrackingFormProps {
   onResults?: (results: any) => void;
+  initialTrackingNumber?: string;
 }
 
-export const TrackingForm: React.FC<TrackingFormProps> = ({ onResults }) => {
-  const [trackingNumber, setTrackingNumber] = React.useState('');
+export const TrackingForm: React.FC<TrackingFormProps> = ({
+  onResults,
+  initialTrackingNumber = '',
+}) => {
+  const [trackingNumber, setTrackingNumber] = React.useState(initialTrackingNumber);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState('');
+
+  React.useEffect(() => {
+    setTrackingNumber(initialTrackingNumber);
+  }, [initialTrackingNumber]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,7 +25,7 @@ export const TrackingForm: React.FC<TrackingFormProps> = ({ onResults }) => {
     setLoading(true);
 
     try {
-      const response = await shipmentService.trackShipment(trackingNumber);
+      const response = await shipmentService.trackShipment(trackingNumber.trim());
       onResults?.(response);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Shipment not found');

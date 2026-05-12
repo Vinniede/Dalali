@@ -49,6 +49,39 @@ class BranchController {
       next(error);
     }
   }
+
+  async updateBranch(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { id } = req.params;
+      const { name, country, phone } = req.body;
+
+      const branch = await branchService.updateBranch(id, name, country, phone);
+
+      res.status(200).json({
+        success: true,
+        message: 'Branch updated successfully',
+        data: branch,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async deleteBranch(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { id } = req.params;
+
+      const branch = await branchService.deleteBranch(id);
+
+      res.status(200).json({
+        success: true,
+        message: 'Branch deleted successfully',
+        data: branch,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new BranchController();

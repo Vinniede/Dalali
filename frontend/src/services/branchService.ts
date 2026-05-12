@@ -44,6 +44,20 @@ class BranchService {
     });
     return response.data;
   }
+
+  async updateBranch(id: string, name: string, country: string, phone: string): Promise<BranchResponse> {
+    const response = await api.put<BranchResponse>(`/branches/${id}`, {
+      name,
+      country,
+      phone,
+    });
+    return response.data;
+  }
+
+  async deleteBranch(id: string): Promise<BranchResponse> {
+    const response = await api.delete<BranchResponse>(`/branches/${id}`);
+    return response.data;
+  }
 }
 
 export default new BranchService();

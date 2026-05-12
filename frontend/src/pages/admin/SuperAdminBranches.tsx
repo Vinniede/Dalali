@@ -11,6 +11,12 @@ interface Branch {
   created_at?: string;
 }
 
+const emptyForm = {
+  name: "",
+  country: "",
+  phone: "",
+};
+
 export const SuperAdminBranches: React.FC = () => {
   const user = authService.getUser();
   const [branches, setBranches] = React.useState<Branch[]>([]);
@@ -19,12 +25,10 @@ export const SuperAdminBranches: React.FC = () => {
   const [success, setSuccess] = React.useState("");
   const [showForm, setShowForm] = React.useState(false);
   const [formLoading, setFormLoading] = React.useState(false);
-
-  const [formData, setFormData] = React.useState({
-    name: "",
-    country: "",
-    phone: "",
-  });
+  const [editingBranchId, setEditingBranchId] = React.useState<string | null>(
+    null,
+  );
+  const [formData, setFormData] = React.useState(emptyForm);
 
   const menuItems = [
     {
@@ -96,31 +100,91 @@ export const SuperAdminBranches: React.FC = () => {
     }
   };
 
-  const handleCreateBranch = async (e: React.FormEvent) => {
+  const resetForm = () => {
+    setFormData(emptyForm);
+    setEditingBranchId(null);
+    setShowForm(false);
+  };
+
+  const openCreateForm = () => {
+    setError("");
+    setSuccess("");
+    setFormData(emptyForm);
+    setEditingBranchId(null);
+    setShowForm(true);
+  };
+
+  const handleSubmitBranch = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setSuccess("");
     setFormLoading(true);
 
     try {
-      const response = await branchService.createBranch(
-        formData.name,
-        formData.country,
-        formData.phone,
-      );
+      if (editingBranchId) {
+        await branchService.updateBranch(
+          editingBranchId,
+          formData.name,
+          formData.country,
+          formData.phone,
+        );
+        setSuccess(`Branch "${formData.name}" updated successfully.`);
+      } else {
+        await branchService.createBranch(
+          formData.name,
+          formData.country,
+          formData.phone,
+        );
+        setSuccess(`Branch "${formData.name}" created successfully.`);
+      }
 
-      setSuccess(`✅ Branch "${formData.name}" created successfully!`);
-      setFormData({ name: "", country: "", phone: "" });
-      setShowForm(false);
-
-      // Refresh branches list
+      resetForm();
       await fetchBranches();
-
       setTimeout(() => setSuccess(""), 3000);
     } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to create branch");
+      setError(
+        err.response?.data?.message ||
+          `Failed to ${editingBranchId ? "update" : "create"} branch`,
+      );
     } finally {
       setFormLoading(false);
+    }
+  };
+
+  const handleEditBranch = (branch: Branch) => {
+    setError("");
+    setSuccess("");
+    setEditingBranchId(branch.id);
+    setFormData({
+      name: branch.name,
+      country: branch.country,
+      phone: branch.phone,
+    });
+    setShowForm(true);
+  };
+
+  const handleDeleteBranch = async (branch: Branch) => {
+    const confirmed = window.confirm(
+      `Delete branch "${branch.name}"? This cannot be undone.`,
+    );
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setError("");
+      setSuccess("");
+      await branchService.deleteBranch(branch.id);
+
+      if (editingBranchId === branch.id) {
+        resetForm();
+      }
+
+      setSuccess(`Branch "${branch.name}" deleted successfully.`);
+      await fetchBranches();
+      setTimeout(() => setSuccess(""), 3000);
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to delete branch");
     }
   };
 
@@ -132,39 +196,37 @@ export const SuperAdminBranches: React.FC = () => {
       userName={user?.name || "Super Admin"}
     >
       <div className="space-y-6">
-        {/* Success Alert */}
         {success && (
-          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+          <div className="rounded border border-green-400 bg-green-100 px-4 py-3 text-green-700">
             {success}
           </div>
         )}
 
-        {/* Error Alert */}
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          <div className="rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
             {error}
           </div>
         )}
 
-        {/* Add Branch Form */}
         {showForm && (
           <div className="card-elevated bg-gradient-to-br from-blue-50 to-indigo-50">
-            <div className="flex justify-between items-center mb-6">
+            <div className="mb-6 flex items-center justify-between gap-3">
               <h3 className="text-xl font-bold text-gray-900">
-                Create New Branch
+                {editingBranchId ? "Edit Branch" : "Create New Branch"}
               </h3>
               <button
-                onClick={() => setShowForm(false)}
-                className="text-gray-500 hover:text-gray-700 text-2xl"
+                onClick={resetForm}
+                className="text-2xl text-gray-500 hover:text-gray-700"
+                aria-label="Close branch form"
               >
-                ×
+                x
               </button>
             </div>
 
-            <form onSubmit={handleCreateBranch} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <form onSubmit={handleSubmitBranch} className="space-y-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-gray-700">
                     Branch Name
                   </label>
                   <input
@@ -179,7 +241,7 @@ export const SuperAdminBranches: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-gray-700">
                     Country
                   </label>
                   <input
@@ -194,7 +256,7 @@ export const SuperAdminBranches: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wide text-gray-700">
                     Phone
                   </label>
                   <input
@@ -210,17 +272,23 @@ export const SuperAdminBranches: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex gap-3 pt-4">
+              <div className="flex flex-col gap-3 pt-4 sm:flex-row">
                 <button
                   type="submit"
                   disabled={formLoading}
                   className="btn-primary flex-1"
                 >
-                  {formLoading ? "⏳ Creating..." : "✅ Create Branch"}
+                  {formLoading
+                    ? editingBranchId
+                      ? "Updating..."
+                      : "Creating..."
+                    : editingBranchId
+                      ? "Save Changes"
+                      : "Create Branch"}
                 </button>
                 <button
                   type="button"
-                  onClick={() => setShowForm(false)}
+                  onClick={resetForm}
                   className="btn-ghost"
                 >
                   Cancel
@@ -230,96 +298,101 @@ export const SuperAdminBranches: React.FC = () => {
           </div>
         )}
 
-        {/* Branches List */}
         {loading ? (
-          <div className="text-center py-12">
-            <div className="inline-block mb-4">
-              <div className="w-12 h-12 border-4 border-gray-200 border-t-primary-600 rounded-full animate-spin"></div>
+          <div className="py-12 text-center">
+            <div className="mb-4 inline-block">
+              <div className="h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-primary-600"></div>
             </div>
             <p className="text-gray-600">Loading branches...</p>
           </div>
         ) : (
           <>
-            {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
               <div className="card-elevated bg-gradient-to-br from-blue-50 to-blue-100">
-                <p className="text-gray-600 text-sm font-semibold">
+                <p className="text-sm font-semibold text-gray-600">
                   Total Branches
                 </p>
-                <p className="text-3xl font-bold text-blue-600 mt-1">
+                <p className="mt-1 text-3xl font-bold text-blue-600">
                   {branches.length}
                 </p>
               </div>
               <div className="card-elevated bg-gradient-to-br from-green-50 to-green-100">
-                <p className="text-gray-600 text-sm font-semibold">Active</p>
-                <p className="text-3xl font-bold text-green-600 mt-1">
+                <p className="text-sm font-semibold text-gray-600">Active</p>
+                <p className="mt-1 text-3xl font-bold text-green-600">
                   {branches.length}
                 </p>
               </div>
               <div className="card-elevated bg-gradient-to-br from-purple-50 to-purple-100">
-                <p className="text-gray-600 text-sm font-semibold">Countries</p>
-                <p className="text-3xl font-bold text-purple-600 mt-1">
-                  {new Set(branches.map((b) => b.country)).size}
+                <p className="text-sm font-semibold text-gray-600">Countries</p>
+                <p className="mt-1 text-3xl font-bold text-purple-600">
+                  {new Set(branches.map((branch) => branch.country)).size}
                 </p>
               </div>
               <div className="card-elevated">
                 <button
-                  onClick={() => setShowForm(true)}
-                  className="w-full px-4 py-6 bg-gradient-to-br from-primary-600 to-primary-700 text-white rounded-lg hover:shadow-lg transition font-bold text-center"
+                  onClick={openCreateForm}
+                  className="w-full rounded-lg bg-gradient-to-br from-primary-600 to-primary-700 px-4 py-6 text-center font-bold text-white transition hover:shadow-lg"
                 >
                   + Add Branch
                 </button>
               </div>
             </div>
 
-            {/* Branch Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {branches && branches.length > 0 ? (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+              {branches.length > 0 ? (
                 branches.map((branch) => (
                   <div
                     key={branch.id}
-                    className="card-elevated border-l-4 border-primary-600 hover:shadow-lg transition"
+                    className="card-elevated border-l-4 border-primary-600 transition hover:shadow-lg"
                   >
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
+                    <div className="mb-4 flex items-start justify-between gap-3">
+                      <div className="min-w-0">
                         <h3 className="text-lg font-bold text-gray-900">
-                          🏢 {branch.name}
+                          Branch: {branch.name}
                         </h3>
-                        <p className="text-sm text-gray-600 mt-1">
-                          📍 {branch.country}
+                        <p className="mt-1 text-sm text-gray-600">
+                          Country: {branch.country}
                         </p>
                       </div>
-                      <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800">
+                      <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-800">
                         Active
                       </span>
                     </div>
 
-                    <div className="space-y-2 mb-4 pb-4 border-b border-gray-200">
+                    <div className="mb-4 space-y-2 border-b border-gray-200 pb-4">
                       <div className="flex items-center gap-2">
-                        <span className="text-gray-600 font-semibold">📞</span>
-                        <p className="text-gray-900 font-mono">
+                        <span className="font-semibold text-gray-600">
+                          Phone:
+                        </span>
+                        <p className="break-all font-mono text-gray-900">
                           {branch.phone}
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex gap-2">
-                      <button className="flex-1 px-3 py-2 bg-primary-100 text-primary-700 hover:bg-primary-200 rounded-lg text-sm font-bold transition">
-                        ✏️ Edit
+                    <div className="flex flex-col gap-2 sm:flex-row">
+                      <button
+                        onClick={() => handleEditBranch(branch)}
+                        className="flex-1 rounded-lg bg-primary-100 px-3 py-2 text-sm font-bold text-primary-700 transition hover:bg-primary-200"
+                      >
+                        Edit
                       </button>
-                      <button className="flex-1 px-3 py-2 bg-red-100 text-red-700 hover:bg-red-200 rounded-lg text-sm font-bold transition">
-                        🗑️ Delete
+                      <button
+                        onClick={() => handleDeleteBranch(branch)}
+                        className="flex-1 rounded-lg bg-red-100 px-3 py-2 text-sm font-bold text-red-700 transition hover:bg-red-200"
+                      >
+                        Delete
                       </button>
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="col-span-full text-center py-12 bg-white rounded-lg">
-                  <p className="text-3xl mb-2">🏢</p>
-                  <p className="text-gray-600 font-medium">No branches found</p>
+                <div className="col-span-full rounded-lg bg-white py-12 text-center">
+                  <p className="mb-2 text-3xl">Branches</p>
+                  <p className="font-medium text-gray-600">No branches found</p>
                   <button
-                    onClick={() => setShowForm(true)}
-                    className="mt-4 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition font-bold"
+                    onClick={openCreateForm}
+                    className="mt-4 rounded-lg bg-primary-600 px-4 py-2 font-bold text-white transition hover:bg-primary-700"
                   >
                     Create First Branch
                   </button>

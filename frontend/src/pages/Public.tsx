@@ -41,6 +41,25 @@ export const TrackingPage: React.FC = () => {
   const searchParams = new URLSearchParams(window.location.search);
   const trackingFromUrl = searchParams.get("tracking");
 
+  React.useEffect(() => {
+    const loadTrackingFromUrl = async () => {
+      if (!trackingFromUrl?.trim()) {
+        return;
+      }
+
+      try {
+        const results = await shipmentService.trackShipment(trackingFromUrl);
+        if (results.success) {
+          setTrackingData(results.data);
+        }
+      } catch (error) {
+        console.error("Failed to auto-load tracking result:", error);
+      }
+    };
+
+    loadTrackingFromUrl();
+  }, [trackingFromUrl]);
+
   const handleTrackingResults = (results: any) => {
     if (results.success) {
       setTrackingData(results.data);
@@ -52,12 +71,23 @@ export const TrackingPage: React.FC = () => {
       <Header />
       <main className="bg-gray-50 min-h-screen">
         {/* Hero Section */}
-        <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-8 sm:py-12 lg:py-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-1 sm:mb-2">
+        <section 
+          className="relative text-white py-8 sm:py-12 lg:py-16 bg-cover bg-center"
+          style={{
+            backgroundImage: 'url(/media/Company%20image.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          }}
+        >
+          {/* Dark overlay for text contrast */}
+          <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+          
+          {/* Content */}
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-1 sm:mb-2 text-yellow-300">
               Track Your Shipment
             </h1>
-            <p className="text-base sm:text-lg text-blue-100">
+            <p className="text-base sm:text-lg text-yellow-100">
               Real-time tracking for your international cargo
             </p>
           </div>
@@ -65,7 +95,10 @@ export const TrackingPage: React.FC = () => {
 
         {/* Tracking Form Section */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
-          <TrackingForm onResults={handleTrackingResults} />
+          <TrackingForm
+            onResults={handleTrackingResults}
+            initialTrackingNumber={trackingFromUrl || ""}
+          />
           {trackingData && <TrackingResults shipment={trackingData} />}
         </section>
       </main>
@@ -153,8 +186,19 @@ export const ServicesPage: React.FC = () => {
       <Header />
       <main className="bg-gray-50 min-h-screen">
         {/* Hero Section */}
-        <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-8 sm:py-12 lg:py-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section 
+          className="relative text-white py-8 sm:py-12 lg:py-16 bg-cover bg-center"
+          style={{
+            backgroundImage: 'url(/media/services%20hero.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          }}
+        >
+          {/* Dark overlay for text contrast */}
+          <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+          
+          {/* Content */}
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-2 sm:mb-3">
               Our Logistics Services
             </h1>
@@ -361,12 +405,23 @@ export const ContactPage: React.FC = () => {
     <>
       <Header />
       <main className="bg-white">
-        <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-8 sm:py-12 lg:py-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-1 sm:mb-2">
+        <section 
+          className="relative text-white py-8 sm:py-12 lg:py-16 bg-cover bg-center"
+          style={{
+            backgroundImage: 'url(/media/Company%20image.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          }}
+        >
+          {/* Dark overlay for text contrast */}
+          <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+          
+          {/* Content */}
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-1 sm:mb-2 text-yellow-300">
               Contact Us
             </h1>
-            <p className="text-base sm:text-lg text-blue-100">
+            <p className="text-base sm:text-lg text-yellow-100">
               Get in touch with our team
             </p>
           </div>
@@ -598,7 +653,7 @@ export const HomePage: React.FC = () => {
 
             {/* Tracking Section */}
             <div className="max-w-2xl mx-auto mb-6 sm:mb-8">
-              <label className="block text-base sm:text-lg font-bold text-gray-800 mb-3 sm:mb-4">
+              <label className="block text-base sm:text-lg font-bold text-white mb-3 sm:mb-4">
                 Enter Tracking Number
               </label>
               <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-4 sm:mb-6">
@@ -625,29 +680,39 @@ export const HomePage: React.FC = () => {
               )}
 
               {trackingResult && (
-                <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-green-100 border-l-4 border-green-500 text-green-700 rounded text-sm sm:text-base">
-                  <p className="font-semibold mb-2">Shipment Found</p>
-                  <p>
-                    <strong>Tracking:</strong> {trackingResult.tracking_number}
-                  </p>
-                  <p>
-                    <strong>From:</strong> {trackingResult.sender_name}
-                  </p>
-                  <p>
-                    <strong>To:</strong> {trackingResult.receiver_name}
-                  </p>
-                  <p>
-                    <strong>Status:</strong>{" "}
-                    <span className="bg-green-500 text-white px-3 py-1 rounded">
+                <div className="mb-4 sm:mb-6 rounded border-l-4 border-green-500 bg-green-100 p-4 text-sm text-green-700 sm:text-base">
+                  <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="font-semibold">Shipment Found</p>
+                    <span className="inline-flex self-start rounded-full bg-green-600 px-3 py-1 text-xs font-bold text-white sm:self-auto">
                       {trackingResult.current_status}
                     </span>
-                  </p>
-                  <p>
-                    <strong>Destination:</strong> {trackingResult.destination}
-                  </p>
+                  </div>
+                  <div className="grid grid-cols-1 gap-2 text-left sm:grid-cols-2">
+                    <p>
+                      <strong>Tracking:</strong> {trackingResult.tracking_number}
+                    </p>
+                    <p>
+                      <strong>Receiver:</strong> {trackingResult.receiver_name}
+                    </p>
+                    <p>
+                      <strong>Route:</strong>{" "}
+                      {trackingResult.origin_branch_name || "Origin"} to{" "}
+                      {trackingResult.destination}
+                    </p>
+                    <p>
+                      <strong>Last Update:</strong>{" "}
+                      {trackingResult.latest_update?.created_at
+                        ? new Date(
+                            trackingResult.latest_update.created_at,
+                          ).toLocaleDateString()
+                        : new Date(trackingResult.created_at).toLocaleDateString()}
+                    </p>
+                  </div>
                   <button
                     onClick={() =>
-                      navigate(`/track?tracking=${trackingNumber}`)
+                      navigate(
+                        `/track?tracking=${trackingResult.tracking_number}`,
+                      )
                     }
                     className="mt-3 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium transition"
                   >

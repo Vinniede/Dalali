@@ -16,6 +16,7 @@ interface CreateShipmentData {
   weight?: number;
   volume?: number;
   serviceType?: string;
+  status?: string;
 }
 
 interface UpdateShipmentData {
@@ -30,6 +31,7 @@ interface UpdateShipmentData {
   weight?: number;
   volume?: number;
   serviceType?: string;
+  status?: string;
 }
 
 interface ShipmentsResult {
@@ -40,8 +42,35 @@ interface ShipmentsResult {
 }
 
 class ShipmentService {
+  private readonly createAllowedStatuses = [
+    SHIPMENT_STATUS.CREATED,
+    SHIPMENT_STATUS.IN_TRANSIT,
+  ];
+
+  private readonly editAllowedStatuses = [
+    SHIPMENT_STATUS.CREATED,
+    SHIPMENT_STATUS.IN_TRANSIT,
+    SHIPMENT_STATUS.DELIVERED,
+    SHIPMENT_STATUS.DELAYED,
+  ];
+
   private normalizeBranchName(value: string | null | undefined): string {
     return (value || '').trim().toLowerCase();
+  }
+
+  private validateStatus(
+    status: string,
+    allowedStatuses: string[],
+    action: 'create' | 'edit'
+  ): string {
+    if (!allowedStatuses.includes(status)) {
+      throw new AppError(
+        `Invalid shipment status for ${action}. Allowed values: ${allowedStatuses.join(', ')}`,
+        400
+      );
+    }
+
+    return status;
   }
 
   private async getBranchName(branchId: string | number | null): Promise<string | null> {
@@ -100,63 +129,68 @@ class ShipmentService {
       weight,
       volume,
       serviceType = 'Standard',
+      status = SHIPMENT_STATUS.CREATED,
     } = data;
 
-    // Validate input
     if (!senderName || !receiverName || !originBranchId || !destination) {
       throw new AppError('All required fields must be provided', 400);
     }
 
-    // Branch admin can only create shipments for their own branch
     if (userRole === 'branch_admin' && originBranchId !== userBranchId) {
       throw new AppError('Branch admins can only create shipments for their branch', 403);
     }
 
-    // Generate tracking number
+    const initialStatus = this.validateStatus(status, this.createAllowedStatuses, 'create');
     const trackingNumber = generateTrackingNumber();
 
     try {
-      // Start transaction
       const client = await pool.connect();
 
       try {
         await client.query('BEGIN');
 
-        // Create shipment with all fields
         const shipmentResult = await client.query(
           `INSERT INTO shipments (
-            tracking_number, sender_name, sender_phone, sender_address, 
-            receiver_name, receiver_phone, receiver_address, 
-            origin_branch_id, destination, cargo_description, 
+            tracking_number, sender_name, sender_phone, sender_address,
+            receiver_name, receiver_phone, receiver_address,
+            origin_branch_id, destination, cargo_description,
             weight, volume, service_type, current_status, created_by, created_at
            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, NOW())
            RETURNING *`,
           [
-            trackingNumber, 
-            senderName, 
-            senderPhone, 
+            trackingNumber,
+            senderName,
+            senderPhone,
             senderAddress,
-            receiverName, 
-            receiverPhone, 
+            receiverName,
+            receiverPhone,
             receiverAddress,
-            originBranchId, 
-            destination, 
+            originBranchId,
+            destination,
             cargoDescription,
             weight || null,
             volume || null,
             serviceType,
-            SHIPMENT_STATUS.CREATED, 
-            userId
+            initialStatus,
+            userId,
           ]
         );
 
         const shipment = shipmentResult.rows[0];
 
-        // Create initial tracking history
         await client.query(
           `INSERT INTO tracking_history (shipment_id, branch_id, location, status, description, created_by, created_at)
            VALUES ($1, $2, $3, $4, $5, $6, NOW())`,
-          [shipment.id, originBranchId, 'Origin Branch', SHIPMENT_STATUS.CREATED, cargoDescription || 'Shipment created', userId]
+          [
+            shipment.id,
+            originBranchId,
+            'Origin Branch',
+            initialStatus,
+            initialStatus === SHIPMENT_STATUS.IN_TRANSIT
+              ? 'Shipment created and marked as In Transit'
+              : cargoDescription || 'Shipment created',
+            userId,
+          ]
         );
 
         await client.query('COMMIT');
@@ -225,7 +259,6 @@ class ShipmentService {
 
     await this.assertShipmentAccess(shipment, userRole, userBranchId, true);
 
-    // Get tracking history
     const historyResult = await pool.query(
       'SELECT * FROM tracking_history WHERE shipment_id = $1 ORDER BY created_at ASC',
       [shipmentId]
@@ -257,7 +290,6 @@ class ShipmentService {
 
     const location = await this.getBranchName(branchId);
 
-    // Add tracking history
     const result = await pool.query(
       `INSERT INTO tracking_history (shipment_id, branch_id, location, status, description, created_by, created_at)
        VALUES ($1, $2, $3, $4, $5, $6, NOW())
@@ -265,7 +297,6 @@ class ShipmentService {
       [shipmentId, branchId, location || shipment.destination, status, description, userId]
     );
 
-    // Update current status in shipment
     await pool.query(
       'UPDATE shipments SET current_status = $1, updated_at = NOW() WHERE id = $2',
       [status, shipmentId]
@@ -278,7 +309,8 @@ class ShipmentService {
     shipmentId: string,
     data: UpdateShipmentData,
     userRole: string,
-    userBranchId: string | null
+    userBranchId: string | null,
+    userId: string
   ): Promise<any> {
     const shipmentResult = await pool.query('SELECT * FROM shipments WHERE id = $1', [shipmentId]);
 
@@ -301,11 +333,16 @@ class ShipmentService {
       weight,
       volume,
       serviceType = 'Standard',
+      status,
     } = data;
 
     if (!senderName || !receiverName || !destination) {
       throw new AppError('Sender, receiver, and destination are required', 400);
     }
+
+    const nextStatus = status
+      ? this.validateStatus(status, this.editAllowedStatuses, 'edit')
+      : shipment.current_status;
 
     const result = await pool.query(
       `UPDATE shipments
@@ -320,8 +357,9 @@ class ShipmentService {
            weight = $9,
            volume = $10,
            service_type = $11,
+           current_status = $12,
            updated_at = NOW()
-       WHERE id = $12
+       WHERE id = $13
        RETURNING *`,
       [
         senderName,
@@ -335,9 +373,27 @@ class ShipmentService {
         weight || null,
         volume || null,
         serviceType,
+        nextStatus,
         shipmentId,
       ]
     );
+
+    if (nextStatus !== shipment.current_status) {
+      const location = await this.getBranchName(shipment.origin_branch_id);
+
+      await pool.query(
+        `INSERT INTO tracking_history (shipment_id, branch_id, location, status, description, created_by, created_at)
+         VALUES ($1, $2, $3, $4, $5, $6, NOW())`,
+        [
+          shipmentId,
+          shipment.origin_branch_id,
+          location || shipment.destination,
+          nextStatus,
+          `Shipment status changed to ${nextStatus} during admin edit`,
+          userId,
+        ]
+      );
+    }
 
     return result.rows[0];
   }
@@ -376,7 +432,6 @@ class ShipmentService {
 
     const shipment = result.rows[0];
 
-    // Get tracking history
     const historyResult = await pool.query(
       'SELECT * FROM tracking_history WHERE shipment_id = $1 ORDER BY created_at ASC',
       [shipment.id]

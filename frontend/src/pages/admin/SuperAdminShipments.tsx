@@ -42,6 +42,7 @@ interface ShipmentFormData {
   weight: string;
   volume: string;
   serviceType: string;
+  status: string;
 }
 
 const initialFormData: ShipmentFormData = {
@@ -57,9 +58,12 @@ const initialFormData: ShipmentFormData = {
   weight: "",
   volume: "",
   serviceType: "Standard",
+  status: "Created",
 };
 
 const SERVICE_TYPES = ["Standard", "Express", "Overnight", "Economy"];
+const CREATE_STATUS_OPTIONS = ["Created", "In Transit"];
+const EDIT_STATUS_OPTIONS = ["Created", "In Transit", "Delivered", "Delayed"];
 
 export const SuperAdminShipments: React.FC = () => {
   const navigate = useNavigate();
@@ -145,6 +149,7 @@ export const SuperAdminShipments: React.FC = () => {
         weight: formData.weight ? parseFloat(formData.weight) : undefined,
         volume: formData.volume ? parseFloat(formData.volume) : undefined,
         serviceType: formData.serviceType,
+        status: formData.status,
       };
 
       if (editingShipmentId) {
@@ -184,6 +189,7 @@ export const SuperAdminShipments: React.FC = () => {
         weight: shipment.weight ? String(shipment.weight) : "",
         volume: shipment.volume ? String(shipment.volume) : "",
         serviceType: shipment.service_type || "Standard",
+        status: shipment.current_status || "Created",
       });
       setShowCreateForm(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -333,6 +339,21 @@ export const SuperAdminShipments: React.FC = () => {
                   <select value={formData.serviceType} onChange={(e) => setFormData({ ...formData, serviceType: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     {SERVICE_TYPES.map((type) => (
                       <option key={type} value={type}>{type}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="mb-2 block text-sm font-bold text-gray-700">
+                    Status {editingShipmentId ? "*" : "(Creation only)"}
+                  </label>
+                  <select
+                    value={formData.status}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  >
+                    {(editingShipmentId ? EDIT_STATUS_OPTIONS : CREATE_STATUS_OPTIONS).map((status) => (
+                      <option key={status} value={status}>{status}</option>
                     ))}
                   </select>
                 </div>

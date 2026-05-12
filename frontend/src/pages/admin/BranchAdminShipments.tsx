@@ -43,9 +43,11 @@ interface EditFormData {
   weight: string;
   volume: string;
   serviceType: string;
+  status: string;
 }
 
 const SERVICE_TYPES = ['Standard', 'Express', 'Overnight', 'Economy'];
+const EDIT_STATUS_OPTIONS = ['Created', 'In Transit', 'Delivered', 'Delayed'];
 
 const initialEditForm: EditFormData = {
   senderName: '',
@@ -59,6 +61,7 @@ const initialEditForm: EditFormData = {
   weight: '',
   volume: '',
   serviceType: 'Standard',
+  status: 'Created',
 };
 
 export const BranchAdminShipments: React.FC = () => {
@@ -155,6 +158,7 @@ export const BranchAdminShipments: React.FC = () => {
         weight: shipment.weight ? String(shipment.weight) : '',
         volume: shipment.volume ? String(shipment.volume) : '',
         serviceType: shipment.service_type || 'Standard',
+        status: shipment.current_status || 'Created',
       });
     } catch (err: any) {
       setError(err.response?.data?.message || err.message || 'Failed to load shipment details');
@@ -187,6 +191,7 @@ export const BranchAdminShipments: React.FC = () => {
         weight: editForm.weight ? parseFloat(editForm.weight) : undefined,
         volume: editForm.volume ? parseFloat(editForm.volume) : undefined,
         serviceType: editForm.serviceType,
+        status: editForm.status,
       });
 
       setSuccess('Shipment updated successfully');
@@ -350,6 +355,17 @@ export const BranchAdminShipments: React.FC = () => {
                         </option>
                       ))}
                     </select>
+                    <select
+                      value={editForm.status}
+                      onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
+                      className="input-field"
+                    >
+                      {EDIT_STATUS_OPTIONS.map((status) => (
+                        <option key={status} value={status}>
+                          {status}
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
                   <textarea
@@ -404,7 +420,7 @@ export const BranchAdminShipments: React.FC = () => {
 
         <div className="card bg-white shadow-base border border-gray-200">
           <div className="flex gap-2 flex-wrap">
-            {['All', 'Created', 'In Transit', 'Delivered', 'Pending', 'Out for Delivery'].map((status) => (
+            {['All', 'Created', 'In Transit', 'Delivered', 'Delayed'].map((status) => (
               <button
                 key={status}
                 onClick={() => setFilter(status)}

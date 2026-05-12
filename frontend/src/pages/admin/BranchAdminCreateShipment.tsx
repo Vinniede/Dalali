@@ -12,6 +12,7 @@ interface Branch {
 }
 
 const SERVICE_TYPES = ["Standard", "Express", "Overnight", "Economy"];
+const CREATE_STATUS_OPTIONS = ["Created", "In Transit"];
 
 export const BranchAdminCreateShipment: React.FC = () => {
   const navigate = useNavigate();
@@ -36,6 +37,7 @@ export const BranchAdminCreateShipment: React.FC = () => {
     weight: "",
     volume: "",
     serviceType: "Standard",
+    status: "Created",
   });
 
   const menuItems = [
@@ -154,6 +156,7 @@ export const BranchAdminCreateShipment: React.FC = () => {
         weight: formData.weight ? parseFloat(formData.weight) : undefined,
         volume: formData.volume ? parseFloat(formData.volume) : undefined,
         serviceType: formData.serviceType,
+        status: formData.status,
       });
 
       console.log('[CreateShipment] Response:', response);
@@ -174,6 +177,7 @@ export const BranchAdminCreateShipment: React.FC = () => {
         weight: "",
         volume: "",
         serviceType: "Standard",
+        status: "Created",
       });
 
       // Redirect after 3 seconds
@@ -416,6 +420,25 @@ export const BranchAdminCreateShipment: React.FC = () => {
                 {SERVICE_TYPES.map((type) => (
                   <option key={type} value={type}>
                     {type}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide">
+                Initial Status
+              </label>
+              <select
+                value={formData.status}
+                onChange={(e) =>
+                  setFormData({ ...formData, status: e.target.value })
+                }
+                className="input-field"
+                required
+              >
+                {CREATE_STATUS_OPTIONS.map((status) => (
+                  <option key={status} value={status}>
+                    {status}
                   </option>
                 ))}
               </select>
