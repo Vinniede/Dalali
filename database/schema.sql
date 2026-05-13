@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS shipments (
   receiver_name VARCHAR(255) NOT NULL,
   receiver_phone VARCHAR(20),
   receiver_address TEXT,
-  origin_branch_id INTEGER NOT NULL REFERENCES branches(id),
+  origin_branch_id INTEGER REFERENCES branches(id),
   destination VARCHAR(255) NOT NULL,
   cargo_description TEXT,
   weight DECIMAL(10, 2),
@@ -54,18 +54,21 @@ ALTER TABLE shipments ADD COLUMN IF NOT EXISTS weight DECIMAL(10, 2);
 ALTER TABLE shipments ADD COLUMN IF NOT EXISTS volume DECIMAL(10, 2);
 ALTER TABLE shipments ADD COLUMN IF NOT EXISTS service_type VARCHAR(100) DEFAULT 'Standard';
 ALTER TABLE shipments ADD COLUMN IF NOT EXISTS origin_country VARCHAR(100);
+ALTER TABLE shipments ALTER COLUMN origin_branch_id DROP NOT NULL;
 
 -- Create tracking_history table
 CREATE TABLE IF NOT EXISTS tracking_history (
   id SERIAL PRIMARY KEY,
   shipment_id INTEGER NOT NULL REFERENCES shipments(id) ON DELETE CASCADE,
-  branch_id INTEGER NOT NULL REFERENCES branches(id),
+  branch_id INTEGER REFERENCES branches(id),
   location VARCHAR(255),
   status VARCHAR(100) NOT NULL,
   description TEXT,
   created_by INTEGER NOT NULL REFERENCES users(id),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE tracking_history ALTER COLUMN branch_id DROP NOT NULL;
 
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_shipments_tracking_number ON shipments(tracking_number);

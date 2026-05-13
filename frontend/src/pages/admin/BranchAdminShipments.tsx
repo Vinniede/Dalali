@@ -15,7 +15,7 @@ interface Shipment {
   receiver_name: string;
   receiver_phone?: string;
   receiver_address?: string;
-  origin_branch_id: string;
+  origin_branch_id: string | null;
   origin_country?: string;
   destination: string;
   cargo_description?: string;

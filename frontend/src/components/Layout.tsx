@@ -41,7 +41,7 @@ export const Header: React.FC<HeaderProps> = ({ isAdmin = false }) => {
               alt="Dalali Express Logo"
               className="w-8 h-8 object-contain"
             />
-            <span className="text-xl font-bold hidden sm:inline brand-name">
+            <span className="brand-name inline max-w-[11rem] truncate text-sm font-bold leading-tight sm:max-w-none sm:text-xl">
               Dalali Express
             </span>
           </Link>
