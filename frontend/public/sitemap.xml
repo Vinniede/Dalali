@@ -3,125 +3,26 @@
   <!-- Homepage -->
   <url>
     <loc>https://dalali-express.com/</loc>
-    <changefreq>monthly</changefreq>
+    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
-  <!-- Public Pages -->
+  <!-- Public Pages Only (NO admin pages) -->
   <url>
-    <loc>https://dalali-express.com/public</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- Admin Pages -->
-  <url>
-    <loc>https://dalali-express.com/admin</loc>
+    <loc>https://dalali-express.com/track</loc>
     <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- Branch Admin Pages -->
-  <url>
-    <loc>https://dalali-express.com/admin/branch-admin-dashboard</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
+    <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://dalali-express.com/admin/branch-admin-create-shipment</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://dalali-express.com/admin/branch-admin-shipments</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://dalali-express.com/admin/branch-admin-incoming</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://dalali-express.com/admin/branch-admin-outgoing</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://dalali-express.com/admin/branch-admin-tracking</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://dalali-express.com/admin/branch-admin-profile</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <url>
-    <loc>https://dalali-express.com/admin/shipment-detail</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- Super Admin Pages -->
-  <url>
-    <loc>https://dalali-express.com/admin/super-admin-dashboard</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://dalali-express.com/admin/super-admin-shipments</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://dalali-express.com/admin/super-admin-branches</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://dalali-express.com/admin/super-admin-users</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://dalali-express.com/admin/super-admin-tracking</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://dalali-express.com/admin/super-admin-services</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <url>
-    <loc>https://dalali-express.com/admin/super-admin-reports</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <url>
-    <loc>https://dalali-express.com/admin/super-admin-notifications</loc>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <url>
-    <loc>https://dalali-express.com/admin/super-admin-settings</loc>
+    <loc>https://dalali-express.com/services</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://dalali-express.com/contact</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>

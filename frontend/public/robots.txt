@@ -1,6 +1,5 @@
 User-agent: *
 Allow: /
-Disallow: /admin/super-admin-*
-Disallow: /admin/branch-admin-*
+Disallow: /admin/
 
 Sitemap: https://dalali-express.com/sitemap.xml
