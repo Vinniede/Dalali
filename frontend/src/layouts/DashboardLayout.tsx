@@ -85,12 +85,12 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       <aside className="z-40 hidden flex-col bg-gradient-to-b from-primary-700 to-primary-800 text-white shadow-elevation lg:flex lg:w-64">
         <div className="flex flex-shrink-0 items-center gap-3 border-b border-primary-600 p-6">
           <img
-            src="/media/Dalali logo.png"
+            src="/media/Dalali logo.jpeg"
             alt="Dalali Express Logo"
-            className="h-10 w-10 object-contain"
+            className="h-10 w-10 rounded-full object-cover"
           />
           <div>
-            <div className="text-lg font-bold">Dalali</div>
+            <div className="text-lg font-bold leading-tight">Dalali Express</div>
             <div
               className={`rounded-full px-2 py-1 text-xs ${getRoleBadgeColor()}`}
             >
@@ -124,11 +124,13 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         }`}
       >
         <div className="flex flex-shrink-0 items-center gap-3 border-b border-primary-600 p-6">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent-500 font-bold text-primary-700 shadow-md">
-            D
-          </div>
+          <img
+            src="/media/Dalali logo.jpeg"
+            alt="Dalali Express Logo"
+            className="h-10 w-10 rounded-full object-cover shadow-md"
+          />
           <div>
-            <div className="text-lg font-bold">Dalali</div>
+            <div className="text-lg font-bold leading-tight">Dalali Express</div>
             <div
               className={`rounded-full px-2 py-1 text-xs ${getRoleBadgeColor()}`}
             >

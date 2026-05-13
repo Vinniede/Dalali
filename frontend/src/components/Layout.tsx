@@ -37,11 +37,11 @@ export const Header: React.FC<HeaderProps> = ({ isAdmin = false }) => {
             className="flex items-center gap-2 hover:opacity-80 transition"
           >
             <img
-              src="/media/Dalali logo.png"
+              src="/media/Dalali logo.jpeg"
               alt="Dalali Express Logo"
-              className="w-8 h-8 object-contain"
+              className="h-9 w-9 rounded-full object-cover"
             />
-            <span className="brand-name inline max-w-[11rem] truncate text-sm font-bold leading-tight sm:max-w-none sm:text-xl">
+            <span className="brand-name inline max-w-[12rem] truncate text-sm font-bold leading-tight sm:max-w-none sm:text-xl">
               Dalali Express
             </span>
           </Link>
@@ -169,9 +169,9 @@ export const Footer: React.FC = () => (
         <div className="col-span-2 sm:col-span-1">
           <div className="flex items-center gap-2 mb-3">
             <img
-              src="/media/Dalali logo.png"
+              src="/media/Dalali logo.jpeg"
               alt="Dalali Express Logo"
-              className="w-8 h-8 object-contain"
+              className="h-9 w-9 rounded-full object-cover"
             />
             <span className="font-bold text-sm sm:text-base">Dalali Express</span>
           </div>
