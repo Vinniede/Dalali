@@ -7,10 +7,12 @@ import authRoutes from './routes/authRoutes.js';
 import shipmentRoutes from './routes/shipmentRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import branchRoutes from './routes/branchRoutes.js';
+import { ensureDatabaseSchema } from './config/database.js';
 
 dotenv.config();
 
 const app: Express = express();
+let schemaReady: Promise<void> | null = null;
 
 // Middleware
 const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
@@ -23,6 +25,17 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  if (!schemaReady) {
+    schemaReady = ensureDatabaseSchema().catch((error) => {
+      schemaReady = null;
+      throw error;
+    });
+  }
+
+  schemaReady.then(() => next()).catch(next);
+});
 
 // Routes
 app.use('/api/auth', authRoutes);
