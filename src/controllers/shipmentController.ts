@@ -13,7 +13,6 @@ class ShipmentController {
         receiverName, 
         receiverPhone, 
         receiverAddress, 
-        originBranchId,
         originCountry,
         destination, 
         cargoDescription, 
@@ -32,7 +31,6 @@ class ShipmentController {
           receiverName, 
           receiverPhone, 
           receiverAddress, 
-          originBranchId,
           originCountry,
           destination, 
           cargoDescription, 
@@ -65,6 +63,7 @@ class ShipmentController {
       const result = await shipmentService.getShipments(
         req.user!.role,
         req.user!.branch_id,
+        req.user!.id,
         limit,
         offset
       );
@@ -85,7 +84,8 @@ class ShipmentController {
       const shipment = await shipmentService.getShipmentById(
         id,
         req.user!.role,
-        req.user!.branch_id
+        req.user!.branch_id,
+        req.user!.id
       );
 
       res.status(200).json({
@@ -186,7 +186,8 @@ class ShipmentController {
       const deletedShipment = await shipmentService.deleteShipment(
         id,
         req.user!.role,
-        req.user!.branch_id
+        req.user!.branch_id,
+        req.user!.id
       );
 
       res.status(200).json({

@@ -10,7 +10,6 @@ interface CreateShipmentData {
   receiverName: string;
   receiverPhone?: string;
   receiverAddress?: string;
-  originBranchId?: string;
   originCountry?: string;
   destination: string;
   cargoDescription?: string;
@@ -90,26 +89,23 @@ class ShipmentService {
     shipment: any,
     userRole: string | null,
     userBranchId: string | null,
+    userId: string | null,
     allowDestinationAccess: boolean
   ): Promise<void> {
     if (userRole !== 'branch_admin') {
       return;
     }
 
-    if (!userBranchId) {
-      throw new AppError('Branch information is required', 403);
-    }
-
-    const isOriginBranch = String(shipment.origin_branch_id) === String(userBranchId);
+    const isCreator = String(shipment.created_by) === String(userId);
     let isDestinationBranch = false;
 
-    if (allowDestinationAccess) {
+    if (allowDestinationAccess && userBranchId) {
       const branchName = await this.getBranchName(userBranchId);
       isDestinationBranch =
         this.normalizeBranchName(branchName) === this.normalizeBranchName(shipment.destination);
     }
 
-    if (!isOriginBranch && !isDestinationBranch) {
+    if (!isCreator && !isDestinationBranch) {
       throw new AppError('You do not have access to this shipment', 403);
     }
   }
@@ -127,7 +123,6 @@ class ShipmentService {
       receiverName,
       receiverPhone = '',
       receiverAddress = '',
-      originBranchId,
       originCountry,
       destination,
       cargoDescription = '',
@@ -138,16 +133,8 @@ class ShipmentService {
       trackingNumber: providedTrackingNumber,
     } = data;
 
-    // Either originBranchId or originCountry must be provided
-    if (!senderName || !receiverName || (!originBranchId && !originCountry) || !destination) {
+    if (!senderName || !receiverName || !originCountry || !destination) {
       throw new AppError('All required fields must be provided', 400);
-    }
-
-    // If originBranchId is provided, use it; otherwise use originCountry
-    const effectiveOriginBranchId = originBranchId || userBranchId;
-
-    if (userRole === 'branch_admin' && effectiveOriginBranchId !== userBranchId) {
-      throw new AppError('Branch admins can only create shipments for their branch', 403);
     }
 
     const initialStatus = this.validateStatus(status, this.createAllowedStatuses, 'create');
@@ -192,8 +179,8 @@ class ShipmentService {
             receiverName,
             receiverPhone,
             receiverAddress,
-            effectiveOriginBranchId,
-            originCountry || null,
+            null,
+            originCountry,
             destination,
             cargoDescription,
             weight || null,
@@ -211,8 +198,8 @@ class ShipmentService {
            VALUES ($1, $2, $3, $4, $5, $6, NOW())`,
           [
             shipment.id,
-            effectiveOriginBranchId,
-            'Origin Branch',
+            null,
+            originCountry,
             initialStatus,
             initialStatus === SHIPMENT_STATUS.IN_TRANSIT
               ? 'Shipment created and marked as In Transit'
@@ -237,6 +224,7 @@ class ShipmentService {
   async getShipments(
     userRole: string,
     userBranchId: string | null = null,
+    userId: string | null = null,
     limit: number = 20,
     offset: number = 0
   ): Promise<ShipmentsResult> {
@@ -251,9 +239,9 @@ class ShipmentService {
         throw new AppError('Branch not found for current user', 403);
       }
 
-      query += ' WHERE origin_branch_id = $1 OR LOWER(TRIM(destination)) = LOWER(TRIM($2))';
-      countQuery += ' WHERE origin_branch_id = $1 OR LOWER(TRIM(destination)) = LOWER(TRIM($2))';
-      params.push(userBranchId, branchName);
+      query += ' WHERE created_by = $1 OR LOWER(TRIM(destination)) = LOWER(TRIM($2))';
+      countQuery += ' WHERE created_by = $1 OR LOWER(TRIM(destination)) = LOWER(TRIM($2))';
+      params.push(userId, branchName);
     }
 
     const countResult = await pool.query(countQuery, params);
@@ -275,7 +263,8 @@ class ShipmentService {
   async getShipmentById(
     shipmentId: string,
     userRole: string | null = null,
-    userBranchId: string | null = null
+    userBranchId: string | null = null,
+    userId: string | null = null
   ): Promise<any> {
     const result = await pool.query('SELECT * FROM shipments WHERE id = $1', [shipmentId]);
 
@@ -285,7 +274,7 @@ class ShipmentService {
 
     const shipment = result.rows[0];
 
-    await this.assertShipmentAccess(shipment, userRole, userBranchId, true);
+    await this.assertShipmentAccess(shipment, userRole, userBranchId, userId, true);
 
     const historyResult = await pool.query(
       'SELECT * FROM tracking_history WHERE shipment_id = $1 ORDER BY created_at ASC',
@@ -293,10 +282,11 @@ class ShipmentService {
     );
 
     const originBranchName = await this.getBranchName(shipment.origin_branch_id);
+    const originDisplay = originBranchName || shipment.origin_country || null;
 
     return {
       ...shipment,
-      origin_branch_name: originBranchName,
+      origin_branch_name: originDisplay,
       history: historyResult.rows,
     };
   }
@@ -310,7 +300,7 @@ class ShipmentService {
     userRole: string,
     userBranchId: string | null
   ): Promise<any> {
-    const shipment = await this.getShipmentById(shipmentId, userRole, userBranchId);
+    const shipment = await this.getShipmentById(shipmentId, userRole, userBranchId, userId);
 
     if (userRole === 'branch_admin' && String(branchId) !== String(userBranchId)) {
       throw new AppError('Branch admins can only post updates for their own branch', 403);
@@ -347,7 +337,7 @@ class ShipmentService {
     }
 
     const shipment = shipmentResult.rows[0];
-    await this.assertShipmentAccess(shipment, userRole, userBranchId, false);
+    await this.assertShipmentAccess(shipment, userRole, userBranchId, userId, false);
 
     const {
       senderName,
@@ -432,15 +422,18 @@ class ShipmentService {
     );
 
     if (nextStatus !== shipment.current_status) {
-      const location = await this.getBranchName(shipment.origin_branch_id);
+      const location =
+        (await this.getBranchName(shipment.origin_branch_id)) ||
+        shipment.origin_country ||
+        shipment.destination;
 
       await pool.query(
         `INSERT INTO tracking_history (shipment_id, branch_id, location, status, description, created_by, created_at)
          VALUES ($1, $2, $3, $4, $5, $6, NOW())`,
         [
           shipmentId,
-          shipment.origin_branch_id,
-          location || shipment.destination,
+          shipment.origin_branch_id || null,
+          location,
           nextStatus,
           `Shipment status changed to ${nextStatus} during admin edit`,
           userId,
@@ -454,7 +447,8 @@ class ShipmentService {
   async deleteShipment(
     shipmentId: string,
     userRole: string,
-    userBranchId: string | null
+    userBranchId: string | null,
+    userId: string | null
   ): Promise<any> {
     const shipmentResult = await pool.query('SELECT * FROM shipments WHERE id = $1', [shipmentId]);
 
@@ -463,7 +457,7 @@ class ShipmentService {
     }
 
     const shipment = shipmentResult.rows[0];
-    await this.assertShipmentAccess(shipment, userRole, userBranchId, false);
+    await this.assertShipmentAccess(shipment, userRole, userBranchId, userId, false);
 
     const result = await pool.query(
       'DELETE FROM shipments WHERE id = $1 RETURNING id, tracking_number',
@@ -492,10 +486,11 @@ class ShipmentService {
 
     const originBranchName = await this.getBranchName(shipment.origin_branch_id);
     const latestHistory = historyResult.rows[historyResult.rows.length - 1] || null;
+    const originDisplay = originBranchName || shipment.origin_country || null;
 
     return {
       ...shipment,
-      origin_branch_name: originBranchName,
+      origin_branch_name: originDisplay,
       latest_update: latestHistory,
       history: historyResult.rows,
     };
