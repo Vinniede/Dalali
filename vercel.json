@@ -17,6 +17,20 @@
       "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"]
     },
     {
+      "src": "/sitemap\\.xml$",
+      "dest": "/sitemap.xml",
+      "headers": {
+        "Content-Type": "application/xml; charset=utf-8"
+      }
+    },
+    {
+      "src": "/robots\\.txt$",
+      "dest": "/robots.txt",
+      "headers": {
+        "Content-Type": "text/plain; charset=utf-8"
+      }
+    },
+    {
       "src": "/(.*)\\.(?:js|css|svg|png|jpg|jpeg|gif|webp|woff|woff2|ttf|eot|mp4|webm)$",
       "dest": "/$1.$2"
     },

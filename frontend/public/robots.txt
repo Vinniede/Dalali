@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin/super-admin-*
+Disallow: /admin/branch-admin-*
+
+Sitemap: https://dalali-express.com/sitemap.xml
