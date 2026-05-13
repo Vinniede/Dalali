@@ -84,9 +84,11 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     <div className="flex min-h-screen bg-gray-50">
       <aside className="z-40 hidden flex-col bg-gradient-to-b from-primary-700 to-primary-800 text-white shadow-elevation lg:flex lg:w-64">
         <div className="flex flex-shrink-0 items-center gap-3 border-b border-primary-600 p-6">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent-500 font-bold text-primary-700 shadow-md">
-            D
-          </div>
+          <img
+            src="/media/Dalali logo.png"
+            alt="Dalali Express Logo"
+            className="h-10 w-10 object-contain"
+          />
           <div>
             <div className="text-lg font-bold">Dalali</div>
             <div

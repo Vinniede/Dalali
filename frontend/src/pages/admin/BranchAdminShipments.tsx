@@ -49,6 +49,157 @@ interface EditFormData {
 const SERVICE_TYPES = ['Standard', 'Express', 'Overnight', 'Economy'];
 const EDIT_STATUS_OPTIONS = ['Created', 'In Transit', 'Delivered', 'Delayed'];
 
+// Comprehensive list of world countries and major cities for shipment destinations
+const WORLD_DESTINATIONS = [
+  // East Africa (Priority)
+  "Nairobi, Kenya",
+  "Dar es Salaam, Tanzania",
+  "Kampala, Uganda",
+  "Kigali, Rwanda",
+  "Addis Ababa, Ethiopia",
+  "Mogadishu, Somalia",
+  "Djibouti, Djibouti",
+  "Mombasa, Kenya",
+  "Arusha, Tanzania",
+  "Goma, Democratic Republic of Congo",
+
+  // Central Africa
+  "Kinshasa, Democratic Republic of Congo",
+  "Brazzaville, Republic of Congo",
+  "Bangui, Central African Republic",
+  "N'Djamena, Chad",
+  "Douala, Cameroon",
+  "Yaoundé, Cameroon",
+
+  // Southern Africa
+  "Johannesburg, South Africa",
+  "Cape Town, South Africa",
+  "Harare, Zimbabwe",
+  "Lusaka, Zambia",
+  "Lilongwe, Malawi",
+  "Gaborone, Botswana",
+  "Windhoek, Namibia",
+
+  // West Africa
+  "Lagos, Nigeria",
+  "Accra, Ghana",
+  "Dakar, Senegal",
+  "Abidjan, Côte d'Ivoire",
+  "Bamako, Mali",
+  "Ouagadougou, Burkina Faso",
+
+  // North Africa
+  "Cairo, Egypt",
+  "Alexandria, Egypt",
+  "Casablanca, Morocco",
+  "Algiers, Algeria",
+  "Tunis, Tunisia",
+  "Tripoli, Libya",
+
+  // Middle East
+  "Dubai, United Arab Emirates",
+  "Abu Dhabi, United Arab Emirates",
+  "Doha, Qatar",
+  "Riyadh, Saudi Arabia",
+  "Jeddah, Saudi Arabia",
+  "Kuwait City, Kuwait",
+  "Beirut, Lebanon",
+  "Tel Aviv, Israel",
+  "Istanbul, Turkey",
+  "Amman, Jordan",
+
+  // South Asia
+  "Mumbai, India",
+  "Delhi, India",
+  "Bangalore, India",
+  "Chennai, India",
+  "Kolkata, India",
+  "Karachi, Pakistan",
+  "Islamabad, Pakistan",
+  "Dhaka, Bangladesh",
+  "Colombo, Sri Lanka",
+  "Kathmandu, Nepal",
+
+  // Southeast Asia
+  "Singapore",
+  "Bangkok, Thailand",
+  "Kuala Lumpur, Malaysia",
+  "Jakarta, Indonesia",
+  "Manila, Philippines",
+  "Hanoi, Vietnam",
+  "Ho Chi Minh City, Vietnam",
+  "Phnom Penh, Cambodia",
+  "Yangon, Myanmar",
+
+  // East Asia
+  "Hong Kong",
+  "Shanghai, China",
+  "Beijing, China",
+  "Guangzhou, China",
+  "Shenzhen, China",
+  "Tokyo, Japan",
+  "Seoul, South Korea",
+  "Taipei, Taiwan",
+
+  // Europe
+  "London, United Kingdom",
+  "Manchester, United Kingdom",
+  "Paris, France",
+  "Frankfurt, Germany",
+  "Berlin, Germany",
+  "Amsterdam, Netherlands",
+  "Rotterdam, Netherlands",
+  "Antwerp, Belgium",
+  "Brussels, Belgium",
+  "Madrid, Spain",
+  "Barcelona, Spain",
+  "Milan, Italy",
+  "Rome, Italy",
+  "Lisbon, Portugal",
+  "Athens, Greece",
+  "Warsaw, Poland",
+  "Prague, Czech Republic",
+  "Vienna, Austria",
+  "Budapest, Hungary",
+  "Stockholm, Sweden",
+  "Copenhagen, Denmark",
+  "Oslo, Norway",
+  "Zurich, Switzerland",
+  "Geneva, Switzerland",
+
+  // North America
+  "New York, United States",
+  "Los Angeles, United States",
+  "Chicago, United States",
+  "Houston, United States",
+  "San Francisco, United States",
+  "Miami, United States",
+  "Dallas, United States",
+  "Atlanta, United States",
+  "Seattle, United States",
+  "Toronto, Canada",
+  "Vancouver, Canada",
+  "Montreal, Canada",
+  "Mexico City, Mexico",
+
+  // South America
+  "São Paulo, Brazil",
+  "Rio de Janeiro, Brazil",
+  "Salvador, Brazil",
+  "Buenos Aires, Argentina",
+  "Bogotá, Colombia",
+  "Lima, Peru",
+  "Santiago, Chile",
+  "Caracas, Venezuela",
+  "Quito, Ecuador",
+
+  // Oceania
+  "Sydney, Australia",
+  "Melbourne, Australia",
+  "Auckland, New Zealand",
+  "Fiji",
+];
+
 const initialEditForm: EditFormData = {
   senderName: '',
   senderPhone: '',
@@ -337,12 +488,21 @@ export const BranchAdminShipments: React.FC = () => {
                       className="input-field"
                       required
                     >
-                      <option value="">Select Destination</option>
-                      {branches.map((branch) => (
-                        <option key={branch.id} value={branch.name}>
-                          {branch.name} - {branch.country}
-                        </option>
-                      ))}
+                      <option value="">Select Destination (City or Country)</option>
+                      <optgroup label="📍 Branch Offices (Recommended)">
+                        {branches.map((branch) => (
+                          <option key={branch.id} value={branch.name}>
+                            {branch.name} - {branch.country}
+                          </option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="🌍 Worldwide Destinations">
+                        {WORLD_DESTINATIONS.map((destination) => (
+                          <option key={destination} value={destination}>
+                            {destination}
+                          </option>
+                        ))}
+                      </optgroup>
                     </select>
                     <select
                       value={editForm.serviceType}

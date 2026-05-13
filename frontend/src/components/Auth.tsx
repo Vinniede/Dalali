@@ -39,9 +39,11 @@ export const LoginForm: React.FC = () => {
         <div className="grid w-full overflow-hidden rounded-2xl bg-white shadow-2xl lg:grid-cols-[1.05fr_0.95fr]">
           <div className="hidden lg:flex flex-col justify-between bg-gradient-to-br from-primary-700 via-primary-800 to-slate-950 p-10 text-white">
             <div>
-              <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 text-2xl font-bold shadow-lg">
-                D
-              </div>
+              <img
+                src="/media/Dalali logo.png"
+                alt="Dalali Express Logo"
+                className="mb-6 h-14 w-14 object-contain"
+              />
               <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-blue-200">
                 Admin Portal
               </p>
@@ -73,9 +75,11 @@ export const LoginForm: React.FC = () => {
           <div className="p-5 sm:p-8 lg:p-10">
             <div className="mx-auto w-full max-w-md">
               <div className="mb-8 text-center lg:text-left">
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-100 text-xl font-bold text-primary-700 lg:mx-0">
-                  D
-                </div>
+                <img
+                  src="/media/Dalali logo.png"
+                  alt="Dalali Express Logo"
+                  className="mx-auto mb-4 h-14 w-14 object-contain lg:mx-0"
+                />
                 <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
                   Dalali Admin Login
                 </h1>

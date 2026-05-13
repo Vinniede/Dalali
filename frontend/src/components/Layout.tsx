@@ -36,9 +36,11 @@ export const Header: React.FC<HeaderProps> = ({ isAdmin = false }) => {
             to="/"
             className="flex items-center gap-2 hover:opacity-80 transition"
           >
-            <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center font-bold text-primary-600">
-              D
-            </div>
+            <img
+              src="/media/Dalali logo.png"
+              alt="Dalali Express Logo"
+              className="w-8 h-8 object-contain"
+            />
             <span className="text-xl font-bold hidden sm:inline brand-name">
               Dalali Express
             </span>
@@ -166,9 +168,11 @@ export const Footer: React.FC = () => (
         {/* Brand Section */}
         <div className="col-span-2 sm:col-span-1">
           <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center font-bold text-white text-sm">
-              D
-            </div>
+            <img
+              src="/media/Dalali logo.png"
+              alt="Dalali Express Logo"
+              className="w-8 h-8 object-contain"
+            />
             <span className="font-bold text-sm sm:text-base">Dalali Express</span>
           </div>
           <p className="text-gray-400 text-xs sm:text-sm leading-tight">
