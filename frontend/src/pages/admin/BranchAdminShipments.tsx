@@ -32,6 +32,7 @@ interface Branch {
 }
 
 interface EditFormData {
+  trackingNumber: string;
   senderName: string;
   senderPhone: string;
   senderAddress: string;
@@ -201,6 +202,7 @@ const WORLD_DESTINATIONS = [
 ];
 
 const initialEditForm: EditFormData = {
+  trackingNumber: '',
   senderName: '',
   senderPhone: '',
   senderAddress: '',
@@ -298,6 +300,7 @@ export const BranchAdminShipments: React.FC = () => {
 
       setEditingShipmentId(shipment.id);
       setEditForm({
+        trackingNumber: shipment.tracking_number || '',
         senderName: shipment.sender_name || '',
         senderPhone: shipment.sender_phone || '',
         senderAddress: shipment.sender_address || '',
@@ -331,6 +334,7 @@ export const BranchAdminShipments: React.FC = () => {
       setSuccess('');
 
       await shipmentService.updateShipment(editingShipmentId, {
+        trackingNumber: editForm.trackingNumber,
         senderName: editForm.senderName,
         senderPhone: editForm.senderPhone,
         senderAddress: editForm.senderAddress,
@@ -423,6 +427,20 @@ export const BranchAdminShipments: React.FC = () => {
               </div>
 
               <form onSubmit={handleSaveEdit} className="space-y-6">
+                <div className="card bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200">
+                  <h3 className="mb-4 text-lg font-bold text-gray-900">🆔 Order/Tracking Number</h3>
+                  <input
+                    type="text"
+                    value={editForm.trackingNumber}
+                    onChange={(e) => setEditForm({ ...editForm, trackingNumber: e.target.value })}
+                    className="input-field w-full"
+                    placeholder="Enter tracking number (must be unique if changed)"
+                  />
+                  <p className="text-xs text-gray-600 mt-2">
+                    💡 You can change the tracking number if needed, but it must be unique.
+                  </p>
+                </div>
+
                 <div className="card">
                   <h3 className="mb-4 text-lg font-bold text-gray-900">Sender Information</h3>
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-3">

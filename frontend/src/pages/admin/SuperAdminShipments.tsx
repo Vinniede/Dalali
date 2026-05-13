@@ -30,6 +30,7 @@ interface Branch {
 }
 
 interface ShipmentFormData {
+  trackingNumber: string;
   senderName: string;
   senderPhone: string;
   senderAddress: string;
@@ -46,6 +47,7 @@ interface ShipmentFormData {
 }
 
 const initialFormData: ShipmentFormData = {
+  trackingNumber: "",
   senderName: "",
   senderPhone: "",
   senderAddress: "",
@@ -288,6 +290,7 @@ export const SuperAdminShipments: React.FC = () => {
       setSaving(true);
 
       const payload = {
+        trackingNumber: formData.trackingNumber,
         senderName: formData.senderName,
         senderPhone: formData.senderPhone,
         senderAddress: formData.senderAddress,
@@ -328,6 +331,7 @@ export const SuperAdminShipments: React.FC = () => {
       const shipment = response.data as Shipment;
       setEditingShipmentId(shipment.id);
       setFormData({
+        trackingNumber: shipment.tracking_number || "",
         senderName: shipment.sender_name || "",
         senderPhone: shipment.sender_phone || "",
         senderAddress: shipment.sender_address || "",
@@ -442,6 +446,18 @@ export const SuperAdminShipments: React.FC = () => {
               {editingShipmentId ? "Edit Shipment Details" : "Create New Shipment"}
             </h3>
             <form onSubmit={saveShipment} className="space-y-4">
+              <div className="rounded-lg bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 p-4">
+                <label className="mb-2 block text-sm font-bold text-gray-700">🆔 Order/Tracking Number (Optional)</label>
+                <input
+                  type="text"
+                  placeholder="Leave empty for auto-generated number"
+                  value={formData.trackingNumber}
+                  onChange={(e) => setFormData({ ...formData, trackingNumber: e.target.value })}
+                  className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <p className="text-xs text-gray-600 mt-2">💡 If you leave empty, a unique number will be generated automatically</p>
+              </div>
+
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                 <div>
                   <label className="mb-2 block text-sm font-bold text-gray-700">Sender Name *</label>

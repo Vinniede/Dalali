@@ -15,11 +15,12 @@ class ShipmentController {
         receiverAddress, 
         originBranchId, 
         destination, 
-      cargoDescription, 
-      weight, 
-      volume, 
-      serviceType,
-      status,
+        cargoDescription, 
+        weight, 
+        volume, 
+        serviceType,
+        status,
+        trackingNumber,
       } = req.body;
 
       const shipment = await shipmentService.createShipment(
@@ -37,6 +38,7 @@ class ShipmentController {
           volume, 
           serviceType,
           status,
+          trackingNumber,
         },
         req.user!.id,
         req.user!.role,
@@ -138,6 +140,7 @@ class ShipmentController {
         volume,
         serviceType,
         status,
+        trackingNumber,
       } = req.body;
 
       const shipment = await shipmentService.updateShipment(
@@ -155,6 +158,7 @@ class ShipmentController {
           volume,
           serviceType,
           status,
+          trackingNumber,
         },
         req.user!.role,
         req.user!.branch_id,

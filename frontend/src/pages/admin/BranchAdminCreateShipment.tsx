@@ -175,10 +175,10 @@ export const BranchAdminCreateShipment: React.FC = () => {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState("");
   const [success, setSuccess] = React.useState("");
-  const [trackingNumber, setTrackingNumber] = React.useState("");
   const [showSuccessModal, setShowSuccessModal] = React.useState(false);
 
   const [formData, setFormData] = React.useState({
+    trackingNumber: "",
     senderName: "",
     senderPhone: "",
     senderAddress: "",
@@ -297,6 +297,7 @@ export const BranchAdminCreateShipment: React.FC = () => {
       });
 
       const response = await shipmentService.createShipment({
+        trackingNumber: formData.trackingNumber || undefined,
         senderName: formData.senderName,
         senderPhone: formData.senderPhone,
         senderAddress: formData.senderAddress,
@@ -314,11 +315,15 @@ export const BranchAdminCreateShipment: React.FC = () => {
 
       console.log('[CreateShipment] Response:', response);
       
-      setTrackingNumber(response.data.tracking_number);
+      setFormData(prevData => ({
+        ...prevData,
+        trackingNumber: response.data.tracking_number
+      }));
       setShowSuccessModal(true);
 
       // Reset form
       setFormData({
+        trackingNumber: "",
         senderName: "",
         senderPhone: "",
         senderAddress: "",
@@ -375,7 +380,7 @@ export const BranchAdminCreateShipment: React.FC = () => {
                 Order Number
               </p>
               <p className="text-3xl font-bold text-primary-600 font-mono break-all mb-2">
-                {trackingNumber}
+                {formData.trackingNumber}
               </p>
               <p className="text-xs text-gray-600">
                 Use this number to track your shipment
@@ -424,6 +429,28 @@ export const BranchAdminCreateShipment: React.FC = () => {
             <span>{success}</span>
           </div>
         )}
+
+        {/* Tracking Number (Optional) */}
+        <div className="card-elevated bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200">
+          <h3 className="text-lg font-bold text-gray-900 mb-5 flex items-center gap-2">
+            🆔 Order/Tracking Number (Optional)
+          </h3>
+          <div className="mb-3">
+            <input
+              type="text"
+              placeholder="Leave empty for auto-generated number (e.g., DEX123456ABC)"
+              value={formData.trackingNumber}
+              onChange={(e) =>
+                setFormData({ ...formData, trackingNumber: e.target.value })
+              }
+              className="input-field w-full"
+            />
+            <p className="text-xs text-gray-600 mt-2">
+              💡 Tip: If you leave this empty, a unique tracking number will be automatically generated. 
+              If you enter a custom number, it must be unique.
+            </p>
+          </div>
+        </div>
 
         {/* Sender Information */}
         <div className="card-elevated">

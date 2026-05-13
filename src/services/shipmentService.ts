@@ -17,6 +17,7 @@ interface CreateShipmentData {
   volume?: number;
   serviceType?: string;
   status?: string;
+  trackingNumber?: string; // Allow manual tracking number input
 }
 
 interface UpdateShipmentData {
@@ -32,6 +33,7 @@ interface UpdateShipmentData {
   volume?: number;
   serviceType?: string;
   status?: string;
+  trackingNumber?: string; // Allow manual tracking number edit
 }
 
 interface ShipmentsResult {
@@ -130,6 +132,7 @@ class ShipmentService {
       volume,
       serviceType = 'Standard',
       status = SHIPMENT_STATUS.CREATED,
+      trackingNumber: providedTrackingNumber,
     } = data;
 
     if (!senderName || !receiverName || !originBranchId || !destination) {
@@ -141,7 +144,24 @@ class ShipmentService {
     }
 
     const initialStatus = this.validateStatus(status, this.createAllowedStatuses, 'create');
-    const trackingNumber = generateTrackingNumber();
+    
+    // Use provided tracking number or generate one
+    let trackingNumber = providedTrackingNumber?.trim();
+    
+    if (trackingNumber) {
+      // Check if provided tracking number already exists
+      const existingShipment = await pool.query(
+        'SELECT id FROM shipments WHERE tracking_number = $1',
+        [trackingNumber]
+      );
+      
+      if (existingShipment.rows.length > 0) {
+        throw new AppError(`Tracking number "${trackingNumber}" is already in use`, 400);
+      }
+    } else {
+      // Generate tracking number if not provided
+      trackingNumber = generateTrackingNumber();
+    }
 
     try {
       const client = await pool.connect();
@@ -334,6 +354,7 @@ class ShipmentService {
       volume,
       serviceType = 'Standard',
       status,
+      trackingNumber: providedTrackingNumber,
     } = data;
 
     if (!senderName || !receiverName || !destination) {
@@ -344,24 +365,45 @@ class ShipmentService {
       ? this.validateStatus(status, this.editAllowedStatuses, 'edit')
       : shipment.current_status;
 
+    // Handle tracking number updates
+    let finalTrackingNumber = shipment.tracking_number;
+    
+    if (providedTrackingNumber && providedTrackingNumber.trim() !== shipment.tracking_number) {
+      const newTrackingNumber = providedTrackingNumber.trim();
+      
+      // Check if the new tracking number is already in use (excluding current shipment)
+      const existingShipment = await pool.query(
+        'SELECT id FROM shipments WHERE tracking_number = $1 AND id != $2',
+        [newTrackingNumber, shipmentId]
+      );
+      
+      if (existingShipment.rows.length > 0) {
+        throw new AppError(`Tracking number "${newTrackingNumber}" is already in use by another shipment`, 400);
+      }
+      
+      finalTrackingNumber = newTrackingNumber;
+    }
+
     const result = await pool.query(
       `UPDATE shipments
-       SET sender_name = $1,
-           sender_phone = $2,
-           sender_address = $3,
-           receiver_name = $4,
-           receiver_phone = $5,
-           receiver_address = $6,
-           destination = $7,
-           cargo_description = $8,
-           weight = $9,
-           volume = $10,
-           service_type = $11,
-           current_status = $12,
+       SET tracking_number = $1,
+           sender_name = $2,
+           sender_phone = $3,
+           sender_address = $4,
+           receiver_name = $5,
+           receiver_phone = $6,
+           receiver_address = $7,
+           destination = $8,
+           cargo_description = $9,
+           weight = $10,
+           volume = $11,
+           service_type = $12,
+           current_status = $13,
            updated_at = NOW()
-       WHERE id = $13
+       WHERE id = $14
        RETURNING *`,
       [
+        finalTrackingNumber,
         senderName,
         senderPhone,
         senderAddress,
