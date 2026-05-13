@@ -40,7 +40,7 @@ export const LoginForm: React.FC = () => {
           <div className="hidden lg:flex flex-col justify-between bg-gradient-to-br from-primary-700 via-primary-800 to-slate-950 p-10 text-white">
             <div>
               <img
-                src="/media/Dalali logo.jpeg"
+                src="/media/Dalali logo.png"
                 alt="Dalali Express Logo"
                 className="mb-6 h-14 w-14 rounded-full object-cover"
               />
@@ -76,7 +76,7 @@ export const LoginForm: React.FC = () => {
             <div className="mx-auto w-full max-w-md">
               <div className="mb-8 text-center lg:text-left">
                 <img
-                  src="/media/Dalali logo.jpeg"
+                  src="/media/Dalali logo.png"
                   alt="Dalali Express Logo"
                   className="mx-auto mb-4 h-14 w-14 rounded-full object-cover lg:mx-0"
                 />
