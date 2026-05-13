@@ -53,6 +53,7 @@ ALTER TABLE shipments ADD COLUMN IF NOT EXISTS cargo_description TEXT;
 ALTER TABLE shipments ADD COLUMN IF NOT EXISTS weight DECIMAL(10, 2);
 ALTER TABLE shipments ADD COLUMN IF NOT EXISTS volume DECIMAL(10, 2);
 ALTER TABLE shipments ADD COLUMN IF NOT EXISTS service_type VARCHAR(100) DEFAULT 'Standard';
+ALTER TABLE shipments ADD COLUMN IF NOT EXISTS origin_country VARCHAR(100);
 
 -- Create tracking_history table
 CREATE TABLE IF NOT EXISTS tracking_history (

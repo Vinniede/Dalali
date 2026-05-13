@@ -14,6 +14,7 @@ interface Shipment {
   receiver_phone?: string;
   receiver_address?: string;
   origin_branch_id: string;
+  origin_country?: string;
   destination: string;
   cargo_description?: string;
   weight?: number;
@@ -37,7 +38,7 @@ interface ShipmentFormData {
   receiverName: string;
   receiverPhone: string;
   receiverAddress: string;
-  originBranchId: string;
+  originCountry: string;
   destination: string;
   cargoDescription: string;
   weight: string;
@@ -54,7 +55,7 @@ const initialFormData: ShipmentFormData = {
   receiverName: "",
   receiverPhone: "",
   receiverAddress: "",
-  originBranchId: "",
+  originCountry: "",
   destination: "",
   cargoDescription: "",
   weight: "",
@@ -218,6 +219,35 @@ const WORLD_DESTINATIONS = [
   "Fiji",
 ];
 
+// List of all countries for origin country selection
+const COUNTRIES = [
+  "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Argentina", "Armenia", "Australia",
+  "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium",
+  "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei",
+  "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada", "Cape Verde", "Central African Republic",
+  "Chad", "Chile", "China", "Colombia", "Comoros", "Congo", "Costa Rica", "Côte d'Ivoire",
+  "Croatia", "Cuba", "Cyprus", "Czech Republic", "Democratic Republic of Congo", "Denmark", "Djibouti", "Dominica",
+  "Dominican Republic", "East Timor", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia",
+  "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany",
+  "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti",
+  "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq",
+  "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya",
+  "Kiribati", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia",
+  "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives",
+  "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova",
+  "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru",
+  "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia",
+  "Norway", "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay",
+  "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Republic of Congo", "Republic of Korea", "Republic of South Sudan",
+  "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino",
+  "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia",
+  "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "Sudan",
+  "Suriname", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand",
+  "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu",
+  "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu",
+  "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+].sort();
+
 export const SuperAdminShipments: React.FC = () => {
   const navigate = useNavigate();
   const [filter, setFilter] = React.useState("all");
@@ -281,7 +311,7 @@ export const SuperAdminShipments: React.FC = () => {
     setError("");
     setSuccess("");
 
-    if (!formData.senderName || !formData.receiverName || !formData.originBranchId || !formData.destination) {
+    if (!formData.senderName || !formData.receiverName || !formData.originCountry || !formData.destination) {
       setError("Please fill in all required fields");
       return;
     }
@@ -297,7 +327,7 @@ export const SuperAdminShipments: React.FC = () => {
         receiverName: formData.receiverName,
         receiverPhone: formData.receiverPhone,
         receiverAddress: formData.receiverAddress,
-        originBranchId: formData.originBranchId,
+        originCountry: formData.originCountry,
         destination: formData.destination,
         cargoDescription: formData.cargoDescription,
         weight: formData.weight ? parseFloat(formData.weight) : undefined,
@@ -338,7 +368,7 @@ export const SuperAdminShipments: React.FC = () => {
         receiverName: shipment.receiver_name || "",
         receiverPhone: shipment.receiver_phone || "",
         receiverAddress: shipment.receiver_address || "",
-        originBranchId: shipment.origin_branch_id || "",
+        originCountry: shipment.origin_country || "",
         destination: shipment.destination || "",
         cargoDescription: shipment.cargo_description || "",
         weight: shipment.weight ? String(shipment.weight) : "",
@@ -484,11 +514,11 @@ export const SuperAdminShipments: React.FC = () => {
                   <input type="text" value={formData.receiverAddress} onChange={(e) => setFormData({ ...formData, receiverAddress: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 </div>
                 <div>
-                  <label className="mb-2 block text-sm font-bold text-gray-700">Origin Branch *</label>
-                  <select value={formData.originBranchId} onChange={(e) => setFormData({ ...formData, originBranchId: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required disabled={!!editingShipmentId}>
-                    <option value="">Select a branch</option>
-                    {branches.map((branch) => (
-                      <option key={branch.id} value={branch.id}>{branch.name}</option>
+                  <label className="mb-2 block text-sm font-bold text-gray-700">Country of Origin *</label>
+                  <select value={formData.originCountry} onChange={(e) => setFormData({ ...formData, originCountry: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required disabled={!!editingShipmentId}>
+                    <option value="">Select country of origin</option>
+                    {COUNTRIES.map((country) => (
+                      <option key={country} value={country}>{country}</option>
                     ))}
                   </select>
                 </div>

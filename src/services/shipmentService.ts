@@ -10,7 +10,8 @@ interface CreateShipmentData {
   receiverName: string;
   receiverPhone?: string;
   receiverAddress?: string;
-  originBranchId: string;
+  originBranchId?: string;
+  originCountry?: string;
   destination: string;
   cargoDescription?: string;
   weight?: number;
@@ -27,6 +28,7 @@ interface UpdateShipmentData {
   receiverName: string;
   receiverPhone?: string;
   receiverAddress?: string;
+  originCountry?: string;
   destination: string;
   cargoDescription?: string;
   weight?: number;
@@ -126,6 +128,7 @@ class ShipmentService {
       receiverPhone = '',
       receiverAddress = '',
       originBranchId,
+      originCountry,
       destination,
       cargoDescription = '',
       weight,
@@ -135,11 +138,15 @@ class ShipmentService {
       trackingNumber: providedTrackingNumber,
     } = data;
 
-    if (!senderName || !receiverName || !originBranchId || !destination) {
+    // Either originBranchId or originCountry must be provided
+    if (!senderName || !receiverName || (!originBranchId && !originCountry) || !destination) {
       throw new AppError('All required fields must be provided', 400);
     }
 
-    if (userRole === 'branch_admin' && originBranchId !== userBranchId) {
+    // If originBranchId is provided, use it; otherwise use originCountry
+    const effectiveOriginBranchId = originBranchId || userBranchId;
+
+    if (userRole === 'branch_admin' && effectiveOriginBranchId !== userBranchId) {
       throw new AppError('Branch admins can only create shipments for their branch', 403);
     }
 
@@ -173,9 +180,9 @@ class ShipmentService {
           `INSERT INTO shipments (
             tracking_number, sender_name, sender_phone, sender_address,
             receiver_name, receiver_phone, receiver_address,
-            origin_branch_id, destination, cargo_description,
+            origin_branch_id, origin_country, destination, cargo_description,
             weight, volume, service_type, current_status, created_by, created_at
-           ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, NOW())
+           ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, NOW())
            RETURNING *`,
           [
             trackingNumber,
@@ -185,7 +192,8 @@ class ShipmentService {
             receiverName,
             receiverPhone,
             receiverAddress,
-            originBranchId,
+            effectiveOriginBranchId,
+            originCountry || null,
             destination,
             cargoDescription,
             weight || null,
@@ -203,7 +211,7 @@ class ShipmentService {
            VALUES ($1, $2, $3, $4, $5, $6, NOW())`,
           [
             shipment.id,
-            originBranchId,
+            effectiveOriginBranchId,
             'Origin Branch',
             initialStatus,
             initialStatus === SHIPMENT_STATUS.IN_TRANSIT
@@ -348,6 +356,7 @@ class ShipmentService {
       receiverName,
       receiverPhone = '',
       receiverAddress = '',
+      originCountry,
       destination,
       cargoDescription = '',
       weight,
@@ -393,14 +402,15 @@ class ShipmentService {
            receiver_name = $5,
            receiver_phone = $6,
            receiver_address = $7,
-           destination = $8,
-           cargo_description = $9,
-           weight = $10,
-           volume = $11,
-           service_type = $12,
-           current_status = $13,
+           origin_country = $8,
+           destination = $9,
+           cargo_description = $10,
+           weight = $11,
+           volume = $12,
+           service_type = $13,
+           current_status = $14,
            updated_at = NOW()
-       WHERE id = $14
+       WHERE id = $15
        RETURNING *`,
       [
         finalTrackingNumber,
@@ -410,6 +420,7 @@ class ShipmentService {
         receiverName,
         receiverPhone,
         receiverAddress,
+        originCountry || null,
         destination,
         cargoDescription,
         weight || null,

@@ -16,6 +16,7 @@ interface Shipment {
   receiver_phone?: string;
   receiver_address?: string;
   origin_branch_id: string;
+  origin_country?: string;
   destination: string;
   cargo_description?: string;
   weight?: number;
@@ -39,6 +40,7 @@ interface EditFormData {
   receiverName: string;
   receiverPhone: string;
   receiverAddress: string;
+  originCountry: string;
   destination: string;
   cargoDescription: string;
   weight: string;
@@ -201,6 +203,35 @@ const WORLD_DESTINATIONS = [
   "Fiji",
 ];
 
+// List of all countries for origin country selection
+const COUNTRIES = [
+  "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Argentina", "Armenia", "Australia",
+  "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium",
+  "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei",
+  "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada", "Cape Verde", "Central African Republic",
+  "Chad", "Chile", "China", "Colombia", "Comoros", "Congo", "Costa Rica", "Côte d'Ivoire",
+  "Croatia", "Cuba", "Cyprus", "Czech Republic", "Democratic Republic of Congo", "Denmark", "Djibouti", "Dominica",
+  "Dominican Republic", "East Timor", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia",
+  "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany",
+  "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti",
+  "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq",
+  "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya",
+  "Kiribati", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia",
+  "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives",
+  "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova",
+  "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru",
+  "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia",
+  "Norway", "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay",
+  "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Republic of Congo", "Republic of Korea", "Republic of South Sudan",
+  "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino",
+  "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia",
+  "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "Sudan",
+  "Suriname", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand",
+  "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu",
+  "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu",
+  "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+].sort();
+
 const initialEditForm: EditFormData = {
   trackingNumber: '',
   senderName: '',
@@ -209,6 +240,7 @@ const initialEditForm: EditFormData = {
   receiverName: '',
   receiverPhone: '',
   receiverAddress: '',
+  originCountry: '',
   destination: '',
   cargoDescription: '',
   weight: '',
@@ -307,6 +339,7 @@ export const BranchAdminShipments: React.FC = () => {
         receiverName: shipment.receiver_name || '',
         receiverPhone: shipment.receiver_phone || '',
         receiverAddress: shipment.receiver_address || '',
+        originCountry: shipment.origin_country || '',
         destination: shipment.destination || '',
         cargoDescription: shipment.cargo_description || '',
         weight: shipment.weight ? String(shipment.weight) : '',
@@ -341,6 +374,7 @@ export const BranchAdminShipments: React.FC = () => {
         receiverName: editForm.receiverName,
         receiverPhone: editForm.receiverPhone,
         receiverAddress: editForm.receiverAddress,
+        originCountry: editForm.originCountry,
         destination: editForm.destination,
         cargoDescription: editForm.cargoDescription,
         weight: editForm.weight ? parseFloat(editForm.weight) : undefined,
@@ -500,6 +534,17 @@ export const BranchAdminShipments: React.FC = () => {
                 <div className="card">
                   <h3 className="mb-4 text-lg font-bold text-gray-900">Cargo Details</h3>
                   <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <select
+                      value={editForm.originCountry}
+                      onChange={(e) => setEditForm({ ...editForm, originCountry: e.target.value })}
+                      className="input-field"
+                      required
+                    >
+                      <option value="">Select Country of Origin</option>
+                      {COUNTRIES.map((country) => (
+                        <option key={country} value={country}>{country}</option>
+                      ))}
+                    </select>
                     <select
                       value={editForm.destination}
                       onChange={(e) => setEditForm({ ...editForm, destination: e.target.value })}
