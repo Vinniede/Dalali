@@ -132,11 +132,6 @@ export const LoginForm: React.FC = () => {
                 </button>
               </form>
 
-              <div className="mt-6 rounded-2xl border border-blue-100 bg-blue-50 p-4 text-sm text-gray-700">
-                <p className="font-semibold text-gray-900">Test credentials</p>
-                <p className="mt-2 break-all">Email: admin@dalali.com</p>
-                <p className="break-all">Password: Admin@2024!</p>
-              </div>
             </div>
           </div>
         </div>

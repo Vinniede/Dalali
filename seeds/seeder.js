@@ -61,8 +61,8 @@ const pool = new Pool({
 
     // Step 4: Create super admin user
     console.log('🔐 Step 3: Creating super admin user...');
-    const email = 'admin@dalali.com';
-    const plainPassword = 'Admin@2024!';
+    const email = 'super.wesley86@Dalala-express.com';
+    const plainPassword = 'wesley86@dalali26';
     const hashedPassword = await bcrypt.hash(plainPassword, 10);
 
     const query = `
