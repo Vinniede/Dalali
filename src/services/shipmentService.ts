@@ -35,6 +35,7 @@ interface UpdateShipmentData {
   serviceType?: string;
   status?: string;
   trackingNumber?: string; // Allow manual tracking number edit
+  currentLocation?: string;
 }
 
 interface ShipmentsResult {
@@ -380,6 +381,7 @@ class ShipmentService {
       serviceType = 'Standard',
       status,
       trackingNumber: providedTrackingNumber,
+      currentLocation,
     } = data;
 
     if (!senderName || !receiverName || !destination) {
@@ -389,6 +391,7 @@ class ShipmentService {
     const nextStatus = status
       ? this.validateStatus(status, this.editAllowedStatuses, 'edit')
       : shipment.current_status;
+    const nextLocation = currentLocation?.trim();
 
     // Handle tracking number updates
     let finalTrackingNumber = shipment.tracking_number;
@@ -447,8 +450,20 @@ class ShipmentService {
       ]
     );
 
-    if (nextStatus !== shipment.current_status) {
+    const latestHistoryResult = await pool.query(
+      `SELECT location FROM tracking_history
+       WHERE shipment_id = $1
+       ORDER BY created_at DESC
+       LIMIT 1`,
+      [shipmentId]
+    );
+    const latestLocation = latestHistoryResult.rows[0]?.location || '';
+    const locationChanged = !!nextLocation && nextLocation !== latestLocation;
+
+    if (nextStatus !== shipment.current_status || locationChanged) {
       const location =
+        nextLocation ||
+        latestLocation ||
         (await this.getBranchName(shipment.origin_branch_id)) ||
         shipment.origin_country ||
         shipment.destination;
@@ -461,7 +476,9 @@ class ShipmentService {
           shipment.origin_branch_id || null,
           location,
           nextStatus,
-          `Shipment status changed to ${nextStatus} during admin edit`,
+          locationChanged && nextStatus === shipment.current_status
+            ? `Current location updated to ${location} during admin edit`
+            : `Shipment status changed to ${nextStatus} during admin edit`,
           userId,
         ]
       );

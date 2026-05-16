@@ -25,6 +25,7 @@ interface Shipment {
   service_type?: string;
   current_status: string;
   current_location?: string;
+  created_by?: string;
   created_at: string;
   latest_update?: any;
   history?: any[];
@@ -51,6 +52,7 @@ interface EditFormData {
   volume: string;
   serviceType: string;
   status: string;
+  currentLocation: string;
 }
 
 const SERVICE_TYPES = ["Standard", "Express", "Overnight", "Economy"];
@@ -424,6 +426,7 @@ const initialEditForm: EditFormData = {
   volume: "",
   serviceType: "Standard",
   status: "Created",
+  currentLocation: "",
 };
 
 export const BranchAdminShipments: React.FC = () => {
@@ -530,10 +533,10 @@ export const BranchAdminShipments: React.FC = () => {
   });
 
   const canManageShipment = (shipment: Shipment) =>
-    String(shipment.origin_branch_id) === String(user?.branch_id);
+    String(shipment.created_by) === String(user?.id);
 
   const getShipmentFlow = (shipment: Shipment) => {
-    if (String(shipment.origin_branch_id) === String(user?.branch_id)) {
+    if (canManageShipment(shipment)) {
       return "Outgoing";
     }
     return "Incoming";
@@ -566,6 +569,11 @@ export const BranchAdminShipments: React.FC = () => {
         volume: shipment.volume ? String(shipment.volume) : "",
         serviceType: shipment.service_type || "Standard",
         status: shipment.current_status || "Created",
+        currentLocation:
+          shipment.current_location ||
+          shipment.latest_update?.location ||
+          shipment.origin_country ||
+          "",
       });
     } catch (err: any) {
       setError(
@@ -605,6 +613,7 @@ export const BranchAdminShipments: React.FC = () => {
         volume: editForm.volume ? parseFloat(editForm.volume) : undefined,
         serviceType: editForm.serviceType,
         status: editForm.status,
+        currentLocation: editForm.currentLocation,
       });
 
       setSuccess("Shipment updated successfully");
@@ -819,6 +828,7 @@ export const BranchAdminShipments: React.FC = () => {
                       }
                       className="input-field"
                       required
+                      disabled
                     >
                       <option value="">Select Country of Origin</option>
                       {COUNTRIES.map((country) => (
@@ -827,6 +837,18 @@ export const BranchAdminShipments: React.FC = () => {
                         </option>
                       ))}
                     </select>
+                    <input
+                      type="text"
+                      value={editForm.currentLocation}
+                      onChange={(e) =>
+                        setEditForm({
+                          ...editForm,
+                          currentLocation: e.target.value,
+                        })
+                      }
+                      className="input-field"
+                      placeholder="Current Location"
+                    />
                     <select
                       value={editForm.destination}
                       onChange={(e) =>

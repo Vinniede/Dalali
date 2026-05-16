@@ -149,6 +149,7 @@ class ShipmentController {
         serviceType,
         status,
         trackingNumber,
+        currentLocation,
       } = req.body;
 
       const shipment = await shipmentService.updateShipment(
@@ -168,6 +169,7 @@ class ShipmentController {
           serviceType,
           status,
           trackingNumber,
+          currentLocation,
         },
         req.user!.role,
         req.user!.branch_id,

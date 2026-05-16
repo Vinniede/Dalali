@@ -49,6 +49,7 @@ interface ShipmentFormData {
   volume: string;
   serviceType: string;
   status: string;
+  currentLocation: string;
 }
 
 const initialFormData: ShipmentFormData = {
@@ -66,6 +67,7 @@ const initialFormData: ShipmentFormData = {
   volume: "",
   serviceType: "Standard",
   status: "Created",
+  currentLocation: "",
 };
 
 const SERVICE_TYPES = ["Standard", "Express", "Overnight", "Economy"];
@@ -559,6 +561,7 @@ export const SuperAdminShipments: React.FC = () => {
         volume: formData.volume ? parseFloat(formData.volume) : undefined,
         serviceType: formData.serviceType,
         status: formData.status,
+        currentLocation: formData.currentLocation,
       };
 
       if (editingShipmentId) {
@@ -607,6 +610,11 @@ export const SuperAdminShipments: React.FC = () => {
         volume: shipment.volume ? String(shipment.volume) : "",
         serviceType: shipment.service_type || "Standard",
         status: shipment.current_status || "Created",
+        currentLocation:
+          shipment.current_location ||
+          shipment.latest_update?.location ||
+          shipment.origin_country ||
+          "",
       });
       setShowCreateForm(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -880,6 +888,25 @@ export const SuperAdminShipments: React.FC = () => {
                     </optgroup>
                   </select>
                 </div>
+                {editingShipmentId && (
+                  <div>
+                    <label className="mb-2 block text-sm font-bold text-gray-700">
+                      Current Location
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.currentLocation}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          currentLocation: e.target.value,
+                        })
+                      }
+                      placeholder="e.g., Kampala transit hub"
+                      className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                )}
                 <div>
                   <label className="mb-2 block text-sm font-bold text-gray-700">
                     Service Type
