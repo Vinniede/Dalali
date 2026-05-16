@@ -10,6 +10,8 @@ interface Shipment {
   receiver_phone?: string;
   receiver_address?: string;
   origin_branch_id: string | null;
+  origin_branch_name?: string;
+  origin_country?: string;
   destination: string;
   cargo_description?: string;
   weight?: number;
@@ -18,6 +20,7 @@ interface Shipment {
   current_status: string;
   created_at: string;
   updated_at?: string;
+  latest_update?: any;
   history?: any[];
 }
 

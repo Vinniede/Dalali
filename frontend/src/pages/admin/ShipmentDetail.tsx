@@ -14,6 +14,9 @@ interface Shipment {
   receiver_name: string;
   receiver_phone?: string;
   receiver_address?: string;
+  origin_branch_id?: string | null;
+  origin_branch_name?: string;
+  origin_country?: string;
   destination: string;
   cargo_description?: string;
   weight?: number;
@@ -21,6 +24,7 @@ interface Shipment {
   service_type?: string;
   current_status: string;
   created_at: string;
+  latest_update?: any;
   history?: any[];
 }
 
@@ -34,13 +38,48 @@ export const ShipmentDetail: React.FC = () => {
   const [branchName, setBranchName] = React.useState("");
 
   const menuItems = [
-    { id: "overview", label: "Overview", icon: "📊", path: "/admin/branch/overview" },
-    { id: "my-shipments", label: "My Shipments", icon: "📦", path: "/admin/branch/shipments" },
-    { id: "create", label: "Create Shipment", icon: "➕", path: "/admin/branch/create" },
-    { id: "incoming", label: "Incoming Cargo", icon: "📥", path: "/admin/branch/incoming" },
-    { id: "outgoing", label: "Outgoing Cargo", icon: "📤", path: "/admin/branch/outgoing" },
-    { id: "tracking", label: "Tracking Updates", icon: "📍", path: "/admin/branch/tracking" },
-    { id: "profile", label: "Profile", icon: "👤", path: "/admin/branch/profile" },
+    {
+      id: "overview",
+      label: "Overview",
+      icon: "📊",
+      path: "/admin/branch/overview",
+    },
+    {
+      id: "my-shipments",
+      label: "My Shipments",
+      icon: "📦",
+      path: "/admin/branch/shipments",
+    },
+    {
+      id: "create",
+      label: "Create Shipment",
+      icon: "➕",
+      path: "/admin/branch/create",
+    },
+    {
+      id: "incoming",
+      label: "Incoming Cargo",
+      icon: "📥",
+      path: "/admin/branch/incoming",
+    },
+    {
+      id: "outgoing",
+      label: "Outgoing Cargo",
+      icon: "📤",
+      path: "/admin/branch/outgoing",
+    },
+    {
+      id: "tracking",
+      label: "Tracking Updates",
+      icon: "📍",
+      path: "/admin/branch/tracking",
+    },
+    {
+      id: "profile",
+      label: "Profile",
+      icon: "👤",
+      path: "/admin/branch/profile",
+    },
   ];
 
   React.useEffect(() => {
@@ -78,7 +117,9 @@ export const ShipmentDetail: React.FC = () => {
           <div className="mb-4 inline-block">
             <div className="h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-primary-600"></div>
           </div>
-          <p className="font-medium text-gray-600">Loading shipment details...</p>
+          <p className="font-medium text-gray-600">
+            Loading shipment details...
+          </p>
         </div>
       </DashboardLayout>
     );
@@ -96,7 +137,10 @@ export const ShipmentDetail: React.FC = () => {
         <div className="mb-6 rounded-lg border border-red-400 bg-red-100 px-4 py-3 text-red-700">
           {error || "Shipment not found"}
         </div>
-        <button onClick={() => navigate("/admin/branch/shipments")} className="btn-primary">
+        <button
+          onClick={() => navigate("/admin/branch/shipments")}
+          className="btn-primary"
+        >
           Back to Shipments
         </button>
       </DashboardLayout>
@@ -147,44 +191,68 @@ export const ShipmentDetail: React.FC = () => {
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 sm:gap-6">
           <div className="card-elevated">
-            <h3 className="mb-4 text-lg font-bold text-gray-900">Sender Information</h3>
+            <h3 className="mb-4 text-lg font-bold text-gray-900">
+              Sender Information
+            </h3>
             <div className="space-y-3">
               <div>
-                <p className="text-xs font-bold uppercase tracking-wide text-gray-600">Name</p>
-                <p className="font-semibold text-gray-900">{shipment.sender_name}</p>
+                <p className="text-xs font-bold uppercase tracking-wide text-gray-600">
+                  Name
+                </p>
+                <p className="font-semibold text-gray-900">
+                  {shipment.sender_name}
+                </p>
               </div>
               {shipment.sender_phone && (
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-wide text-gray-600">Phone</p>
+                  <p className="text-xs font-bold uppercase tracking-wide text-gray-600">
+                    Phone
+                  </p>
                   <p className="text-gray-900">{shipment.sender_phone}</p>
                 </div>
               )}
               {shipment.sender_address && (
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-wide text-gray-600">Address</p>
-                  <p className="text-gray-900 break-words">{shipment.sender_address}</p>
+                  <p className="text-xs font-bold uppercase tracking-wide text-gray-600">
+                    Address
+                  </p>
+                  <p className="text-gray-900 break-words">
+                    {shipment.sender_address}
+                  </p>
                 </div>
               )}
             </div>
           </div>
 
           <div className="card-elevated">
-            <h3 className="mb-4 text-lg font-bold text-gray-900">Receiver Information</h3>
+            <h3 className="mb-4 text-lg font-bold text-gray-900">
+              Receiver Information
+            </h3>
             <div className="space-y-3">
               <div>
-                <p className="text-xs font-bold uppercase tracking-wide text-gray-600">Name</p>
-                <p className="font-semibold text-gray-900">{shipment.receiver_name}</p>
+                <p className="text-xs font-bold uppercase tracking-wide text-gray-600">
+                  Name
+                </p>
+                <p className="font-semibold text-gray-900">
+                  {shipment.receiver_name}
+                </p>
               </div>
               {shipment.receiver_phone && (
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-wide text-gray-600">Phone</p>
+                  <p className="text-xs font-bold uppercase tracking-wide text-gray-600">
+                    Phone
+                  </p>
                   <p className="text-gray-900">{shipment.receiver_phone}</p>
                 </div>
               )}
               {shipment.receiver_address && (
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-wide text-gray-600">Address</p>
-                  <p className="text-gray-900 break-words">{shipment.receiver_address}</p>
+                  <p className="text-xs font-bold uppercase tracking-wide text-gray-600">
+                    Address
+                  </p>
+                  <p className="text-gray-900 break-words">
+                    {shipment.receiver_address}
+                  </p>
                 </div>
               )}
             </div>
@@ -192,42 +260,86 @@ export const ShipmentDetail: React.FC = () => {
         </div>
 
         <div className="card-elevated">
-          <h3 className="mb-4 text-lg font-bold text-gray-900">Cargo Details</h3>
+          <h3 className="mb-4 text-lg font-bold text-gray-900">
+            Cargo Details
+          </h3>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <div>
-              <p className="text-xs font-bold uppercase tracking-wide text-gray-600">Destination</p>
-              <p className="font-semibold text-gray-900">{shipment.destination}</p>
+              <p className="text-xs font-bold uppercase tracking-wide text-gray-600">
+                Country of Origin
+              </p>
+              <p className="font-semibold text-gray-900">
+                {shipment.origin_country ||
+                  shipment.origin_branch_name ||
+                  "N/A"}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wide text-gray-600">
+                Destination
+              </p>
+              <p className="font-semibold text-gray-900">
+                {shipment.destination}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wide text-gray-600">
+                Current Location
+              </p>
+              <p className="font-semibold text-gray-900">
+                {shipment.latest_update?.location ||
+                  shipment.origin_country ||
+                  "N/A"}
+              </p>
             </div>
             {shipment.service_type && (
               <div>
-                <p className="text-xs font-bold uppercase tracking-wide text-gray-600">Service Type</p>
-                <p className="font-semibold text-gray-900">{shipment.service_type}</p>
+                <p className="text-xs font-bold uppercase tracking-wide text-gray-600">
+                  Service Type
+                </p>
+                <p className="font-semibold text-gray-900">
+                  {shipment.service_type}
+                </p>
               </div>
             )}
             {shipment.weight && (
               <div>
-                <p className="text-xs font-bold uppercase tracking-wide text-gray-600">Weight</p>
-                <p className="font-semibold text-gray-900">{shipment.weight} kg</p>
+                <p className="text-xs font-bold uppercase tracking-wide text-gray-600">
+                  Weight
+                </p>
+                <p className="font-semibold text-gray-900">
+                  {shipment.weight} kg
+                </p>
               </div>
             )}
             {shipment.volume && (
               <div>
-                <p className="text-xs font-bold uppercase tracking-wide text-gray-600">Volume</p>
-                <p className="font-semibold text-gray-900">{shipment.volume} m3</p>
+                <p className="text-xs font-bold uppercase tracking-wide text-gray-600">
+                  Volume
+                </p>
+                <p className="font-semibold text-gray-900">
+                  {shipment.volume} m3
+                </p>
               </div>
             )}
           </div>
           {shipment.cargo_description && (
             <div className="mt-4 border-t border-gray-200 pt-4">
-              <p className="mb-2 text-xs font-bold uppercase tracking-wide text-gray-600">Description</p>
-              <p className="break-words text-gray-900">{shipment.cargo_description}</p>
+              <p className="mb-2 text-xs font-bold uppercase tracking-wide text-gray-600">
+                Description
+              </p>
+              <p className="break-words text-gray-900">
+                {shipment.cargo_description}
+              </p>
             </div>
           )}
         </div>
 
         {shipment.history && shipment.history.length > 0 && (
           <div className="card-elevated">
-            <h3 className="mb-6 text-lg font-bold text-gray-900">Tracking History</h3>
+            <h3 className="mb-6 text-lg font-bold text-gray-900">
+              Tracking History
+            </h3>
             <div className="space-y-4">
               {shipment.history.map((event, index) => (
                 <div key={index} className="flex gap-3 sm:gap-4">
@@ -239,7 +351,9 @@ export const ShipmentDetail: React.FC = () => {
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="mb-1 flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
-                      <span className="font-bold text-gray-900">{event.status}</span>
+                      <span className="font-bold text-gray-900">
+                        {event.status}
+                      </span>
                       <span className="text-xs text-gray-600 sm:text-sm">
                         {formatDate(event.created_at)}
                       </span>

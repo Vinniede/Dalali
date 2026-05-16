@@ -282,11 +282,12 @@ class ShipmentService {
     );
 
     const originBranchName = await this.getBranchName(shipment.origin_branch_id);
-    const originDisplay = originBranchName || shipment.origin_country || null;
+    const latestHistory = historyResult.rows[historyResult.rows.length - 1] || null;
 
     return {
       ...shipment,
-      origin_branch_name: originDisplay,
+      origin_branch_name: originBranchName,
+      latest_update: latestHistory,
       history: historyResult.rows,
     };
   }

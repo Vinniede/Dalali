@@ -14,6 +14,7 @@ interface Shipment {
   receiver_phone?: string;
   receiver_address?: string;
   origin_branch_id: string | null;
+  origin_branch_name?: string;
   origin_country?: string;
   destination: string;
   cargo_description?: string;
@@ -22,6 +23,8 @@ interface Shipment {
   service_type?: string;
   current_status: string;
   created_at: string;
+  latest_update?: any;
+  history?: any[];
 }
 
 interface Branch {
@@ -221,31 +224,204 @@ const WORLD_DESTINATIONS = [
 
 // List of all countries for origin country selection
 const COUNTRIES = [
-  "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Argentina", "Armenia", "Australia",
-  "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium",
-  "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei",
-  "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada", "Cape Verde", "Central African Republic",
-  "Chad", "Chile", "China", "Colombia", "Comoros", "Congo", "Costa Rica", "Côte d'Ivoire",
-  "Croatia", "Cuba", "Cyprus", "Czech Republic", "Democratic Republic of Congo", "Denmark", "Djibouti", "Dominica",
-  "Dominican Republic", "East Timor", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia",
-  "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany",
-  "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti",
-  "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq",
-  "Ireland", "Israel", "Italy", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya",
-  "Kiribati", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia",
-  "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", "Malaysia", "Maldives",
-  "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova",
-  "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru",
-  "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia",
-  "Norway", "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay",
-  "Peru", "Philippines", "Poland", "Portugal", "Qatar", "Republic of Congo", "Republic of Korea", "Republic of South Sudan",
-  "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino",
-  "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia",
-  "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "Sudan",
-  "Suriname", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand",
-  "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu",
-  "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu",
-  "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+  "Afghanistan",
+  "Albania",
+  "Algeria",
+  "Andorra",
+  "Angola",
+  "Argentina",
+  "Armenia",
+  "Australia",
+  "Austria",
+  "Azerbaijan",
+  "Bahamas",
+  "Bahrain",
+  "Bangladesh",
+  "Barbados",
+  "Belarus",
+  "Belgium",
+  "Belize",
+  "Benin",
+  "Bhutan",
+  "Bolivia",
+  "Bosnia and Herzegovina",
+  "Botswana",
+  "Brazil",
+  "Brunei",
+  "Bulgaria",
+  "Burkina Faso",
+  "Burundi",
+  "Cambodia",
+  "Cameroon",
+  "Canada",
+  "Cape Verde",
+  "Central African Republic",
+  "Chad",
+  "Chile",
+  "China",
+  "Colombia",
+  "Comoros",
+  "Congo",
+  "Costa Rica",
+  "Côte d'Ivoire",
+  "Croatia",
+  "Cuba",
+  "Cyprus",
+  "Czech Republic",
+  "Democratic Republic of Congo",
+  "Denmark",
+  "Djibouti",
+  "Dominica",
+  "Dominican Republic",
+  "East Timor",
+  "Ecuador",
+  "Egypt",
+  "El Salvador",
+  "Equatorial Guinea",
+  "Eritrea",
+  "Estonia",
+  "Ethiopia",
+  "Fiji",
+  "Finland",
+  "France",
+  "Gabon",
+  "Gambia",
+  "Georgia",
+  "Germany",
+  "Ghana",
+  "Greece",
+  "Grenada",
+  "Guatemala",
+  "Guinea",
+  "Guinea-Bissau",
+  "Guyana",
+  "Haiti",
+  "Honduras",
+  "Hong Kong",
+  "Hungary",
+  "Iceland",
+  "India",
+  "Indonesia",
+  "Iran",
+  "Iraq",
+  "Ireland",
+  "Israel",
+  "Italy",
+  "Jamaica",
+  "Japan",
+  "Jordan",
+  "Kazakhstan",
+  "Kenya",
+  "Kiribati",
+  "Kuwait",
+  "Kyrgyzstan",
+  "Laos",
+  "Latvia",
+  "Lebanon",
+  "Lesotho",
+  "Liberia",
+  "Libya",
+  "Liechtenstein",
+  "Lithuania",
+  "Luxembourg",
+  "Madagascar",
+  "Malawi",
+  "Malaysia",
+  "Maldives",
+  "Mali",
+  "Malta",
+  "Marshall Islands",
+  "Mauritania",
+  "Mauritius",
+  "Mexico",
+  "Micronesia",
+  "Moldova",
+  "Monaco",
+  "Mongolia",
+  "Montenegro",
+  "Morocco",
+  "Mozambique",
+  "Myanmar",
+  "Namibia",
+  "Nauru",
+  "Nepal",
+  "Netherlands",
+  "New Zealand",
+  "Nicaragua",
+  "Niger",
+  "Nigeria",
+  "North Korea",
+  "North Macedonia",
+  "Norway",
+  "Oman",
+  "Pakistan",
+  "Palau",
+  "Palestine",
+  "Panama",
+  "Papua New Guinea",
+  "Paraguay",
+  "Peru",
+  "Philippines",
+  "Poland",
+  "Portugal",
+  "Qatar",
+  "Republic of Congo",
+  "Republic of Korea",
+  "Republic of South Sudan",
+  "Romania",
+  "Russia",
+  "Rwanda",
+  "Saint Kitts and Nevis",
+  "Saint Lucia",
+  "Saint Vincent and the Grenadines",
+  "Samoa",
+  "San Marino",
+  "Sao Tome and Principe",
+  "Saudi Arabia",
+  "Senegal",
+  "Serbia",
+  "Seychelles",
+  "Sierra Leone",
+  "Singapore",
+  "Slovakia",
+  "Slovenia",
+  "Solomon Islands",
+  "Somalia",
+  "South Africa",
+  "South Sudan",
+  "Spain",
+  "Sri Lanka",
+  "Sudan",
+  "Suriname",
+  "Sweden",
+  "Switzerland",
+  "Syria",
+  "Taiwan",
+  "Tajikistan",
+  "Tanzania",
+  "Thailand",
+  "Timor-Leste",
+  "Togo",
+  "Tonga",
+  "Trinidad and Tobago",
+  "Tunisia",
+  "Turkey",
+  "Turkmenistan",
+  "Tuvalu",
+  "Uganda",
+  "Ukraine",
+  "United Arab Emirates",
+  "United Kingdom",
+  "United States",
+  "Uruguay",
+  "Uzbekistan",
+  "Vanuatu",
+  "Vatican City",
+  "Venezuela",
+  "Vietnam",
+  "Yemen",
+  "Zambia",
+  "Zimbabwe",
 ].sort();
 
 export const SuperAdminShipments: React.FC = () => {
@@ -258,19 +434,62 @@ export const SuperAdminShipments: React.FC = () => {
   const [error, setError] = React.useState("");
   const [success, setSuccess] = React.useState("");
   const [showCreateForm, setShowCreateForm] = React.useState(false);
-  const [editingShipmentId, setEditingShipmentId] = React.useState<string | null>(null);
-  const [formData, setFormData] = React.useState<ShipmentFormData>(initialFormData);
+  const [editingShipmentId, setEditingShipmentId] = React.useState<
+    string | null
+  >(null);
+  const [formData, setFormData] =
+    React.useState<ShipmentFormData>(initialFormData);
 
   const menuItems = [
-    { id: "overview", label: "Overview", icon: "📊", path: "/admin/super/overview" },
-    { id: "shipments", label: "Shipments", icon: "📦", path: "/admin/super/shipments" },
+    {
+      id: "overview",
+      label: "Overview",
+      icon: "📊",
+      path: "/admin/super/overview",
+    },
+    {
+      id: "shipments",
+      label: "Shipments",
+      icon: "📦",
+      path: "/admin/super/shipments",
+    },
     { id: "users", label: "Users", icon: "👥", path: "/admin/super/users" },
-    { id: "branches", label: "Branches", icon: "🏢", path: "/admin/super/branches" },
-    { id: "services", label: "Services", icon: "🚚", path: "/admin/super/services" },
-    { id: "tracking", label: "Tracking Control", icon: "📍", path: "/admin/super/tracking" },
-    { id: "reports", label: "Reports", icon: "📈", path: "/admin/super/reports" },
-    { id: "notifications", label: "Notifications", icon: "🔔", path: "/admin/super/notifications" },
-    { id: "settings", label: "Settings", icon: "⚙️", path: "/admin/super/settings" },
+    {
+      id: "branches",
+      label: "Branches",
+      icon: "🏢",
+      path: "/admin/super/branches",
+    },
+    {
+      id: "services",
+      label: "Services",
+      icon: "🚚",
+      path: "/admin/super/services",
+    },
+    {
+      id: "tracking",
+      label: "Tracking Control",
+      icon: "📍",
+      path: "/admin/super/tracking",
+    },
+    {
+      id: "reports",
+      label: "Reports",
+      icon: "📈",
+      path: "/admin/super/reports",
+    },
+    {
+      id: "notifications",
+      label: "Notifications",
+      icon: "🔔",
+      path: "/admin/super/notifications",
+    },
+    {
+      id: "settings",
+      label: "Settings",
+      icon: "⚙️",
+      path: "/admin/super/settings",
+    },
   ];
 
   React.useEffect(() => {
@@ -311,7 +530,12 @@ export const SuperAdminShipments: React.FC = () => {
     setError("");
     setSuccess("");
 
-    if (!formData.senderName || !formData.receiverName || !formData.originCountry || !formData.destination) {
+    if (
+      !formData.senderName ||
+      !formData.receiverName ||
+      !formData.originCountry ||
+      !formData.destination
+    ) {
       setError("Please fill in all required fields");
       return;
     }
@@ -337,11 +561,18 @@ export const SuperAdminShipments: React.FC = () => {
       };
 
       if (editingShipmentId) {
-        const response = await shipmentService.updateShipment(editingShipmentId, payload);
-        setSuccess(`Shipment ${response.data.tracking_number} updated successfully`);
+        const response = await shipmentService.updateShipment(
+          editingShipmentId,
+          payload,
+        );
+        setSuccess(
+          `Shipment ${response.data.tracking_number} updated successfully`,
+        );
       } else {
         const response = await shipmentService.createShipment(payload);
-        setSuccess(`Shipment created successfully. Tracking: ${response.data.tracking_number}`);
+        setSuccess(
+          `Shipment created successfully. Tracking: ${response.data.tracking_number}`,
+        );
       }
 
       resetForm();
@@ -379,7 +610,9 @@ export const SuperAdminShipments: React.FC = () => {
       setShowCreateForm(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to load shipment details");
+      setError(
+        err.response?.data?.message || "Failed to load shipment details",
+      );
     } finally {
       setSaving(false);
     }
@@ -387,7 +620,7 @@ export const SuperAdminShipments: React.FC = () => {
 
   const handleDeleteShipment = async (shipment: Shipment) => {
     const confirmed = window.confirm(
-      `Delete shipment ${shipment.tracking_number}? This action cannot be undone.`
+      `Delete shipment ${shipment.tracking_number}? This action cannot be undone.`,
     );
     if (!confirmed) return;
 
@@ -423,7 +656,9 @@ export const SuperAdminShipments: React.FC = () => {
 
   const filteredShipments = shipments.filter((shipment) => {
     if (filter === "all") return true;
-    return shipment.current_status.toLowerCase().replace(/\s+/g, "-") === filter;
+    return (
+      shipment.current_status.toLowerCase().replace(/\s+/g, "-") === filter
+    );
   });
 
   return (
@@ -465,7 +700,9 @@ export const SuperAdminShipments: React.FC = () => {
               }}
               className="w-full rounded-lg bg-white px-4 py-3 font-bold text-blue-600 transition hover:bg-gray-100 sm:w-auto sm:px-6"
             >
-              {showCreateForm || editingShipmentId ? "Close Form" : "+ Create Shipment"}
+              {showCreateForm || editingShipmentId
+                ? "Close Form"
+                : "+ Create Shipment"}
             </button>
           </div>
         </div>
@@ -473,76 +710,190 @@ export const SuperAdminShipments: React.FC = () => {
         {(showCreateForm || editingShipmentId) && (
           <div className="rounded-lg bg-white p-4 shadow sm:p-6">
             <h3 className="mb-6 text-lg font-bold text-gray-900">
-              {editingShipmentId ? "Edit Shipment Details" : "Create New Shipment"}
+              {editingShipmentId
+                ? "Edit Shipment Details"
+                : "Create New Shipment"}
             </h3>
             <form onSubmit={saveShipment} className="space-y-4">
               <div className="rounded-lg bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 p-4">
-                <label className="mb-2 block text-sm font-bold text-gray-700">🆔 Order/Tracking Number (Optional)</label>
+                <label className="mb-2 block text-sm font-bold text-gray-700">
+                  🆔 Order/Tracking Number (Optional)
+                </label>
                 <input
                   type="text"
                   placeholder="Leave empty for auto-generated number"
                   value={formData.trackingNumber}
-                  onChange={(e) => setFormData({ ...formData, trackingNumber: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, trackingNumber: e.target.value })
+                  }
                   className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                <p className="text-xs text-gray-600 mt-2">💡 If you leave empty, a unique number will be generated automatically</p>
+                <p className="text-xs text-gray-600 mt-2">
+                  💡 If you leave empty, a unique number will be generated
+                  automatically
+                </p>
               </div>
 
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                 <div>
-                  <label className="mb-2 block text-sm font-bold text-gray-700">Sender Name *</label>
-                  <input type="text" value={formData.senderName} onChange={(e) => setFormData({ ...formData, senderName: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+                  <label className="mb-2 block text-sm font-bold text-gray-700">
+                    Sender Name *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.senderName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, senderName: e.target.value })
+                    }
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
                 </div>
                 <div>
-                  <label className="mb-2 block text-sm font-bold text-gray-700">Sender Phone</label>
-                  <input type="text" value={formData.senderPhone} onChange={(e) => setFormData({ ...formData, senderPhone: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                  <label className="mb-2 block text-sm font-bold text-gray-700">
+                    Sender Phone
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.senderPhone}
+                    onChange={(e) =>
+                      setFormData({ ...formData, senderPhone: e.target.value })
+                    }
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
                 <div>
-                  <label className="mb-2 block text-sm font-bold text-gray-700">Sender Address</label>
-                  <input type="text" value={formData.senderAddress} onChange={(e) => setFormData({ ...formData, senderAddress: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                  <label className="mb-2 block text-sm font-bold text-gray-700">
+                    Sender Address
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.senderAddress}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        senderAddress: e.target.value,
+                      })
+                    }
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
                 <div>
-                  <label className="mb-2 block text-sm font-bold text-gray-700">Receiver Name *</label>
-                  <input type="text" value={formData.receiverName} onChange={(e) => setFormData({ ...formData, receiverName: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+                  <label className="mb-2 block text-sm font-bold text-gray-700">
+                    Receiver Name *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.receiverName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, receiverName: e.target.value })
+                    }
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
                 </div>
                 <div>
-                  <label className="mb-2 block text-sm font-bold text-gray-700">Receiver Phone</label>
-                  <input type="text" value={formData.receiverPhone} onChange={(e) => setFormData({ ...formData, receiverPhone: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                  <label className="mb-2 block text-sm font-bold text-gray-700">
+                    Receiver Phone
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.receiverPhone}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        receiverPhone: e.target.value,
+                      })
+                    }
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
                 <div>
-                  <label className="mb-2 block text-sm font-bold text-gray-700">Receiver Address</label>
-                  <input type="text" value={formData.receiverAddress} onChange={(e) => setFormData({ ...formData, receiverAddress: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                  <label className="mb-2 block text-sm font-bold text-gray-700">
+                    Receiver Address
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.receiverAddress}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        receiverAddress: e.target.value,
+                      })
+                    }
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
                 <div>
-                  <label className="mb-2 block text-sm font-bold text-gray-700">Country of Origin *</label>
-                  <select value={formData.originCountry} onChange={(e) => setFormData({ ...formData, originCountry: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required disabled={!!editingShipmentId}>
+                  <label className="mb-2 block text-sm font-bold text-gray-700">
+                    Country of Origin *
+                  </label>
+                  <select
+                    value={formData.originCountry}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        originCountry: e.target.value,
+                      })
+                    }
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                    disabled={!!editingShipmentId}
+                  >
                     <option value="">Select country of origin</option>
                     {COUNTRIES.map((country) => (
-                      <option key={country} value={country}>{country}</option>
+                      <option key={country} value={country}>
+                        {country}
+                      </option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label className="mb-2 block text-sm font-bold text-gray-700">Destination *</label>
-                  <select value={formData.destination} onChange={(e) => setFormData({ ...formData, destination: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                    <option value="">Select destination (City or Country)</option>
+                  <label className="mb-2 block text-sm font-bold text-gray-700">
+                    Destination *
+                  </label>
+                  <select
+                    value={formData.destination}
+                    onChange={(e) =>
+                      setFormData({ ...formData, destination: e.target.value })
+                    }
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  >
+                    <option value="">
+                      Select destination (City or Country)
+                    </option>
                     <optgroup label="📍 Branch Offices (Recommended)">
                       {branches.map((branch) => (
-                        <option key={branch.id} value={branch.name}>{branch.name}</option>
+                        <option key={branch.id} value={branch.name}>
+                          {branch.name}
+                        </option>
                       ))}
                     </optgroup>
                     <optgroup label="🌍 Worldwide Destinations">
                       {WORLD_DESTINATIONS.map((destination) => (
-                        <option key={destination} value={destination}>{destination}</option>
+                        <option key={destination} value={destination}>
+                          {destination}
+                        </option>
                       ))}
                     </optgroup>
                   </select>
                 </div>
                 <div>
-                  <label className="mb-2 block text-sm font-bold text-gray-700">Service Type</label>
-                  <select value={formData.serviceType} onChange={(e) => setFormData({ ...formData, serviceType: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <label className="mb-2 block text-sm font-bold text-gray-700">
+                    Service Type
+                  </label>
+                  <select
+                    value={formData.serviceType}
+                    onChange={(e) =>
+                      setFormData({ ...formData, serviceType: e.target.value })
+                    }
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
                     {SERVICE_TYPES.map((type) => (
-                      <option key={type} value={type}>{type}</option>
+                      <option key={type} value={type}>
+                        {type}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -552,12 +903,19 @@ export const SuperAdminShipments: React.FC = () => {
                   </label>
                   <select
                     value={formData.status}
-                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, status: e.target.value })
+                    }
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   >
-                    {(editingShipmentId ? EDIT_STATUS_OPTIONS : CREATE_STATUS_OPTIONS).map((status) => (
-                      <option key={status} value={status}>{status}</option>
+                    {(editingShipmentId
+                      ? EDIT_STATUS_OPTIONS
+                      : CREATE_STATUS_OPTIONS
+                    ).map((status) => (
+                      <option key={status} value={status}>
+                        {status}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -565,24 +923,70 @@ export const SuperAdminShipments: React.FC = () => {
 
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-[2fr_1fr_1fr]">
                 <div>
-                  <label className="mb-2 block text-sm font-bold text-gray-700">Description</label>
-                  <textarea value={formData.cargoDescription} onChange={(e) => setFormData({ ...formData, cargoDescription: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500" rows={4} />
+                  <label className="mb-2 block text-sm font-bold text-gray-700">
+                    Description
+                  </label>
+                  <textarea
+                    value={formData.cargoDescription}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        cargoDescription: e.target.value,
+                      })
+                    }
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    rows={4}
+                  />
                 </div>
                 <div>
-                  <label className="mb-2 block text-sm font-bold text-gray-700">Weight (kg)</label>
-                  <input type="number" min="0" step="0.01" value={formData.weight} onChange={(e) => setFormData({ ...formData, weight: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                  <label className="mb-2 block text-sm font-bold text-gray-700">
+                    Weight (kg)
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={formData.weight}
+                    onChange={(e) =>
+                      setFormData({ ...formData, weight: e.target.value })
+                    }
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
                 <div>
-                  <label className="mb-2 block text-sm font-bold text-gray-700">Volume</label>
-                  <input type="number" min="0" step="0.01" value={formData.volume} onChange={(e) => setFormData({ ...formData, volume: e.target.value })} className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                  <label className="mb-2 block text-sm font-bold text-gray-700">
+                    Volume
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={formData.volume}
+                    onChange={(e) =>
+                      setFormData({ ...formData, volume: e.target.value })
+                    }
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
               </div>
 
               <div className="flex flex-col gap-3 sm:flex-row">
-                <button type="submit" disabled={saving} className="rounded-lg bg-green-600 px-6 py-3 font-medium text-white transition hover:bg-green-700 disabled:opacity-50">
-                  {saving ? "Saving..." : editingShipmentId ? "Save Shipment Changes" : "Create Shipment"}
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="rounded-lg bg-green-600 px-6 py-3 font-medium text-white transition hover:bg-green-700 disabled:opacity-50"
+                >
+                  {saving
+                    ? "Saving..."
+                    : editingShipmentId
+                      ? "Save Shipment Changes"
+                      : "Create Shipment"}
                 </button>
-                <button type="button" onClick={resetForm} className="rounded-lg bg-gray-100 px-6 py-3 font-medium text-gray-700 transition hover:bg-gray-200">
+                <button
+                  type="button"
+                  onClick={resetForm}
+                  className="rounded-lg bg-gray-100 px-6 py-3 font-medium text-gray-700 transition hover:bg-gray-200"
+                >
                   Cancel
                 </button>
               </div>
@@ -591,7 +995,9 @@ export const SuperAdminShipments: React.FC = () => {
         )}
 
         <div className="rounded-lg bg-white p-4 shadow sm:p-6">
-          <h3 className="mb-4 text-lg font-bold text-gray-900">Filter Shipments</h3>
+          <h3 className="mb-4 text-lg font-bold text-gray-900">
+            Filter Shipments
+          </h3>
           <div className="flex flex-wrap gap-2 sm:gap-3">
             {[
               { id: "all", label: "All", active: "bg-blue-600" },
@@ -600,7 +1006,11 @@ export const SuperAdminShipments: React.FC = () => {
               { id: "delivered", label: "Delivered", active: "bg-green-600" },
               { id: "delayed", label: "Delayed", active: "bg-red-600" },
             ].map((item) => (
-              <button key={item.id} onClick={() => setFilter(item.id)} className={`rounded-lg px-4 py-2 text-sm font-medium transition ${filter === item.id ? `${item.active} text-white` : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}>
+              <button
+                key={item.id}
+                onClick={() => setFilter(item.id)}
+                className={`rounded-lg px-4 py-2 text-sm font-medium transition ${filter === item.id ? `${item.active} text-white` : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+              >
                 {item.label}
               </button>
             ))}
@@ -609,40 +1019,94 @@ export const SuperAdminShipments: React.FC = () => {
 
         <div className="rounded-lg bg-white shadow">
           {loading ? (
-            <div className="p-6 text-center text-gray-600">Loading shipments...</div>
+            <div className="p-6 text-center text-gray-600">
+              Loading shipments...
+            </div>
           ) : filteredShipments.length === 0 ? (
-            <div className="p-6 text-center text-gray-600">No shipments found</div>
+            <div className="p-6 text-center text-gray-600">
+              No shipments found
+            </div>
           ) : (
             <>
               <div className="hidden overflow-x-auto lg:block">
                 <table className="w-full">
                   <thead className="border-b bg-gray-50">
                     <tr>
-                      <th className="px-6 py-4 text-left font-bold text-gray-700">Tracking Number</th>
-                      <th className="px-6 py-4 text-left font-bold text-gray-700">Sender</th>
-                      <th className="px-6 py-4 text-left font-bold text-gray-700">Receiver</th>
-                      <th className="px-6 py-4 text-left font-bold text-gray-700">Destination</th>
-                      <th className="px-6 py-4 text-left font-bold text-gray-700">Status</th>
-                      <th className="px-6 py-4 text-left font-bold text-gray-700">Created</th>
-                      <th className="px-6 py-4 text-left font-bold text-gray-700">Actions</th>
+                      <th className="px-6 py-4 text-left font-bold text-gray-700">
+                        Tracking Number
+                      </th>
+                      <th className="px-6 py-4 text-left font-bold text-gray-700">
+                        Sender
+                      </th>
+                      <th className="px-6 py-4 text-left font-bold text-gray-700">
+                        Receiver
+                      </th>
+                      <th className="px-6 py-4 text-left font-bold text-gray-700">
+                        Destination
+                      </th>
+                      <th className="px-6 py-4 text-left font-bold text-gray-700">
+                        Status
+                      </th>
+                      <th className="px-6 py-4 text-left font-bold text-gray-700">
+                        Created
+                      </th>
+                      <th className="px-6 py-4 text-left font-bold text-gray-700">
+                        Actions
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredShipments.map((shipment) => (
-                      <tr key={shipment.id} className="border-b transition hover:bg-gray-50">
-                        <td className="px-6 py-4 font-bold text-blue-600">{shipment.tracking_number}</td>
-                        <td className="px-6 py-4 text-gray-700">{shipment.sender_name}</td>
-                        <td className="px-6 py-4 text-gray-700">{shipment.receiver_name}</td>
-                        <td className="px-6 py-4 text-gray-700">{shipment.destination}</td>
-                        <td className="px-6 py-4">
-                          <span className={`rounded-full px-3 py-1 text-sm font-medium ${getStatusColor(shipment.current_status)}`}>{shipment.current_status}</span>
+                      <tr
+                        key={shipment.id}
+                        className="border-b transition hover:bg-gray-50"
+                      >
+                        <td className="px-6 py-4 font-bold text-blue-600">
+                          {shipment.tracking_number}
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-600">{new Date(shipment.created_at).toLocaleDateString()}</td>
+                        <td className="px-6 py-4 text-gray-700">
+                          {shipment.sender_name}
+                        </td>
+                        <td className="px-6 py-4 text-gray-700">
+                          {shipment.receiver_name}
+                        </td>
+                        <td className="px-6 py-4 text-gray-700">
+                          {shipment.destination}
+                        </td>
+                        <td className="px-6 py-4">
+                          <span
+                            className={`rounded-full px-3 py-1 text-sm font-medium ${getStatusColor(shipment.current_status)}`}
+                          >
+                            {shipment.current_status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-600">
+                          {new Date(shipment.created_at).toLocaleDateString()}
+                        </td>
                         <td className="px-6 py-4">
                           <div className="flex flex-wrap gap-2">
-                            <button onClick={() => navigate(`/admin/branch/shipments/${shipment.id}`)} className="rounded-lg bg-blue-100 px-3 py-2 text-xs font-bold text-blue-700 transition hover:bg-blue-200">View</button>
-                            <button onClick={() => handleEditShipment(shipment.id)} className="rounded-lg bg-amber-100 px-3 py-2 text-xs font-bold text-amber-700 transition hover:bg-amber-200">Edit</button>
-                            <button onClick={() => handleDeleteShipment(shipment)} className="rounded-lg bg-red-100 px-3 py-2 text-xs font-bold text-red-700 transition hover:bg-red-200">Delete</button>
+                            <button
+                              onClick={() =>
+                                navigate(
+                                  `/admin/branch/shipments/${shipment.id}`,
+                                )
+                              }
+                              className="rounded-lg bg-blue-100 px-3 py-2 text-xs font-bold text-blue-700 transition hover:bg-blue-200"
+                            >
+                              View
+                            </button>
+                            <button
+                              onClick={() => handleEditShipment(shipment.id)}
+                              className="rounded-lg bg-amber-100 px-3 py-2 text-xs font-bold text-amber-700 transition hover:bg-amber-200"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteShipment(shipment)}
+                              className="rounded-lg bg-red-100 px-3 py-2 text-xs font-bold text-red-700 transition hover:bg-red-200"
+                            >
+                              Delete
+                            </button>
                           </div>
                         </td>
                       </tr>
@@ -653,23 +1117,60 @@ export const SuperAdminShipments: React.FC = () => {
 
               <div className="grid grid-cols-1 gap-4 p-4 lg:hidden">
                 {filteredShipments.map((shipment) => (
-                  <div key={shipment.id} className="rounded-lg border border-gray-200 p-4 shadow-sm">
+                  <div
+                    key={shipment.id}
+                    className="rounded-lg border border-gray-200 p-4 shadow-sm"
+                  >
                     <div className="mb-3 flex items-start justify-between gap-3">
                       <div className="min-w-0">
-                        <p className="break-all text-sm font-bold text-blue-600">{shipment.tracking_number}</p>
-                        <p className="mt-1 text-xs text-gray-500">{new Date(shipment.created_at).toLocaleDateString()}</p>
+                        <p className="break-all text-sm font-bold text-blue-600">
+                          {shipment.tracking_number}
+                        </p>
+                        <p className="mt-1 text-xs text-gray-500">
+                          {new Date(shipment.created_at).toLocaleDateString()}
+                        </p>
                       </div>
-                      <span className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusColor(shipment.current_status)}`}>{shipment.current_status}</span>
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusColor(shipment.current_status)}`}
+                      >
+                        {shipment.current_status}
+                      </span>
                     </div>
                     <div className="space-y-2 text-sm text-gray-700">
-                      <p><span className="font-semibold">Sender:</span> {shipment.sender_name}</p>
-                      <p><span className="font-semibold">Receiver:</span> {shipment.receiver_name}</p>
-                      <p><span className="font-semibold">Destination:</span> {shipment.destination}</p>
+                      <p>
+                        <span className="font-semibold">Sender:</span>{" "}
+                        {shipment.sender_name}
+                      </p>
+                      <p>
+                        <span className="font-semibold">Receiver:</span>{" "}
+                        {shipment.receiver_name}
+                      </p>
+                      <p>
+                        <span className="font-semibold">Destination:</span>{" "}
+                        {shipment.destination}
+                      </p>
                     </div>
                     <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-                      <button onClick={() => navigate(`/admin/branch/shipments/${shipment.id}`)} className="rounded-lg bg-blue-100 px-3 py-2 text-sm font-bold text-blue-700 transition hover:bg-blue-200">View</button>
-                      <button onClick={() => handleEditShipment(shipment.id)} className="rounded-lg bg-amber-100 px-3 py-2 text-sm font-bold text-amber-700 transition hover:bg-amber-200">Edit</button>
-                      <button onClick={() => handleDeleteShipment(shipment)} className="rounded-lg bg-red-100 px-3 py-2 text-sm font-bold text-red-700 transition hover:bg-red-200">Delete</button>
+                      <button
+                        onClick={() =>
+                          navigate(`/admin/branch/shipments/${shipment.id}`)
+                        }
+                        className="rounded-lg bg-blue-100 px-3 py-2 text-sm font-bold text-blue-700 transition hover:bg-blue-200"
+                      >
+                        View
+                      </button>
+                      <button
+                        onClick={() => handleEditShipment(shipment.id)}
+                        className="rounded-lg bg-amber-100 px-3 py-2 text-sm font-bold text-amber-700 transition hover:bg-amber-200"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDeleteShipment(shipment)}
+                        className="rounded-lg bg-red-100 px-3 py-2 text-sm font-bold text-red-700 transition hover:bg-red-200"
+                      >
+                        Delete
+                      </button>
                     </div>
                   </div>
                 ))}
