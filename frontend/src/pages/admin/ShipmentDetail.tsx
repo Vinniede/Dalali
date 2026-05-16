@@ -23,6 +23,7 @@ interface Shipment {
   volume?: number;
   service_type?: string;
   current_status: string;
+  current_location?: string;
   created_at: string;
   latest_update?: any;
   history?: any[];
@@ -287,7 +288,8 @@ export const ShipmentDetail: React.FC = () => {
                 Current Location
               </p>
               <p className="font-semibold text-gray-900">
-                {shipment.latest_update?.location ||
+                {shipment.current_location ||
+                  shipment.latest_update?.location ||
                   shipment.origin_country ||
                   "N/A"}
               </p>

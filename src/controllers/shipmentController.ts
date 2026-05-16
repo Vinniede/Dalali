@@ -100,16 +100,21 @@ class ShipmentController {
   async updateShipmentStatus(req: AuthRequest, res: Response, next: NextFunction): Promise<void> {
     try {
       const { shipmentId } = req.params;
-      const { status, branchId, description } = req.body;
+      const { status, branchId, location, description } = req.body;
 
-      if (!status || !branchId) {
-        throw new AppError('Status and branchId are required', 400);
+      if (!status) {
+        throw new AppError('Status is required', 400);
+      }
+
+      if (req.user!.role === 'branch_admin' && !branchId) {
+        throw new AppError('Branch ID is required for branch admins', 400);
       }
 
       const history = await shipmentService.updateShipmentStatus(
         shipmentId,
         status,
         branchId,
+        location,
         description,
         req.user!.id,
         req.user!.role,

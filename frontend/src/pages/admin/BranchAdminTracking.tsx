@@ -9,9 +9,11 @@ interface Shipment {
   tracking_number: string;
   destination: string;
   current_status: string;
+  current_location?: string;
   created_at: string;
   history?: Array<{
     id: string;
+    location?: string;
     status: string;
     description: string;
     created_at: string;
@@ -24,6 +26,7 @@ export const BranchAdminTracking: React.FC = () => {
   const [trackingId, setTrackingId] = React.useState('');
   const [selectedShipment, setSelectedShipment] = React.useState<Shipment | null>(null);
   const [status, setStatus] = React.useState('In Transit');
+  const [currentLocation, setCurrentLocation] = React.useState('');
   const [notes, setNotes] = React.useState('');
   const [shipments, setShipments] = React.useState<Shipment[]>([]);
   const [loading, setLoading] = React.useState(false);
@@ -72,6 +75,12 @@ export const BranchAdminTracking: React.FC = () => {
       const response = await shipmentService.trackShipment(trackingId);
       setSelectedShipment(response.data);
       setStatus(response.data.current_status);
+      setCurrentLocation(
+        response.data.latest_update?.location ||
+          response.data.current_location ||
+          response.data.destination ||
+          ''
+      );
       setNotes('');
     } catch (err: any) {
       setError('Shipment not found');
@@ -95,12 +104,14 @@ export const BranchAdminTracking: React.FC = () => {
         selectedShipment.id,
         status,
         user?.branch_id || '',
+        currentLocation,
         notes
       );
       setSuccess('✅ Shipment status updated successfully!');
       setSelectedShipment(null);
       setTrackingId('');
       setStatus('In Transit');
+      setCurrentLocation('');
       setNotes('');
       fetchShipments();
       setTimeout(() => setSuccess(''), 3000);
@@ -176,6 +187,12 @@ export const BranchAdminTracking: React.FC = () => {
                   <p className="text-xs font-bold text-gray-600 uppercase tracking-widest">Destination</p>
                   <p className="font-semibold text-gray-900 mt-2">{selectedShipment.destination}</p>
                 </div>
+                <div>
+                  <p className="text-xs font-bold text-gray-600 uppercase tracking-widest">Current Location</p>
+                  <p className="font-semibold text-gray-900 mt-2">
+                    {currentLocation || selectedShipment.current_location || 'Not set'}
+                  </p>
+                </div>
               </div>
 
               <div>
@@ -191,6 +208,17 @@ export const BranchAdminTracking: React.FC = () => {
                   <option value="Delivered">✅ Delivered</option>
                   <option value="Failed Delivery">❌ Failed Delivery</option>
                 </select>
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-2 uppercase tracking-wide">Current Location</label>
+                <input
+                  type="text"
+                  value={currentLocation}
+                  onChange={(e) => setCurrentLocation(e.target.value)}
+                  placeholder="e.g., Kampala transit hub"
+                  className="input-field"
+                />
+                <p className="text-xs text-gray-500 mt-1">Update where the shipment has currently reached</p>
               </div>
               <div>
                 <label className="block text-sm font-bold text-gray-900 mb-2 uppercase tracking-wide">Notes (Optional)</label>
@@ -249,6 +277,7 @@ export const BranchAdminTracking: React.FC = () => {
                     setSelectedShipment(shipment);
                     setTrackingId(shipment.tracking_number);
                     setStatus(shipment.current_status);
+                    setCurrentLocation(shipment.current_location || '');
                   }}
                   className={`w-full flex justify-between items-center pb-3 border-b last:border-b-0 p-3 rounded-lg transition-all duration-200 ${
                     selectedShipment?.id === shipment.id

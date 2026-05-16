@@ -22,6 +22,7 @@ interface Shipment {
   volume?: number;
   service_type?: string;
   current_status: string;
+  current_location?: string;
   created_at: string;
   latest_update?: any;
   history?: any[];
@@ -1048,6 +1049,9 @@ export const SuperAdminShipments: React.FC = () => {
                         Status
                       </th>
                       <th className="px-6 py-4 text-left font-bold text-gray-700">
+                        Current Location
+                      </th>
+                      <th className="px-6 py-4 text-left font-bold text-gray-700">
                         Created
                       </th>
                       <th className="px-6 py-4 text-left font-bold text-gray-700">
@@ -1079,6 +1083,11 @@ export const SuperAdminShipments: React.FC = () => {
                           >
                             {shipment.current_status}
                           </span>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-700">
+                          {shipment.current_location ||
+                            shipment.origin_country ||
+                            "N/A"}
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-600">
                           {new Date(shipment.created_at).toLocaleDateString()}
@@ -1148,6 +1157,12 @@ export const SuperAdminShipments: React.FC = () => {
                       <p>
                         <span className="font-semibold">Destination:</span>{" "}
                         {shipment.destination}
+                      </p>
+                      <p>
+                        <span className="font-semibold">Current Location:</span>{" "}
+                        {shipment.current_location ||
+                          shipment.origin_country ||
+                          "N/A"}
                       </p>
                     </div>
                     <div className="mt-4 flex flex-col gap-2 sm:flex-row">

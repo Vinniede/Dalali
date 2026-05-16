@@ -24,6 +24,7 @@ interface Shipment {
   volume?: number;
   service_type?: string;
   current_status: string;
+  current_location?: string;
   created_at: string;
   latest_update?: any;
   history?: any[];
@@ -1012,6 +1013,9 @@ export const BranchAdminShipments: React.FC = () => {
                       Status
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">
+                      Current Location
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">
                       Created
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">
@@ -1065,6 +1069,9 @@ export const BranchAdminShipments: React.FC = () => {
                           >
                             {shipment.current_status}
                           </span>
+                        </td>
+                        <td className="px-6 py-4 text-gray-700 text-sm">
+                          {shipment.current_location || shipment.origin_country || "N/A"}
                         </td>
                         <td className="px-6 py-4 text-gray-700 text-sm">
                           {formatDate(shipment.created_at)}

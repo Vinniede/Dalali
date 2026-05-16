@@ -251,9 +251,29 @@ class ShipmentService {
     params.push(limit, offset);
 
     const result = await pool.query(query, params);
+    const shipmentsWithLocation = await Promise.all(
+      result.rows.map(async (shipment) => {
+        const historyResult = await pool.query(
+          `SELECT location, created_at
+           FROM tracking_history
+           WHERE shipment_id = $1
+           ORDER BY created_at DESC
+           LIMIT 1`,
+          [shipment.id]
+        );
+
+        return {
+          ...shipment,
+          current_location:
+            historyResult.rows[0]?.location ||
+            shipment.origin_country ||
+            shipment.destination,
+        };
+      })
+    );
 
     return {
-      shipments: result.rows,
+      shipments: shipmentsWithLocation,
       total,
       limit,
       offset,
@@ -287,6 +307,8 @@ class ShipmentService {
     return {
       ...shipment,
       origin_branch_name: originBranchName,
+      current_location:
+        latestHistory?.location || shipment.origin_country || shipment.destination,
       latest_update: latestHistory,
       history: historyResult.rows,
     };
@@ -295,7 +317,8 @@ class ShipmentService {
   async updateShipmentStatus(
     shipmentId: string,
     status: string,
-    branchId: string,
+    branchId: string | null = null,
+    location: string = '',
     description: string = '',
     userId: string,
     userRole: string,
@@ -307,13 +330,15 @@ class ShipmentService {
       throw new AppError('Branch admins can only post updates for their own branch', 403);
     }
 
-    const location = await this.getBranchName(branchId);
+    const branchLocation = branchId ? await this.getBranchName(branchId) : null;
+    const nextLocation =
+      location.trim() || branchLocation || shipment.destination;
 
     const result = await pool.query(
       `INSERT INTO tracking_history (shipment_id, branch_id, location, status, description, created_by, created_at)
        VALUES ($1, $2, $3, $4, $5, $6, NOW())
        RETURNING *`,
-      [shipmentId, branchId, location || shipment.destination, status, description, userId]
+      [shipmentId, branchId || null, nextLocation, status, description, userId]
     );
 
     await pool.query(
@@ -492,6 +517,8 @@ class ShipmentService {
     return {
       ...shipment,
       origin_branch_name: originDisplay,
+      current_location:
+        latestHistory?.location || shipment.origin_country || shipment.destination,
       latest_update: latestHistory,
       history: historyResult.rows,
     };

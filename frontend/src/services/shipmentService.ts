@@ -18,6 +18,7 @@ interface Shipment {
   volume?: number;
   service_type?: string;
   current_status: string;
+  current_location?: string;
   created_at: string;
   updated_at?: string;
   latest_update?: any;
@@ -67,10 +68,17 @@ class ShipmentService {
     return response.data;
   }
 
-  async updateShipmentStatus(shipmentId: string, status: string, branchId: string, description: string): Promise<any> {
+  async updateShipmentStatus(
+    shipmentId: string,
+    status: string,
+    branchId: string | null,
+    location: string,
+    description: string
+  ): Promise<any> {
     const response = await api.post(`/shipments/status/${shipmentId}`, {
       status,
       branchId,
+      location,
       description,
     });
     return response.data;
